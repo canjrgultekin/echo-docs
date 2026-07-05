@@ -4,665 +4,159 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Echo MVP — Mimari ve Maliyet Çalışması</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#0F2A2E;
-    --ink-soft:#33504F;
-    --paper:#EDF1EF;
-    --card:#FFFFFF;
-    --line:#C9D6D2;
-    --line-strong:#0F2A2E;
-    --teal:#0E6E62;
-    --teal-deep:#0A4A44;
-    --amber:#B4700F;
-    --amber-soft:#F6E9D2;
-    --row-alt:#F3F7F5;
-    --head-bg:#0F2A2E;
-    --head-fg:#E9F2EF;
-    --total-bg:#0E6E62;
-    --total-fg:#F2FBF8;
+    --teal:#0f4c5c; --teal-dark:#0a3542; --teal-light:#e6f0f2;
+    --ink:#1f2933; --muted:#5b6770; --line:#d8e0e4;
+    --accent:#e36414; --ok:#1a7f5a; --warn:#b3541e;
   }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Source Sans 3',sans-serif;
-    font-size:16px;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:1180px;margin:0 auto;padding:0 28px 96px;}
-
-  /* ---------- HEADER ---------- */
-  header.masthead{
-    background:var(--head-bg);
-    color:var(--head-fg);
-    padding:56px 0 48px;
-    position:relative;
-    overflow:hidden;
-  }
-  header.masthead::after{
-    content:"";
-    position:absolute;inset:0;
-    background:
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 96px);
-    pointer-events:none;
-  }
-  .masthead .wrap{padding-bottom:0;}
-  .eyebrow{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;letter-spacing:0.22em;text-transform:uppercase;
-    color:#7FB8AC;
-    margin-bottom:18px;
-  }
-  h1{
-    font-family:'Archivo',sans-serif;
-    font-weight:800;
-    font-size:clamp(30px,4.6vw,52px);
-    line-height:1.06;
-    letter-spacing:-0.015em;
-    max-width:820px;
-  }
-  h1 .accent{color:#6FD3BF;}
-  .meta-row{
-    display:flex;flex-wrap:wrap;gap:0;
-    margin-top:34px;
-    border-top:1px solid rgba(233,242,239,0.25);
-  }
-  .meta-cell{
-    padding:14px 28px 4px 0;
-    margin-right:28px;
-    border-right:1px solid rgba(233,242,239,0.15);
-  }
-  .meta-cell:last-child{border-right:none;}
-  .meta-cell .k{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#7FB8AC;
-    display:block;margin-bottom:2px;
-  }
-  .meta-cell .v{font-weight:600;font-size:15px;color:var(--head-fg);}
-
-  /* ---------- INTRO ---------- */
-  .intro{
-    margin:52px 0 8px;
-    max-width:860px;
-  }
-  .intro p{margin-bottom:16px;font-size:17px;color:var(--ink-soft);}
-  .intro p strong{color:var(--ink);}
-  .assumption-strip{
-    margin:30px 0 10px;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-left:4px solid var(--teal);
-    padding:22px 26px;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:18px 32px;
-  }
-  .assumption-strip .a .k{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
-    color:var(--teal);display:block;margin-bottom:3px;
-  }
-  .assumption-strip .a .v{font-weight:600;font-size:15px;line-height:1.4;}
-
-  /* ---------- SECTIONS ---------- */
-  section{margin-top:76px;}
-  .sec-head{
-    display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;
-    border-bottom:3px solid var(--line-strong);
-    padding-bottom:14px;margin-bottom:10px;
-  }
-  .sec-tag{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px;font-weight:600;letter-spacing:0.16em;
-    color:var(--total-fg);
-    background:var(--teal);
-    padding:5px 12px;
-  }
-  .sec-tag.alt{background:var(--amber);}
-  .sec-tag.scale{background:var(--ink);}
-  h2{
-    font-family:'Archivo',sans-serif;
-    font-weight:700;font-size:clamp(22px,3vw,31px);
-    letter-spacing:-0.01em;line-height:1.15;
-  }
-  .sec-sub{
-    font-size:16.5px;color:var(--ink-soft);
-    max-width:900px;margin:14px 0 26px;
-  }
-  .sec-sub strong{color:var(--ink);}
-
-  /* ---------- TABLES ---------- */
-  .table-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    box-shadow:0 1px 0 var(--line), 0 10px 28px rgba(15,42,46,0.06);
-    overflow-x:auto;
-  }
-  table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:15px;
-    min-width:860px;
-  }
-  thead th{
-    background:var(--head-bg);
-    color:var(--head-fg);
-    font-family:'Archivo',sans-serif;
-    font-weight:600;font-size:13px;
-    letter-spacing:0.08em;text-transform:uppercase;
-    text-align:left;
-    padding:14px 18px;
-    white-space:nowrap;
-  }
-  thead th.num{text-align:right;}
-  tbody td{
-    padding:15px 18px;
-    border-bottom:1px solid var(--line);
-    vertical-align:top;
-  }
-  tbody tr:nth-child(even){background:var(--row-alt);}
-  tbody tr:hover{background:#E7F0EC;}
-  td.comp{
-    font-family:'Archivo',sans-serif;
-    font-weight:600;font-size:15px;
-    color:var(--ink);
-    min-width:190px;
-  }
-  td.comp .svc{
-    display:block;
-    font-family:'IBM Plex Mono',monospace;
-    font-weight:500;font-size:12.5px;
-    color:var(--teal);
-    margin-top:3px;letter-spacing:0.01em;
-  }
-  td.desc{color:var(--ink-soft);max-width:420px;}
-  td.desc code, .sec-sub code, .intro code, .note-block code{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:13px;
-    background:#E3ECE8;
-    color:var(--teal-deep);
-    padding:1px 5px;border-radius:3px;
-    white-space:nowrap;
-  }
-  td.why{color:var(--ink-soft);max-width:360px;font-size:14.5px;}
-  td.cost{
-    font-family:'IBM Plex Mono',monospace;
-    font-weight:600;font-size:15px;
-    text-align:right;
-    white-space:nowrap;
-    color:var(--teal-deep);
-    min-width:120px;
-  }
-  tr.total-row td{
-    background:var(--total-bg);
-    color:var(--total-fg);
-    border-bottom:none;
-    padding:18px;
-  }
-  tr.total-row td.comp{
-    color:var(--total-fg);
-    font-family:'Archivo',sans-serif;
-    font-weight:800;font-size:16px;
-    letter-spacing:0.06em;text-transform:uppercase;
-  }
-  tr.total-row td.cost{
-    color:#FFFFFF;
-    font-size:19px;font-weight:600;
-  }
-  tr.total-row.amber td{background:#8A5A10;}
-  tr.total-row.ink td{background:var(--ink);}
-  tr.variant-row td{
-    background:var(--amber-soft);
-    color:var(--ink);
-    border-bottom:none;
-    font-size:14.5px;
-  }
-  tr.variant-row td.cost{color:var(--amber);}
-
-  /* mini assumption table inside section 3 */
-  .mini-table-card{
-    background:var(--card);
-    border:1px solid var(--line);
-    margin-bottom:30px;
-    overflow-x:auto;
-  }
-  .mini-table-card table{min-width:720px;font-size:14.5px;}
-  .mini-table-card thead th{
-    background:#2A4A4C;
-    font-size:12px;padding:11px 16px;
-  }
-  .mini-table-card tbody td{padding:11px 16px;}
-  .mini-label{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:12px;letter-spacing:0.16em;text-transform:uppercase;
-    color:var(--ink-soft);
-    margin:0 0 10px 2px;
-  }
-
-  /* ---------- NOTE / VERDICT ---------- */
-  .note-block{
-    margin-top:26px;
-    background:var(--card);
-    border:1px solid var(--line);
-    border-left:4px solid var(--amber);
-    padding:20px 26px;
-    max-width:1000px;
-  }
-  .note-block h4{
-    font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;
-    letter-spacing:0.05em;text-transform:uppercase;
-    color:var(--amber);margin-bottom:8px;
-  }
-  .note-block p{color:var(--ink-soft);font-size:15.5px;margin-bottom:10px;}
-  .note-block p:last-child{margin-bottom:0;}
-  .note-block p strong{color:var(--ink);}
-
-  .verdict{
-    margin-top:80px;
-    background:var(--head-bg);
-    color:var(--head-fg);
-    padding:40px 44px;
-    position:relative;
-  }
-  .verdict::before{
-    content:"";
-    position:absolute;left:0;top:0;bottom:0;width:6px;
-    background:repeating-linear-gradient(45deg, var(--teal) 0 10px, #6FD3BF 10px 20px);
-  }
-  .verdict h3{
-    font-family:'Archivo',sans-serif;font-weight:800;
-    font-size:clamp(19px,2.4vw,25px);
-    margin-bottom:14px;letter-spacing:-0.01em;
-  }
-  .verdict p{color:#C6DAD4;font-size:16.5px;max-width:960px;margin-bottom:12px;}
-  .verdict p strong{color:#FFFFFF;}
-  .verdict .figures{
-    display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;
-  }
-  .verdict .fig{
-    border:1px solid rgba(233,242,239,0.25);
-    padding:12px 20px;
-  }
-  .verdict .fig .k{
-    font-family:'IBM Plex Mono',monospace;
-    font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#7FB8AC;
-    display:block;margin-bottom:3px;
-  }
-  .verdict .fig .v{
-    font-family:'IBM Plex Mono',monospace;
-    font-weight:600;font-size:19px;color:#6FD3BF;
-  }
-
-  footer{
-    margin-top:60px;
-    padding-top:22px;
-    border-top:1px solid var(--line);
-    font-size:13.5px;color:var(--ink-soft);
-    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
-  }
-  footer .mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px;}
-
-  @media (max-width:720px){
-    .verdict{padding:30px 24px;}
-    .meta-cell{padding-right:18px;margin-right:18px;}
-  }
-  @media (prefers-reduced-motion:no-preference){
-    section{animation:rise .5s ease both;}
-    @keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:#f4f7f8;line-height:1.55}
+  .page{max-width:1060px;margin:0 auto;background:#fff;box-shadow:0 2px 18px rgba(15,76,92,.12)}
+  header{background:linear-gradient(135deg,var(--teal-dark),var(--teal));color:#fff;padding:38px 48px}
+  header h1{margin:0 0 6px;font-size:27px;letter-spacing:.3px}
+  header .sub{opacity:.85;font-size:14.5px}
+  header .meta{margin-top:14px;font-size:12.5px;opacity:.75}
+  main{padding:36px 48px 48px}
+  h2{color:var(--teal);font-size:20px;border-bottom:3px solid var(--teal);padding-bottom:8px;margin:42px 0 14px}
+  h2:first-of-type{margin-top:0}
+  h3{color:var(--teal-dark);font-size:15.5px;margin:26px 0 8px}
+  p{margin:10px 0;font-size:14px}
+  .lead{font-size:14.5px;color:var(--ink)}
+  table{width:100%;border-collapse:collapse;margin:16px 0 8px;font-size:13.2px}
+  caption{caption-side:top;text-align:left;font-weight:600;color:var(--teal-dark);font-size:14px;padding-bottom:8px}
+  th{background:var(--teal);color:#fff;text-align:left;padding:10px 12px;font-weight:600;font-size:12.6px;letter-spacing:.2px}
+  td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:nth-child(even){background:var(--teal-light)}
+  tr.total td{background:var(--teal-dark);color:#fff;font-weight:700;font-size:13.6px;border-bottom:none}
+  tr.subtotal td{background:#cfe3e8;font-weight:600}
+  .cost{white-space:nowrap;font-weight:600;color:var(--teal-dark)}
+  .tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:.3px}
+  .tag.free{background:#d9f2e6;color:var(--ok)}
+  .tag.paid{background:#fdeadd;color:var(--warn)}
+  .tag.incl{background:#dbe9f5;color:#1c5d99}
+  .note{background:var(--teal-light);border-left:4px solid var(--teal);padding:12px 16px;font-size:13px;margin:14px 0;border-radius:0 6px 6px 0}
+  .warnbox{background:#fdf3ec;border-left:4px solid var(--accent);padding:12px 16px;font-size:13px;margin:14px 0;border-radius:0 6px 6px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 26px;margin:12px 0}
+  .kv{font-size:13px;padding:8px 10px;background:#fafcfc;border:1px solid var(--line);border-radius:6px}
+  .kv b{color:var(--teal-dark)}
+  footer{padding:20px 48px 34px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line)}
+  footer a{color:var(--teal)}
+  @media print{
+    body{background:#fff}
+    .page{box-shadow:none;max-width:100%}
+    header{padding:26px 34px}
+    main{padding:22px 34px}
+    h2{page-break-after:avoid}
+    table{page-break-inside:avoid;font-size:11.5px}
+    a{color:inherit;text-decoration:none}
   }
 </style>
 </head>
 <body>
-<a href="https://51-116-178-119.nip.io" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:22px;z-index:99999;display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:#0E6E62;color:#F2FBF8;font:700 14.5px 'Source Sans 3',Segoe UI,sans-serif;letter-spacing:.2px;text-decoration:none;box-shadow:0 10px 28px rgba(14,110,98,.4);border:1px solid rgba(255,255,255,.2)"><span style="font-size:15px">&#9654;</span> Uygulamay&#305; A&#231;</a>
+<a href="https://51-116-178-119.nip.io" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:22px;z-index:99999;display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:#0f4c5c;color:#ffffff;font:700 14.5px -apple-system,'Segoe UI',Roboto,Arial,sans-serif;letter-spacing:.2px;text-decoration:none;box-shadow:0 10px 28px rgba(15,76,92,.42);border:1px solid rgba(255,255,255,.22)"><span style="font-size:15px">&#9654;</span> Uygulamay&#305; A&#231;</a>
+<div class="page">
 
-<header class="masthead">
-  <div class="wrap">
-    <div class="eyebrow">Mimari &amp; Maliyet Çalışması · Web App MVP</div>
-    <h1>Echo MVP<br><span class="accent">Mimari ve Maliyet Tasarımı</span></h1>
-    <div class="meta-row">
-      <div class="meta-cell"><span class="k">Hazırlayan</span><span class="v">Can Küçükgültekin</span></div>
-      <div class="meta-cell"><span class="k">Tarih</span><span class="v">4 Temmuz 2026</span></div>
-      <div class="meta-cell"><span class="k">Hedef</span><span class="v">Ekim–Kasım 2026 dizi lansmanı</span></div>
-      <div class="meta-cell"><span class="k">Platform</span><span class="v">Web app (Next.js + .NET 10)</span></div>
-      <div class="meta-cell"><span class="k">Bölge</span><span class="v">Germany West Central</span></div>
-    </div>
-  </div>
+<header>
+  <h1>Echo MVP — Mimari ve Maliyet Çalışması</h1>
+  <div class="sub">İdeal production mimarisi, minimum maliyetli alternatif ve 20.000 günlük kullanıcı ölçek projeksiyonu</div>
+  <div class="meta">Hazırlayan: Can Küçükgültekin · Principal Systems &amp; Software Architect · 4 Temmuz 2026 · Tüm fiyatlar Temmuz 2026 itibarıyla resmî kaynaklardan doğrulanmıştır (USD, aylık).</div>
 </header>
 
-<div class="wrap">
+<main>
 
-  <div class="intro">
-    <p>Bu çalışmayı Echo MVP'nin lansman kararını netleştirmek için hazırladım. Aynı hizmeti iki farklı mimariyle kurgulayıp ikisini de kalem kalem fiyatlandırdım: birincisi tamamen managed servislerle production-grade bir kurulum, ikincisi tek VM üzerinde Docker Compose ile minimum maliyet kurulumu. Üçüncü tabloda ise işin büyüme tarafına baktım; ürün tutar ve 10 aktif kanalda günlük 20.000 kullanıcıya çıkarsak, ideal mimarinin 30 günlük faturası ne olur, onu hesapladım.</p>
-    <p>Tüm fiyatlar Temmuz 2026 itibarıyla resmi Azure ve OpenAI fiyat sayfalarından doğrulanmış liste fiyatlarıdır; bölgeye göre yüzde 5-10 sapma olabilir. AI tarafında her iki senaryoda da aynı modeller kullanılıyor: <strong>gpt-4.1-mini</strong> (0.40$/M input, 1.60$/M output, Batch API ile yüzde 50 indirim) ve <strong>text-embedding-3-small</strong> (0.02$/M token). Aşağıdaki boyutlandırma varsayımları benim deklare ettiğim senaryodur; herhangi biri değişirse rakamları yeniden hesaplarım.</p>
-  </div>
+<p class="lead">Bu çalışmayı Echo MVP'sinin deployment planlaması için hazırladım. Hedefimiz Ekim–Kasım döneminde yeni sezonu çıkacak bir dizi ile canlıya çıkmak; platform web uygulaması olarak geliştirilecek. Aşağıda iki ayrı senaryoyu uçtan uca çıkardım: birincisi, production standardında, tamamı managed servislerden oluşan ideal mimari; ikincisi, aynı hizmet kapsamını eksiksiz veren ama tek sunucuya sıkıştırılmış minimum maliyetli kurulum. Sonunda da 10 aktif kanal ve günlük 20.000 kullanıcılık büyüme senaryosunun ideal mimari üzerindeki 30 günlük maliyet projeksiyonu var. Veri toplama tarafında MVP kaynak setimiz dört platform: YouTube, Threads, Reddit ve X; her birinin güncel fiyat ve şartlarını ayrı bölümde tek tek verdim.</p>
 
-  <div class="assumption-strip">
-    <div class="a"><span class="k">Lansman içeriği</span><span class="v">1 popüler dizi, 8 bölümlük sezon, haftada 1 bölüm</span></div>
-    <div class="a"><span class="k">Veri kaynakları</span><span class="v">YouTube + Threads (ücretsiz) + Reddit free tier</span></div>
-    <div class="a"><span class="k">Ham yorum hacmi</span><span class="v">~100.000/ay → dedupe sonrası ~30.000 curated</span></div>
-    <div class="a"><span class="k">Beta kullanıcı</span><span class="v">~500 kayıtlı, 100–200 eşzamanlı tepe</span></div>
-    <div class="a"><span class="k">Canlı mesaj</span><span class="v">~50.000/ay (üst bant)</span></div>
-  </div>
+<div class="note"><b>Boyutlandırma senaryosu (MVP/beta):</b> 8 bölümlük sezon, haftada 1 bölüm; aylık ~100.000 ham yorum, dedupe sonrası ~%30'u yayınlanır; ~500 kayıtlı beta kullanıcısı, tepe 100–200 eşzamanlı; ~50.000 canlı kullanıcı mesajı/ay. AI modelleri: OpenAI gpt-4.1-mini (0,40 $ / 1,60 $ per 1M token; Batch API ile %50 indirim) ve text-embedding-3-small (0,02 $ / 1M token).</div>
 
-  <!-- ================= SENARYO A ================= -->
-  <section id="senaryo-a">
-    <div class="sec-head">
-      <span class="sec-tag">TABLO 1</span>
-      <h2>Senaryo A — İdeal Mimari (Production-Grade, Managed Servisler)</h2>
-    </div>
-    <p class="sec-sub">Buradaki felsefem net: her bileşen managed, her bileşenin tek sorumluluğu var, autoscale ve HA hazır. Operasyon yükü minimumda kalıyor, büyüme anında yanıt veriyor. Bu sadece beta mimarisi değil; beta sonrası gerçek lansmanın da altyapısı budur.</p>
+<h2>1. Senaryo A — İdeal Mimari (Production-Grade, Managed)</h2>
+<p>Bu senaryoda her bileşen managed; autoscale, yüksek erişilebilirlik ve sıfır sunucu bakımı hedefliyorum. Beta sonrası gerçek lansmanın da altyapısı budur: bileşenler bağımsız ölçeklenir, büyüme anında yanıt verir.</p>
 
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:19%">Bileşen</th>
-            <th style="width:33%">İçerik &amp; Boyutlandırma</th>
-            <th style="width:33%">Neden Bu Tercih</th>
-            <th class="num" style="width:15%">Tahmini $/ay</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="comp">Compute<span class="svc">Azure Container Apps (Consumption)</span></td>
-            <td class="desc">4 container app: <code>echo-api</code> (.NET 10 Minimal API + SignalR hub, 2 replica autoscale), <code>echo-web</code> (Next.js standalone, 2 replica), <code>echo-ingest-worker</code> (kaynak tarama scheduler + collector'lar), <code>echo-enrich-worker</code> (dedupe + alignment + spoiler + translate pipeline). Sürekli toplam ~2 vCPU + 4 GiB.</td>
-            <td class="why">Kubernetes operasyonu olmadan container orkestrasyonu; replica bazlı autoscale ve scale-to-zero desteği. Aylık ücretsiz kota (180K vCPU-sn + 360K GiB-sn + 2M istek) faturayı ciddi düşürüyor; per-second faturalama.</td>
-            <td class="cost">80 – 130</td>
-          </tr>
-          <tr>
-            <td class="comp">Veritabanı<span class="svc">PostgreSQL Flexible Server (PG 18 + pgvector)</span></td>
-            <td class="desc">Tek veritabanı: ilişkisel şema + pgvector embedding kolonları (curated mesajlar, cluster centroid'leri, segment haritası). Burstable B2s (2 vCPU / 4 GiB) + 32 GB storage.</td>
-            <td class="why">Managed backup (7 gün PITR), otomatik patching, storage autogrow. pgvector sayesinde ayrı bir vector DB kurma ihtiyacı tamamen ortadan kalkıyor. İleride General Purpose D2ds'e yükseltme ~120–140 $/ay.</td>
-            <td class="cost">~30</td>
-          </tr>
-          <tr>
-            <td class="comp">Event Backbone<span class="svc">Azure Event Hubs Standard (Kafka endpoint)</span></td>
-            <td class="desc">Ingest pipeline'ın omurgası: <code>raw-comments</code>, <code>enriched-comments</code>, <code>publish-events</code> topic'leri. .NET tarafı Kafka client ile konuşuyor (<code>IIngestBus</code> soyutlaması). 1 Throughput Unit.</td>
-            <td class="why">Kafka ihtiyacını managed karşılıyor; bu ölçekte kendi Kafka cluster'ını işletmek savunulamaz. Kritik detay: Basic tier Kafka protokolünü desteklemiyor, o yüzden Standard şart. 1 TU = 1 MB/s ingress, hacmimizin çok üstünde.</td>
-            <td class="cost">~25</td>
-          </tr>
-          <tr>
-            <td class="comp">Realtime<span class="svc">Azure SignalR Service (Standard, 1 unit)</span></td>
-            <td class="desc">Kanal chat push'u; API replica'ları arasındaki bağlantı yönetimini tamamen üstleniyor. 1 unit = 1.000 eşzamanlı bağlantı + 1M mesaj/gün.</td>
-            <td class="why">API 2+ replica olduğu anda self-hosted SignalR için backplane gerekir; Azure SignalR bu derdi kökten alıyor. Tepe 200 eşzamanlı ihtiyacımızın 5 katı kapasite hazırda bekliyor.</td>
-            <td class="cost">~49</td>
-          </tr>
-          <tr>
-            <td class="comp">Cache<span class="svc">Azure Managed Redis (Balanced B0, 1 GB)</span></td>
-            <td class="desc">Sıcak veri cache'i (kanal meta, kullanıcı tercihleri), rate limiting, dedupe hot-set (son N saatin embedding hash'leri), distributed lock.</td>
-            <td class="why">Okuma yolunu DB'den koparıyor, ingest dedupe ön filtresini hızlandırıyor. Not: Azure Cache for Redis 2028'de emekli oluyor, yeni standart Managed Redis; baştan doğru üründe konumlanıyoruz.</td>
-            <td class="cost">13 – 16</td>
-          </tr>
-          <tr>
-            <td class="comp">Depolama<span class="svc">Azure Blob Storage (Cool tier)</span></td>
-            <td class="desc">Ham yorum JSON arşivi (10–50 GB) + pg_dump yedekleri.</td>
-            <td class="why">Yeniden işleme, audit ve model iyileştirme için ham veriyi asla atmıyoruz; Cool tier bunu neredeyse bedavaya saklıyor.</td>
-            <td class="cost">1 – 3</td>
-          </tr>
-          <tr>
-            <td class="comp">Registry<span class="svc">Azure Container Registry (Basic)</span></td>
-            <td class="desc">api / web / worker imajları.</td>
-            <td class="why">CI/CD'nin doğal parçası; Basic tier bu hacim için fazlasıyla yeterli.</td>
-            <td class="cost">~5</td>
-          </tr>
-          <tr>
-            <td class="comp">Observability<span class="svc">Application Insights + Log Analytics</span></td>
-            <td class="desc">OpenTelemetry ile uçtan uca trace (collector → pipeline → publish → SignalR), per-source ingest metrikleri, LLM çağrı süre/maliyet metrikleri, alert'ler. ~5–10 GB/ay, ilk 5 GB ücretsiz.</td>
-            <td class="why">"Yorum kaçırmama" garantisi ancak ölçülürse gerçektir; kaynak başına toplanan / işlenen / düşen sayaçları burada izlenir. Ölçemediğin şeyi vaat edemezsin.</td>
-            <td class="cost">10 – 15</td>
-          </tr>
-          <tr>
-            <td class="comp">Diğer<span class="svc">Key Vault + Domain + TLS</span></td>
-            <td class="desc">Key Vault (~1 $), custom domain (~12 $/yıl ≈ 1 $/ay); managed TLS Container Apps'e dahil.</td>
-            <td class="why">Secret yönetimi baştan doğru kurulur, sonradan taşınmaz.</td>
-            <td class="cost">~2</td>
-          </tr>
-          <tr>
-            <td class="comp">AI<span class="svc">OpenAI API (gpt-4.1-mini + embedding-3-small)</span></td>
-            <td class="desc">Segment haritası üretimi, yorum embedding, alignment + mutlak spoiler sınıflandırma, EN↔TR çeviri, canlı mesaj spoiler kontrolü. Detay kırılım aşağıdaki notta.</td>
-            <td class="why">Toplu işlerin tamamı Batch API ile yüzde 50 indirimli koşuyor; okuma anında asla LLM çağrılmıyor, her şey ingest'te bir kez hesaplanıyor, serving saf SQL filtresi.</td>
-            <td class="cost">25 – 60</td>
-          </tr>
-          <tr class="total-row">
-            <td class="comp" colspan="3">Senaryo A Toplam</td>
-            <td class="cost">~245 – 330 $/ay</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<table>
+<caption>Tablo 1 — İdeal mimari: bileşenler, roller, boyutlar ve aylık maliyetler</caption>
+<thead><tr><th style="width:19%">Bileşen</th><th style="width:36%">Rolü</th><th style="width:26%">Boyut / SKU</th><th style="width:19%">Aylık Maliyet</th></tr></thead>
+<tbody>
+<tr><td><b>Azure Container Apps</b></td><td>4 uygulama: echo-api (.NET 10 + SignalR hub), echo-web (Next.js), echo-ingest-worker (kaynak tarama), echo-enrich-worker (dedupe + spoiler + çeviri pipeline'ı)</td><td>Consumption plan; toplam ~2 vCPU + 4 GiB sürekli; api 2, web 2 replica; aylık ücretsiz kota düşülmüş</td><td class="cost">80 – 130 $</td></tr>
+<tr><td><b>Azure Database for PostgreSQL</b></td><td>Tek veritabanı: ilişkisel şema + pgvector (embedding, cluster centroid, segment haritası); 7 gün PITR backup</td><td>Flexible Server, Burstable B2s (2 vCPU / 4 GiB) + 32 GB</td><td class="cost">~30 $</td></tr>
+<tr><td><b>Azure Event Hubs</b></td><td>Ingest pipeline omurgası (Kafka-compatible endpoint); raw → enriched → publish topic akışı</td><td>Standard, 1 TU (Basic tier Kafka desteklemez)</td><td class="cost">~25 $</td></tr>
+<tr><td><b>Azure SignalR Service</b></td><td>Kanal chat push'u; çoklu API replica'da bağlantı yönetimi</td><td>Standard, 1 unit (1.000 eşzamanlı + 1M mesaj/gün)</td><td class="cost">~49 $</td></tr>
+<tr><td><b>Azure Managed Redis</b></td><td>Sıcak cache, rate limiting, dedupe hot-set, distributed lock</td><td>Balanced B0 (1 GB)</td><td class="cost">~15 $</td></tr>
+<tr><td><b>Blob + ACR + Key Vault + domain</b></td><td>Ham yorum arşivi (Cool), container registry, secret yönetimi, TLS'li özel alan adı</td><td>Blob 10–50 GB, ACR Basic</td><td class="cost">~10 $</td></tr>
+<tr><td><b>App Insights + Log Analytics</b></td><td>OpenTelemetry uçtan uca trace, ingest sayaçları, LLM maliyet metrikleri, alert'ler</td><td>~5–10 GB/ay (ilk 5 GB ücretsiz)</td><td class="cost">~12 $</td></tr>
+<tr><td><b>X API read bütçesi</b></td><td>X collector'ın pay-per-use okuma bütçesi (tavanlı)</td><td>~10.000 yorum/ay @ 0,005 $/read</td><td class="cost">~50 $</td></tr>
+<tr><td><b>OpenAI API</b></td><td>Segment haritası, embedding, alignment + spoiler sınıflandırma, çeviri (Batch API) + canlı mesaj spoiler kontrolü (realtime)</td><td>gpt-4.1-mini + text-embedding-3-small</td><td class="cost">25 – 60 $</td></tr>
+<tr class="total"><td colspan="3">SENARYO A TOPLAM</td><td>~295 – 380 $/ay</td></tr>
+</tbody>
+</table>
+<p><b>Artıları:</b> yüksek erişilebilirlik, autoscale, sıfır sunucu bakımı, bileşen bazlı bağımsız ölçekleme. <b>Eksisi:</b> beta ölçeğinde kapasitenin önemli kısmı boşta durur; sabit maliyet yüksektir.</p>
 
-    <div class="note-block">
-      <h4>Değerlendirmem</h4>
-      <p><strong>Artıları:</strong> HA, autoscale, sıfır sunucu bakımı, bileşen bazında bağımsız ölçekleme ve lansman sonrası büyümeye hazır bir omurga. <strong>Eksisi:</strong> aylık sabit maliyet yüksek; beta ölçeğinde bu kapasitenin önemli bir kısmı boşta durur.</p>
-      <p><strong>AI katmanı kırılımı (aylık, senaryo hacminde):</strong> segment haritası üretimi bölüm başına 1 kez, 8 bölüm × ~20K token ile 1 $'ın altında; yorum embedding 5M token ile ~0.10 $; alignment + mutlak spoiler sınıflandırma Batch API ile ~7–15 $; EN↔TR çeviri Batch API ile ~6–12 $; canlı mesaj spoiler kontrolü (batch olamaz, realtime) 50K mesaj × ~330 token ile ~8–15 $. Toplam ~25–45 $/ay, tepe ayda ~60 $. Göreceli spoiler'ı LLM'siz, okuma anında anchor karşılaştırmasıyla çözüyoruz; yalnızca mutlak spoiler (twist/final ifşası) ingest'te sınıflandırılıyor.</p>
-    </div>
-  </section>
+<h2>2. Senaryo B — Minimum Maliyet (Tek VM + Docker Compose)</h2>
+<p>Aynı hizmet kapsamının tamamı, tek Azure VM üzerinde. Bu modeli daha önce canlıda çalıştırıp doğruladım; Caddy reverse proxy otomatik HTTPS alıyor, backend açılışta migration'larını kendisi uyguluyor. Kod tabanı baştan Senaryo A'ya uyumlu soyutlamalarla (IIngestBus, IDistributedCache, SignalR soyutlaması) yazılacağı için B'den A'ya geçiş kod değil konfigürasyon meselesidir.</p>
 
-  <!-- ================= SENARYO B ================= -->
-  <section id="senaryo-b">
-    <div class="sec-head">
-      <span class="sec-tag alt">TABLO 2</span>
-      <h2>Senaryo B — Minimum Maliyet (Tek VM + Docker Compose)</h2>
-    </div>
-    <p class="sec-sub">Aynı hizmetin tamamı, tek bir Azure VM üzerinde Docker Compose ile. Bu modeli Echo'da zaten canlıda kanıtladık (nip.io + Caddy + otomatik migration ile). Managed servislerin yerini süreç içi alternatifler alıyor ama <strong>hizmet kapsamı birebir aynı kalıyor</strong>; kısılan şey özellik değil, sabit maliyet.</p>
+<table>
+<caption>Tablo 2 — Minimum maliyet: idealdeki servisin tek VM karşılığı ve aylık maliyetler</caption>
+<thead><tr><th style="width:19%">İdealdeki Servis</th><th style="width:30%">Tek VM Karşılığı</th><th style="width:32%">Not</th><th style="width:19%">Aylık Maliyet</th></tr></thead>
+<tbody>
+<tr><td><b>Container Apps</b></td><td>Docker Compose: caddy + api + web + ingest-worker + enrich-worker</td><td>Aynı imajlar; VM: <b>B2ms (2 vCPU / 8 GB)</b> — canlıda kanıtlanmış boyut</td><td class="cost">~61 $ (VM)</td></tr>
+<tr><td><b>PostgreSQL Flexible</b></td><td>postgres:18 + pgvector container</td><td>Volume: /var/lib/postgresql (PG 18 kuralı); gece pg_dump → Blob</td><td class="cost">0 $ (VM içinde)</td></tr>
+<tr><td><b>Event Hubs / Kafka</b></td><td>PostgreSQL kuyruk: outbox + FOR UPDATE SKIP LOCKED + .NET Channels</td><td>IIngestBus soyutlaması; Event Hubs'a kod değişmeden geçilir</td><td class="cost">0 $</td></tr>
+<tr><td><b>Azure SignalR</b></td><td>Self-hosted SignalR (in-memory)</td><td>Tek API instance; backplane gerekmez; 200 eşzamanlıyı rahat taşır</td><td class="cost">0 $</td></tr>
+<tr><td><b>Managed Redis</b></td><td>IMemoryCache</td><td>Tek instance'ta distributed cache gereksiz</td><td class="cost">0 $</td></tr>
+<tr><td><b>Observability</b></td><td>OpenTelemetry → structured log (+ opsiyonel Jaeger container)</td><td>RAM bütçesine dikkat</td><td class="cost">0 $</td></tr>
+<tr><td><b>Disk + IP + yedek + domain</b></td><td>64 GB Standard SSD + statik IP + Blob yedek + domain</td><td>nip.io ile domain 0 $'a iner</td><td class="cost">~11 $</td></tr>
+<tr><td><b>X API read bütçesi</b></td><td>Aynı tavanlı collector</td><td>~10.000 yorum/ay</td><td class="cost">~50 $</td></tr>
+<tr><td><b>OpenAI API</b></td><td>Aynı AI hattı (Batch API + realtime)</td><td>Senaryo A ile birebir aynı</td><td class="cost">25 – 60 $</td></tr>
+<tr class="total"><td colspan="3">SENARYO B TOPLAM (B2ms)</td><td>~147 – 182 $/ay</td></tr>
+<tr class="subtotal"><td colspan="3">Daha da kısılmış varyant: B2s (4 GB) + VM dışında image build</td><td class="cost">~116 – 151 $/ay</td></tr>
+</tbody>
+</table>
+<p><b>Artıları:</b> en düşük sabit maliyet, kanıtlanmış kurulum, tam kontrol. <b>Eksileri:</b> tek makine tek hata noktasıdır; yedekleme, güvenlik ve patch işletimi bizde; dikey ölçek sınırı vardır; eşzamanlılık binlere çıktığında Senaryo A'ya geçiş şarttır.</p>
 
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:19%">Kalem</th>
-            <th style="width:33%">İdealdeki Karşılığı → VM'deki Çözüm</th>
-            <th style="width:33%">Not &amp; Gerekçe</th>
-            <th class="num" style="width:15%">Tahmini $/ay</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="comp">VM<span class="svc">Azure B2ms (2 vCPU / 8 GB)</span></td>
-            <td class="desc">Container Apps yerine Docker Compose: <code>caddy</code> + <code>api</code> + <code>web</code> + <code>ingest-worker</code> + <code>enrich-worker</code>, aynı imajlar, compose profilleriyle.</td>
-            <td class="why">postgres + api + web + 2 worker + caddy aynı anda koşuyor; Next.js build VM'de yapılıyorsa 4 GB'ta OOM riski var. Echo deploy'unda 8 GB'ın rahat ettiğini canlıda gördük, kanıtlı. Dizi lansmanı hedefi için önerim B2ms.</td>
-            <td class="cost">~61</td>
-          </tr>
-          <tr>
-            <td class="comp">Veritabanı<span class="svc">postgres:18 + pgvector container</span></td>
-            <td class="desc">PostgreSQL Flexible yerine aynı VM'de container; volume <code>/var/lib/postgresql</code> (PG18 kuralı, kanıtlı).</td>
-            <td class="why">Managed backup yerine gece cron ile pg_dump → Azure Blob. Şema ve pgvector kullanımı Senaryo A ile birebir aynı; ileride Flexible Server'a restore ile taşınır.</td>
-            <td class="cost">VM'e dahil</td>
-          </tr>
-          <tr>
-            <td class="comp">Event Backbone<span class="svc">Postgres queue + Channels</span></td>
-            <td class="desc">Event Hubs / Kafka yerine PostgreSQL tabanlı kuyruk: outbox tablosu + <code>FOR UPDATE SKIP LOCKED</code> + System.Threading.Channels.</td>
-            <td class="why"><code>IIngestBus</code> soyutlaması sayesinde ileride Event Hubs'a kod değişikliği olmadan, sadece implementasyon takasıyla geçilir. Bu ölçekte Postgres kuyruk fazlasıyla yeterli.</td>
-            <td class="cost">0</td>
-          </tr>
-          <tr>
-            <td class="comp">Realtime<span class="svc">Self-hosted SignalR (in-memory)</span></td>
-            <td class="desc">Azure SignalR yerine API içinde self-hosted SignalR.</td>
-            <td class="why">Tek api instance olduğu için backplane gerekmiyor; 200 eşzamanlıyı rahat taşır. Binlere çıkıldığında Azure SignalR'a geçiş connection string değişikliğinden ibaret.</td>
-            <td class="cost">0</td>
-          </tr>
-          <tr>
-            <td class="comp">Cache<span class="svc">IMemoryCache + Postgres</span></td>
-            <td class="desc">Managed Redis yerine in-process cache; rate limit de in-memory.</td>
-            <td class="why">Tek instance'ta distributed cache gereksiz karmaşıklık olur. <code>IDistributedCache</code> zaten soyut olduğu için Redis'e geçiş konfigürasyonla yapılır.</td>
-            <td class="cost">0</td>
-          </tr>
-          <tr>
-            <td class="comp">Arşiv &amp; Yedek<span class="svc">Postgres tablosu + Azure Blob</span></td>
-            <td class="desc">Ham JSON'lar Postgres <code>raw_comments</code> tablosunda; gece cron pg_dump → Azure Blob.</td>
-            <td class="why">Blob burada sadece yedek görevi görüyor; ham veri saklama prensibi Senaryo A ile aynı, veri asla atılmıyor.</td>
-            <td class="cost">~1</td>
-          </tr>
-          <tr>
-            <td class="comp">Observability<span class="svc">OpenTelemetry → dosya/console (+ opsiyonel Jaeger)</span></td>
-            <td class="desc">App Insights yerine OTel export dosya/console'a; istenirse VM'de Jaeger container (RAM'e dikkat).</td>
-            <td class="why">Ücretsiz; instrumentation kodu Senaryo A ile aynı olduğu için App Insights'a geçiş yalnızca exporter değişikliğidir.</td>
-            <td class="cost">0</td>
-          </tr>
-          <tr>
-            <td class="comp">Registry &amp; TLS<span class="svc">VM'de build / Docker Hub + Caddy + Let's Encrypt</span></td>
-            <td class="desc">ACR yerine GitHub'dan VM'de build (kanıtlı yöntem) veya Docker Hub free; TLS için Caddy + Let's Encrypt, domain nip.io (0 $) veya gerçek domain.</td>
-            <td class="why">Her ikisi de Echo deploy'unda kanıtlanmış yöntemler; sıfır ek maliyet.</td>
-            <td class="cost">0 – 1</td>
-          </tr>
-          <tr>
-            <td class="comp">Altyapı Ekleri<span class="svc">OS Disk + Statik IP</span></td>
-            <td class="desc">OS disk Standard SSD 64 GB (~5 $) + statik public IP (~4 $).</td>
-            <td class="why">VM'in kaçınılmaz yan kalemleri.</td>
-            <td class="cost">~9</td>
-          </tr>
-          <tr>
-            <td class="comp">AI<span class="svc">OpenAI API</span></td>
-            <td class="desc">Senaryo A ile birebir aynı AI katmanı ve aynı kurallar: ingest'te bir kez hesapla, Batch API kullan, okuma anında LLM çağırma.</td>
-            <td class="why">AI maliyeti mimariden bağımsız, hacimle beraber hareket ediyor.</td>
-            <td class="cost">25 – 60</td>
-          </tr>
-          <tr class="total-row amber">
-            <td class="comp" colspan="3">Senaryo B Toplam (B2ms)</td>
-            <td class="cost">~97 – 132 $/ay</td>
-          </tr>
-          <tr class="variant-row">
-            <td class="comp" colspan="3">Kısılmış varyant: B2s (2 vCPU / 4 GB, 30.27 $) + 2 GB swap; şart: imajlar CI'da build edilip VM'e hazır çekilmeli, VM'de build yok. Çalışır ama nefes payı dar; lansman haftası yorum dalgasında enrich-worker ile web aynı anda zorlanır.</td>
-            <td class="cost">~66 – 101 $/ay</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<h2>3. Veri Toplama Platformları — Güncel Fiyat ve Şartlar (Temmuz 2026)</h2>
+<p>MVP kaynak seti dört platformdur: YouTube, Threads, Reddit ve X. Aşağıda her birinin erişim modeli, fiyatı, limitleri ve bizi bağlayan şartları tek tek, araştırılmış ve doğrulanmış haliyle veriyorum.</p>
 
-    <div class="note-block">
-      <h4>Değerlendirmem</h4>
-      <p><strong>Artıları:</strong> en düşük sabit maliyet, kanıtlanmış deploy modeli, tam kontrol. <strong>Eksileri, dürüst liste:</strong> tek makine tek hata noktası demek; VM ölürse her şey durur (beta için kabul edilebilir, lansman büyürse değil). Yedekleme, güvenlik ve patch tamamen bizde. Dikey ölçek sınırı var. SignalR tek instance; 200 eşzamanlıyı rahat taşır ama binlere çıkarsa Senaryo A'ya geçiş şart.</p>
-      <p><strong>B'den A'ya geçiş yolu bilinçli tasarımın parçası:</strong> aynı Docker imajları Container Apps'e deploy edilir; <code>IIngestBus</code> Postgres-queue implementasyonu Event Hubs implementasyonuyla takas edilir; self-hosted SignalR → Azure SignalR connection string değişikliğidir; IMemoryCache → Redis geçişi <code>IDistributedCache</code> soyutlaması sayesinde konfigürasyondur. Yani B ile başlamak A'yı kapatmaz; kod tabanı baştan A-uyumlu yazılır.</p>
-    </div>
-  </section>
+<table>
+<caption>Platform bazında erişim, fiyat ve şart özeti</caption>
+<thead><tr><th style="width:12%">Platform</th><th style="width:14%">MVP Durumu</th><th style="width:24%">Fiyat</th><th style="width:50%">Şartlar ve Limitler</th></tr></thead>
+<tbody>
+<tr><td><b>YouTube</b><br>Data API v3</td><td><span class="tag incl">ANA KAYNAK</span></td><td><span class="tag free">ÜCRETSİZ</span> Para ile ek kota satın alınamaz</td><td>Günlük 10.000 birim kota; commentThreads.list çağrısı 1 birim (teoride günde ~10.000 yorum sayfası çekimi). Haziran 2026 değişikliğiyle search.list ayrı kovaya alındı: günde ~100 arama. Video keşfini az sayıda aramayla yapıp yorumları commentThreads ile çekeceğiz. Kota artışı yalnızca Google'a başvuruyla mümkün.</td></tr>
+<tr><td><b>Threads</b><br>Threads API (Meta)</td><td><span class="tag incl">ANA KAYNAK</span></td><td><span class="tag free">ÜCRETSİZ</span></td><td>Resmî keyword search endpoint'i mevcut; tarih aralığı filtresi destekleniyor. Limit: kullanıcı başına 24 saatte 2.200 sorgu (uygulamalar arası ortak sayılır). threads_basic + threads_keyword_search izinleri gerekli. Metin/görsel/video medya tiplerinde arama yapılabiliyor.</td></tr>
+<tr><td><b>Reddit</b><br>Data API</td><td><span class="tag incl">BETA'DA DAHİL</span></td><td><span class="tag free">Free tier: 0 $</span><br><span class="tag paid">Ticari: ~12.000 $/ay'dan başlar</span></td><td>Free tier 100 istek/dk (OAuth) ve açıkça <b>non-commercial</b> kullanım içindir. Ticari tier ~50M çağrı/ay içerir, aşımı ~0,24 $/1K istek; 200 RPM ~24.000 $, 500 RPM ~60.000 $ mertebesinde. Şeffaf fiyat sayfası yayınlamıyorlar, ticari kullanım onay + özel anlaşma istiyor. <b>Kritik karar:</b> kapalı betada (gelir yokken) free tier düşük hacimle savunulabilir; ticari lansman öncesi ya ücretli anlaşma ya kaynaktan çıkarma kararı verilmeli. Hukuki değerlendirme ekip gündeminde.</td></tr>
+<tr><td><b>X</b><br>X API</td><td><span class="tag incl">MVP DAHİL</span></td><td><span class="tag paid">Pay-per-use</span> 0,005 $/okuma · 0,015 $/post yazma</td><td>Yeni geliştiriciler için abonelik tier'ları kapandı (Nisan 2026); varsayılan model pay-per-use, okuma tavanı 2M/ay. Legacy Basic (200 $/ay) ve Pro (5.000 $/ay) yalnızca eski abonelerde ve Haziran 2026 sonrası pay-per-use'a taşınıyor; Enterprise ~42.000 $/ay. <b>Bizim kurgumuz:</b> collector'a aylık read bütçesi tavanı koyuyoruz (beta ~50 $ ≈ 10.000 yorum; ölçekte 200–500 $ karar değişkeni); bütçe dolunca collector durur, metrik yazar; yüksek etkileşimli içerik önceliklendirilir. Erişim koşulları sık değiştiği için bütçe tavanı sözleşmesel güvencemizdir.</td></tr>
+<tr><td><b>IMDb / Letterboxd</b></td><td><span class="tag paid">KAPSAM DIŞI</span></td><td>—</td><td>Resmî yorum API'si sunmuyorlar; scraping ToS ihlali ve hukuki risk. Bu ihtiyacı YouTube fazlasıyla karşılıyor.</td></tr>
+</tbody>
+</table>
 
-  <!-- ================= ÖLÇEK SENARYOSU ================= -->
-  <section id="olcek">
-    <div class="sec-head">
-      <span class="sec-tag scale">TABLO 3</span>
-      <h2>Ölçek Senaryosu — 20.000 Günlük Kullanıcı, 30 Gün (Senaryo A Bazlı)</h2>
-    </div>
-    <p class="sec-sub">Bu tablo, ürün tuttuğunda faturanın nereye gideceğini gösteriyor: <strong>10 aktif kanal × 2.000 kullanıcı = 20.000 DAU</strong>, 30 günlük dönem, ideal mimari (Senaryo A) baz alınarak. Aşağıdaki davranış varsayımları benim deklarasyonum; değişirse hesap güncellenir.</p>
+<div class="warnbox"><b>Hukuki not:</b> Yorumlar platformda anonimleştirilerek gösterilecek; yine de üçüncü taraf içeriğin yeniden yayınlanmasının telif ve platform ToS boyutu ekip düzeyinde (legal başlığında) netleştirilmeli. Mimaride kaynak atıfı göster/gizle konfigürasyonu hazır tutulacak.</div>
 
-    <p class="mini-label">Davranış Varsayımları ve Türetilen Hacimler</p>
-    <div class="mini-table-card">
-      <table>
-        <thead>
-          <tr><th style="width:34%">Varsayım</th><th style="width:30%">Değer</th><th style="width:36%">Türetilen Hacim</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="comp">Günlük aktif kullanıcı</td><td class="desc">20.000 (10 kanal × 2.000)</td><td class="desc">—</td></tr>
-          <tr><td class="comp">Yazan oranı / yazan başına mesaj</td><td class="desc">%20 / günde 8 mesaj</td><td class="desc">~32.000 canlı mesaj/gün ≈ ~1M/ay</td></tr>
-          <tr><td class="comp">Gün boyu ortalama eşzamanlı</td><td class="desc">DAU'nun ~%4'ü</td><td class="desc">Kanal başına ~80 bağlı kullanıcı</td></tr>
-          <tr><td class="comp">Tepe eşzamanlı (dizi akşamı)</td><td class="desc">DAU'nun ~%18'i</td><td class="desc">~3.600 bağlantı</td></tr>
-          <tr><td class="comp">Ham yorum (10 popüler kanal)</td><td class="desc">Kanal başına ~100K/ay</td><td class="desc">1M ham/ay → ~300K curated/ay</td></tr>
-          <tr><td class="comp">SignalR outbound</td><td class="desc">Canlı + curated push × bağlı kullanıcı</td><td class="desc">~3,4M mesaj/gün</td></tr>
-        </tbody>
-      </table>
-    </div>
+<h2>4. Ölçek Projeksiyonu — 10 Aktif Kanal × 2.000 Kullanıcı (20.000 DAU, 30 Gün)</h2>
+<p>Aşağıdaki tablo, ideal mimari (Senaryo A) baz alınarak 10 aktif kanal ve günlük toplam 20.000 kullanıcının mesaj okuyup yazdığı 30 günlük dönemin tahmini maliyetidir. Davranış varsayımlarım: kullanıcıların %20'si yazıyor (yazan başına günde 8 mesaj → ~32.000 canlı mesaj/gün, ~1M/ay); gün boyu ortalama eşzamanlılık %4 (kanal başına ~80 bağlı), dizi akşamı tepe %18 (~3.600 eşzamanlı); 10 popüler kanal ayda toplam ~1M ham yorum üretiyor (~300.000 curated).</p>
 
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:21%">Kalem</th>
-            <th style="width:40%">Boyut @ Ölçek</th>
-            <th style="width:24%">Not</th>
-            <th class="num" style="width:15%">Tahmini $/ay</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="comp">Container Apps<span class="svc">api + web + worker'lar</span></td>
-            <td class="desc">api ~3 replica + web ~2 replica + worker'lar; sürekli ortalama ≈ 5,75 vCPU / 11,5 GiB.</td>
-            <td class="why">Yalın konfigürasyonda ~316 $'a iner; bant, autoscale davranışına göre.</td>
-            <td class="cost">380 – 455</td>
-          </tr>
-          <tr>
-            <td class="comp">PostgreSQL Flexible<span class="svc">General Purpose D2ds_v5</span></td>
-            <td class="desc">D2ds_v5 + 128 GB storage.</td>
-            <td class="why">B2s bu yükü taşımaz; ölçekte General Purpose'a geçiş zorunlu.</td>
-            <td class="cost">~170</td>
-          </tr>
-          <tr>
-            <td class="comp">Azure SignalR<span class="svc">Standard, 4 unit</span></td>
-            <td class="desc">4.000 concurrent + 4M mesaj/gün dahil kapasite.</td>
-            <td class="why">Tepe 3.600 eşzamanlıyı karşılar; 10K+ eşzamanlıya gidilirse Premium tier'a geçilir.</td>
-            <td class="cost">~196</td>
-          </tr>
-          <tr>
-            <td class="comp">Event Hubs<span class="svc">Standard, 1–2 TU (auto-inflate)</span></td>
-            <td class="desc">~5M event/ay ingress, 1 $'ın altında; maliyet TU saatinden geliyor.</td>
-            <td class="why">Auto-inflate ile tepe anlarında kendi kendine 2 TU'ya çıkar.</td>
-            <td class="cost">~30</td>
-          </tr>
-          <tr>
-            <td class="comp">Managed Redis<span class="svc">Balanced B1</span></td>
-            <td class="desc">Cache + rate limit + dedupe hot-set.</td>
-            <td class="why">B0'ın 1 GB'ı bu hacimde yetmez; B1 doğru boyut.</td>
-            <td class="cost">~30</td>
-          </tr>
-          <tr>
-            <td class="comp">Blob + ACR + Key Vault + Domain</td>
-            <td class="desc">Ham arşiv ~100 GB cool tier.</td>
-            <td class="why">Arşiv büyüyor ama Cool tier'da hâlâ önemsiz kalem.</td>
-            <td class="cost">~15</td>
-          </tr>
-          <tr>
-            <td class="comp">App Insights / Log Analytics</td>
-            <td class="desc">Sampling ile ~15–20 GB/ay telemetri.</td>
-            <td class="why">Sampling şart; ham telemetri bu ölçekte faturayı katlar.</td>
-            <td class="cost">~50</td>
-          </tr>
-          <tr>
-            <td class="comp">Bandwidth (egress)</td>
-            <td class="desc">~200–300 GB/ay çıkış trafiği.</td>
-            <td class="why">Realtime push + web trafiğinin doğal sonucu.</td>
-            <td class="cost">~20</td>
-          </tr>
-          <tr>
-            <td class="comp">OpenAI API</td>
-            <td class="desc">Batch kalemler ~135 $ + realtime spoiler kontrolü 100–160 $ (prompt cache oranına göre).</td>
-            <td class="why">Prompt cache oranı yükseldikçe realtime kalem ~100 $'a iner.</td>
-            <td class="cost">235 – 300</td>
-          </tr>
-          <tr class="total-row ink">
-            <td class="comp" colspan="3">Ölçek Toplamı (20.000 DAU, 30 gün) · orta bant ~1.200 $/ay</td>
-            <td class="cost">~950 – 1.600 $/ay</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+<table>
+<caption>Tablo 3 — 20.000 DAU ölçeğinde 30 günlük tahmini kaynak maliyeti (Senaryo A bazlı)</caption>
+<thead><tr><th style="width:22%">Kalem</th><th style="width:44%">Ölçekteki Boyut</th><th style="width:16%">Aylık Maliyet</th><th style="width:18%">Not</th></tr></thead>
+<tbody>
+<tr><td><b>Azure Container Apps</b></td><td>api ~3 replica + web ~2 + worker'lar; ~5,75 vCPU / 11,5 GiB sürekli ortalama</td><td class="cost">380 – 455 $</td><td>Yalın konfigürasyonla ~316 $</td></tr>
+<tr><td><b>PostgreSQL Flexible</b></td><td>General Purpose D2ds_v5 + 128 GB (B2s bu yükü taşımaz)</td><td class="cost">~170 $</td><td>Gerekirse D4ds ~2×</td></tr>
+<tr><td><b>Azure SignalR Standard</b></td><td>4 unit: 4.000 eşzamanlı + 4M mesaj/gün dahil (tepe 3.600 bağlantı, ~3,4M push/gün)</td><td class="cost">~196 $</td><td>10K+ eşzamanlıda Premium</td></tr>
+<tr><td><b>Event Hubs Standard</b></td><td>1–2 TU auto-inflate; ~5M event/ay</td><td class="cost">~30 $</td><td>Ingress ücreti &lt;1 $</td></tr>
+<tr><td><b>Managed Redis</b></td><td>Balanced B1; cache + rate limit + dedupe hot-set</td><td class="cost">~30 $</td><td></td></tr>
+<tr><td><b>Blob + ACR + Key Vault + domain</b></td><td>Arşiv ~100 GB Cool</td><td class="cost">~15 $</td><td></td></tr>
+<tr><td><b>App Insights / Log Analytics</b></td><td>Sampling ile ~15–20 GB/ay</td><td class="cost">~50 $</td><td>Sampling'siz 100 $+</td></tr>
+<tr><td><b>Bandwidth (egress)</b></td><td>~200–300 GB/ay</td><td class="cost">~20 $</td><td>İlk 100 GB ücretsiz</td></tr>
+<tr><td><b>X API (bütçe tavanlı)</b></td><td>~40–100K read/ay; karar değişkeni</td><td class="cost">200 – 500 $</td><td>Tavan bizim kontrolümüzde</td></tr>
+<tr><td><b>OpenAI API</b></td><td>1M ham yorumun tüm işlenmesi (Batch: ~135 $) + ~1M canlı mesajın realtime spoiler kontrolü (100–160 $, prompt cache oranına göre)</td><td class="cost">235 – 300 $</td><td>Okumada LLM çağrısı yok</td></tr>
+<tr class="total"><td colspan="2">ÖLÇEK TOPLAMI (30 gün)</td><td>~1.150 – 2.100 $</td><td>Orta bant ~1.400 $/ay</td></tr>
+<tr class="subtotal"><td colspan="2">Kullanıcı başına maliyet (orta bant)</td><td colspan="2" class="cost">~0,07 $/DAU/ay</td></tr>
+</tbody>
+</table>
 
-    <div class="note-block">
-      <h4>Bu Tabloyu Nasıl Okumalı</h4>
-      <p>Kullanıcı başına maliyet <strong>~0,06 $/DAU/ay</strong>. AI maliyeti toplamın yüzde 20-25'i ve hacimle lineer büyüyor; altyapının asıl büyük kalemleri compute ve realtime. Önümde iki net optimizasyon eşiği var: birincisi, realtime spoiler kontrolünde prompt cache oranı yükseldikçe AI kalemi ~100 $'a iner. İkincisi, Container Apps ~450 $'a dayandığında Dedicated plan ya da 2× VM (Docker) hibriti compute'u yarıya indirebilir; bu eşik aynı zamanda mimarinin AKS/Dedicated'a taşınma sinyalidir. SignalR unit sayısı tepe eşzamanlıya göre ayarlanır.</p>
-    </div>
-  </section>
+<div class="note"><b>Gelir tarafıyla bağ (şahsi değerlendirmem):</b> Kendi hesaplamalarım sonucunda Pro planı için 6,99 $/ay seviyesini öneriyorum; sizlerin fiyat kararı için bir başlangıç noktası olması amacıyla paylaşıyorum. Bu ölçekte break-even ~200 Pro üye (DAU'nun yalnızca %1'i); sektör normu %4 dönüşümle 800 Pro üye ~5.590 $/ay gelir üretir, bu da ~%75 brüt marja karşılık gelir. Pazar konumu olarak 6,99 $, Reddit Premium (5,99 $) ve Discord Nitro (2,99–9,99 $) bandının içinde kalıyor. Maliyetin en büyük optimizasyon kaldıraçları: realtime spoiler kontrolünde prompt cache oranını yükseltmek (AI kalemini ~100 $'a indirir) ve compute 450 $'a dayandığında Dedicated plan / hibrit VM değerlendirmesi. Farklı bir fiyat noktası tercih edilirse hesabı aynı yöntemle güncellerim.</div>
 
-  <!-- ================= KARAR ================= -->
-  <div class="verdict">
-    <h3>Karar Önerim</h3>
-    <p>MVP'yi <strong>Senaryo B (B2ms)</strong> ile ~100 $/ay bandında canlıya çıkarırım; kod tabanını baştan A-uyumlu soyutlamalarla yazarım (IIngestBus, IDistributedCache, SignalR abstraction). Lansman sonrası eşzamanlı kullanıcı ve kanal sayısı büyüdüğünde bileşen bileşen Senaryo A'ya geçerim. Böylece bugün minimum harcanır, yarın mimari borç ödenmez.</p>
-    <p>Veri kaynağı tarafında tek kırmızı bayrak Reddit: free tier non-commercial ve 100 istek/dk ile kapalı betada sorun yok, ama ticari lansman öncesi karar şart; ya ücretli anlaşma (~12.000 $/ay'dan başlıyor) ya da kaynaktan çıkarma. X API'yi MVP'ye almıyorum, Faz 2 pilotu olarak duruyor (pay-per-use, 10.000 yorum ≈ 50 $). IMDb ve Letterboxd kapsam dışı; resmi yorum API'leri yok, scraping ToS ihlali.</p>
-    <div class="figures">
-      <div class="fig"><span class="k">Beta · Senaryo B</span><span class="v">~97–132 $/ay</span></div>
-      <div class="fig"><span class="k">Beta · Senaryo A</span><span class="v">~245–330 $/ay</span></div>
-      <div class="fig"><span class="k">20K DAU · Senaryo A</span><span class="v">~1.200 $/ay</span></div>
-      <div class="fig"><span class="k">Kullanıcı Başına</span><span class="v">~0,06 $/DAU/ay</span></div>
-    </div>
-  </div>
+<h2>5. Değerlendirmem ve Öneri</h2>
+<p>Kendi değerlendirmem, MVP'yi Senaryo B ile (B2ms, aylık ~150–180 $ bandı) canlıya çıkarıp kod tabanını ilk günden Senaryo A'ya uyumlu soyutlamalarla yazmak yönünde; böylece lansman sonrası büyüme geldiğinde bileşen bileşen ideal mimariye geçiş, mimari borç ödemeden mümkün olur. Bunu bir öneri olarak sunuyorum; her iki senaryo da uçtan uca hazır olduğu için hangi yönde ilerleyeceğimize birlikte karar verebiliriz, farklı bir tercih olursa planı ona göre şekillendiririm.</p>
 
-  <footer>
-    <div>Echo MVP · Mimari ve Maliyet Çalışması · Can Küçükgültekin</div>
-    <div class="mono">Fiyat doğrulama: Temmuz 2026 · Azure &amp; OpenAI resmi liste fiyatları · Bölge: Germany West Central (±%5–10)</div>
-  </footer>
+</main>
 
 </div>
 </body>
