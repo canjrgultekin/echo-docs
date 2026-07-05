@@ -1,0 +1,78 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echo · Dokümanlar</title>
+<style>
+  :root{--bg:#0a1120;--panel:#111d33;--border:#22324c;--ink:#e8eef8;--ink2:#9fb0c9;--ink3:#6b7d99;
+    --teal:#2dd4bf;--tealD:#0d9488;--violet:#a78bfa;--violetD:#7c3aed;--amber:#fbbf24}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:
+      radial-gradient(1100px 560px at 82% -8%, rgba(124,58,237,.16), transparent 60%),
+      radial-gradient(900px 480px at -8% 8%, rgba(13,148,136,.14), transparent 55%),
+      var(--bg);
+    color:var(--ink);min-height:100vh;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:70px 24px 90px}
+  .brand{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .logo{width:52px;height:52px}
+  .kicker{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--teal);font-weight:800}
+  h1{font-size:40px;line-height:1.12;margin:14px 0 12px;font-weight:800;letter-spacing:-.5px;
+    background:linear-gradient(180deg,#fff,#b9c6dc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{color:var(--ink2);font-size:17px;max-width:640px}
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:26px;padding:15px 26px;border-radius:999px;
+    background:linear-gradient(135deg,var(--teal),var(--violetD));color:#04121a;font-weight:800;font-size:15.5px;
+    text-decoration:none;box-shadow:0 14px 40px rgba(124,58,237,.4);border:1px solid rgba(255,255,255,.15);transition:transform .15s}
+  .cta:hover{transform:translateY(-2px)}
+  .cta .u{font-size:12px;color:#0a2e2a;opacity:.8;font-weight:700}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:44px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}h1{font-size:31px}}
+  .card{display:block;border:1px solid var(--border);border-radius:20px;padding:26px;text-decoration:none;color:inherit;
+    background:linear-gradient(180deg,#0f1a2e,#0b1424);box-shadow:0 18px 50px rgba(0,0,0,.35);transition:transform .16s,border-color .16s}
+  .card:hover{transform:translateY(-3px);border-color:#33507a}
+  .tag{display:inline-block;font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-weight:800;padding:5px 12px;border-radius:999px;margin-bottom:16px}
+  .t-arch{background:rgba(45,212,191,.14);color:var(--teal)}
+  .t-cost{background:rgba(251,191,36,.14);color:var(--amber)}
+  .card h2{font-size:22px;font-weight:800;margin-bottom:8px}
+  .card p{color:var(--ink2);font-size:14.5px}
+  .card .go{margin-top:18px;color:var(--teal);font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
+  .foot{margin-top:56px;padding-top:24px;border-top:1px solid var(--border);color:var(--ink3);font-size:13.5px}
+  .foot a{color:var(--teal);text-decoration:none}
+</style>
+
+<div class="wrap">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 100 100" fill="none">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+      <rect x="6" y="6" width="88" height="88" rx="24" stroke="url(#g)" stroke-width="3"/>
+      <circle cx="50" cy="50" r="8" fill="url(#g)"/>
+      <circle cx="50" cy="50" r="20" stroke="#2dd4bf" stroke-width="2.4" opacity=".7"/>
+      <circle cx="50" cy="50" r="31" stroke="#7c3aed" stroke-width="2.2" opacity=".45"/>
+      <path d="M50 19 A31 31 0 0 1 81 50" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div><div class="kicker">Echo Platformu</div></div>
+  </div>
+
+  <h1>Echo · Dokümanlar</h1>
+  <p class="lede">Dizi ve film izleyicilerini içeriğe özel kürasyonlu sohbet kanallarında buluşturan Echo platformunun teknik anlatımı ve maliyet çalışması. Aşağıdan dokümanlara, sağ üstten canlı uygulamaya ulaşabilirsiniz.</p>
+
+  <a class="cta" href="https://51-116-178-119.nip.io" target="_blank" rel="noopener">▶ Canlı Uygulamayı Aç <span class="u">51-116-178-119.nip.io</span></a>
+
+  <div class="grid">
+    <a class="card" href="sistem-mimari.html">
+      <span class="tag t-arch">Teknik · Mimari</span>
+      <h2>Sistem ve Mimari Görsel Anlatım</h2>
+      <p>Uçtan uca mimari, veri toplama ve işleme hattı, embedding/vektör yapısı, segment haritaları, spoiler ve moderatör yapay zekaları; her bölüme özel şemalarla.</p>
+      <span class="go">Dokümanı aç →</span>
+    </a>
+    <a class="card" href="mvp-maliyet.html">
+      <span class="tag t-cost">İş · Maliyet</span>
+      <h2>MVP Mimari ve Maliyet Çalışması</h2>
+      <p>MVP kapsamı, teknoloji tercihleri, altyapı ve servis maliyet kalemleri, üyelik/paywall modeli ve ölçeklenme senaryolarıyla iş perspektifi.</p>
+      <span class="go">Dokümanı aç →</span>
+    </a>
+  </div>
+
+  <div class="foot">
+    Canlı uygulama: <a href="https://51-116-178-119.nip.io" target="_blank" rel="noopener">https://51-116-178-119.nip.io</a> · Her doküman sayfasının sağ altında da uygulamaya giden buton bulunur.
+  </div>
+</div>

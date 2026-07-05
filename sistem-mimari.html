@@ -1,0 +1,1509 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echo · Sistem ve Mimari Görsel Anlatım</title>
+<style>
+  :root{
+    --bg:#0a1120; --bg2:#0d1526; --panel:#111d33; --panel2:#0f1a2e;
+    --border:#22324c; --border2:#2c405f;
+    --ink:#e8eef8; --ink2:#9fb0c9; --ink3:#6b7d99;
+    --teal:#2dd4bf; --tealD:#0d9488; --violet:#a78bfa; --violetD:#7c3aed;
+    --amber:#fbbf24; --sky:#38bdf8; --rose:#fb7185; --green:#34d399; --slate:#64748b;
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.14), transparent 60%),
+      radial-gradient(1000px 500px at -10% 10%, rgba(13,148,136,.12), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.75; font-size:16.5px; letter-spacing:.1px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px 120px}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 40px; text-align:center; position:relative}
+  .brandmark{width:76px;height:76px;margin:0 auto 22px;display:block}
+  .kicker{font-size:12.5px; letter-spacing:3.5px; text-transform:uppercase; color:var(--teal); font-weight:700}
+  h1.title{font-size:44px; line-height:1.12; margin:14px 0 10px; font-weight:800; letter-spacing:-.5px;
+    background:linear-gradient(180deg,#fff, #b9c6dc); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .subtitle{max-width:760px; margin:0 auto; color:var(--ink2); font-size:17px}
+  .meta-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:26px}
+  .chip{border:1px solid var(--border2); background:rgba(255,255,255,.02); color:var(--ink2);
+    padding:7px 14px; border-radius:999px; font-size:13px; font-weight:600}
+  .chip b{color:var(--ink)}
+
+  /* ---------- LEGEND ---------- */
+  .legend{margin:34px 0 8px; border:1px solid var(--border); background:linear-gradient(180deg,var(--panel),var(--panel2));
+    border-radius:var(--radius); padding:20px 22px}
+  .legend h4{margin:0 0 14px; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3)}
+  .legend-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 22px}
+  .lg{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--ink2)}
+  .sw{width:15px;height:15px;border-radius:5px;flex:0 0 auto}
+
+  /* ---------- TOC ---------- */
+  .toc{margin:26px 0 10px; border:1px solid var(--border); background:var(--panel2); border-radius:var(--radius); padding:20px 22px}
+  .toc h4{margin:0 0 14px; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3)}
+  .toc ol{margin:0; padding:0; list-style:none; columns:2; column-gap:36px}
+  .toc li{margin:0 0 9px; break-inside:avoid}
+  .toc a{color:var(--ink2); text-decoration:none; font-size:14.5px; display:flex; gap:10px; align-items:baseline}
+  .toc a:hover{color:var(--teal)}
+  .toc .n{color:var(--teal); font-weight:800; font-variant-numeric:tabular-nums; min-width:24px}
+
+  /* ---------- SECTION ---------- */
+  section{margin-top:64px; scroll-margin-top:24px}
+  .sec-head{display:flex; gap:16px; align-items:flex-start; margin-bottom:8px}
+  .sec-num{flex:0 0 auto; width:46px;height:46px;border-radius:14px; display:grid;place-items:center;
+    font-weight:800; font-size:18px; color:#04121a;
+    background:linear-gradient(135deg,var(--teal),var(--tealD)); box-shadow:0 8px 24px rgba(13,148,136,.35)}
+  section.v .sec-num{background:linear-gradient(135deg,var(--violet),var(--violetD)); color:#120425; box-shadow:0 8px 24px rgba(124,58,237,.35)}
+  h2{font-size:26px; margin:2px 0 2px; font-weight:800; letter-spacing:-.3px}
+  .sec-sub{color:var(--ink3); font-size:13.5px; font-weight:600; letter-spacing:.3px; text-transform:uppercase}
+  .prose p{margin:16px 0; color:#d7e0ee}
+  .prose p b{color:#fff}
+
+  /* ---------- FIGURE ---------- */
+  figure{margin:26px 0 6px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+    background:linear-gradient(180deg,#0e1a2f,#0b1424); box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .fig-top{display:flex; align-items:center; gap:9px; padding:12px 18px; border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.015)}
+  .fig-top .dot{width:10px;height:10px;border-radius:50%}
+  .fig-top .t{font-size:12.5px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); font-weight:700}
+  .fig-body{padding:22px}
+  figure svg{display:block; width:100%; height:auto}
+  figcaption{padding:2px 18px 16px; color:var(--ink3); font-size:13px; text-align:center}
+
+  /* svg text defaults */
+  svg text{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  .mono{font-family:"SF Mono",ui-monospace,"Cascadia Code",Consolas,monospace}
+
+  .foot{margin-top:80px; padding-top:26px; border-top:1px solid var(--border); color:var(--ink3); font-size:13.5px; text-align:center}
+  @media (max-width:720px){
+    h1.title{font-size:33px} .toc ol{columns:1} .fig-body{padding:14px} .wrap{padding:0 16px 80px}
+  }
+
+  /* ---------- PRINT / PDF (görünümü bozmaz; yalnız sadakat) ---------- */
+  @media print{
+    *{-webkit-print-color-adjust:exact !important; print-color-adjust:exact !important}
+    @page{size:A4; margin:14mm 12mm}
+    body{background:#0a1120 !important; font-size:12.5px}
+    .wrap{max-width:100%; padding:0}
+    .hero{padding:8px 0 22px}
+    h1.title{font-size:34px}
+    section{margin-top:26px}
+    figure{break-inside:avoid; page-break-inside:avoid; box-shadow:none}
+    .fig-body{break-inside:avoid}
+    .sec-head{break-after:avoid; page-break-after:avoid}
+    h2{break-after:avoid}
+    .prose p{orphans:3; widows:3}
+    .toc,.legend{break-inside:avoid}
+    figcaption{break-before:avoid}
+    a{color:inherit; text-decoration:none}
+  }
+</style>
+
+<a href="https://51-116-178-119.nip.io" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:22px;z-index:99999;display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:linear-gradient(135deg,#2dd4bf,#7c3aed);color:#04121a;font:800 14.5px -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.2px;text-decoration:none;box-shadow:0 12px 34px rgba(124,58,237,.45);border:1px solid rgba(255,255,255,.18)"><span style="font-size:15px">▶</span> Uygulamayı Aç</a>
+<a href="https://51-116-178-119.nip.io" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:22px;z-index:99999;display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:linear-gradient(135deg,#2dd4bf,#7c3aed);color:#04121a;font:800 14.5px -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.2px;text-decoration:none;box-shadow:0 12px 34px rgba(124,58,237,.45);border:1px solid rgba(255,255,255,.18)"><span style="font-size:15px">&#9654;</span> Uygulamay&#305; A&#231;</a>
+<div class="wrap">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <svg class="brandmark" viewBox="0 0 100 100" fill="none">
+      <defs>
+        <linearGradient id="bm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#7c3aed"/>
+        </linearGradient>
+      </defs>
+      <rect x="6" y="6" width="88" height="88" rx="24" stroke="url(#bm)" stroke-width="3"/>
+      <circle cx="50" cy="50" r="8" fill="url(#bm)"/>
+      <circle cx="50" cy="50" r="20" stroke="#2dd4bf" stroke-width="2.4" opacity=".7"/>
+      <circle cx="50" cy="50" r="31" stroke="#7c3aed" stroke-width="2.2" opacity=".45"/>
+      <path d="M50 19 A31 31 0 0 1 81 50" stroke="#a78bfa" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    <div class="kicker">Echo Platformu · Teknik & Mimari Anlatım</div>
+    <h1 class="title">Sistem Nasıl Çalışıyor</h1>
+    <p class="subtitle">Uçtan uca mimarinin, veri hattının ve yapay zeka kurgularının her bölümü için özel hazırlanmış görsel tasarım ve çözüm şemalarıyla eksiksiz anlatım.</p>
+    <div class="meta-row">
+      <span class="chip"><b>4</b> yazılım katmanı</span>
+      <span class="chip"><b>4</b> aktif veri kaynağı</span>
+      <span class="chip"><b>3</b> yapay zeka kurgusu</span>
+      <span class="chip"><b>2</b> canlı içerik</span>
+      <span class="chip">.NET 10 · PostgreSQL + pgvector · Next.js · Docker</span>
+    </div>
+  </header>
+
+  <!-- ===================== LEGEND ===================== -->
+  <div class="legend">
+    <h4>Şemalarda renk kodu</h4>
+    <div class="legend-grid">
+      <div class="lg"><span class="sw" style="background:#2dd4bf"></span>Web servisi / kullanıcı yüzü</div>
+      <div class="lg"><span class="sw" style="background:#7c3aed"></span>Yapay zeka / karar katmanı</div>
+      <div class="lg"><span class="sw" style="background:#38bdf8"></span>Veri toplama / dış kaynak</div>
+      <div class="lg"><span class="sw" style="background:#fbbf24"></span>İşleme / boru hattı</div>
+      <div class="lg"><span class="sw" style="background:#34d399"></span>Kalıcı veri / veritabanı</div>
+      <div class="lg"><span class="sw" style="background:#fb7185"></span>Spoiler / koruma / uyarı</div>
+    </div>
+  </div>
+
+  <!-- ===================== TOC ===================== -->
+  <nav class="toc">
+    <h4>İçindekiler</h4>
+    <ol>
+      <li><a href="#s1"><span class="n">01</span>Echo Nedir, Hangi Problemi Çözer</a></li>
+      <li><a href="#s2"><span class="n">02</span>Büyük Resim: Sistem Nasıl Kurgulandı</a></li>
+      <li><a href="#s3"><span class="n">03</span>Veri Modeli: Sistem Neleri Hatırlıyor</a></li>
+      <li><a href="#s4"><span class="n">04</span>Veri Nereden ve Nasıl Toplanıyor</a></li>
+      <li><a href="#s5"><span class="n">05</span>Veri Nasıl Temizleniyor ve İşleniyor</a></li>
+      <li><a href="#s6"><span class="n">06</span>Vektör ve Embedding</a></li>
+      <li><a href="#s7"><span class="n">07</span>Segment Haritaları: Zamanın İskeleti</a></li>
+      <li><a href="#s8"><span class="n">08</span>Yeni İçerik İçin Hazırlık</a></li>
+      <li><a href="#s9"><span class="n">09</span>Kanal Akışı: Kullanıcı Ne Görüyor</a></li>
+      <li><a href="#s10"><span class="n">10</span>Zaman Aralığına Göre Filtreleme</a></li>
+      <li><a href="#s11"><span class="n">11</span>Spoiler Kontrol Yapay Zekası</a></li>
+      <li><a href="#s12"><span class="n">12</span>Moderatör Yapay Zekası</a></li>
+      <li><a href="#s13"><span class="n">13</span>Gerçek Zamanlılık</a></li>
+      <li><a href="#s14"><span class="n">14</span>Yönetim Paneli ve echo-admin</a></li>
+      <li><a href="#s15"><span class="n">15</span>Altyapı: Sistem Nerede Yaşıyor</a></li>
+      <li><a href="#s16"><span class="n">16</span>Talep Edilen Hizmetler · Özet</a></li>
+    </ol>
+  </nav>
+
+  <!-- ===================== MASTER ARCHITECTURE ===================== -->
+  <section id="arch">
+    <div class="sec-head">
+      <div class="sec-num" style="background:linear-gradient(135deg,#38bdf8,#7c3aed);color:#04121a">★</div>
+      <div>
+        <div class="sec-sub">High-Level Architecture</div>
+        <h2>Kuşbakışı Mimari</h2>
+      </div>
+    </div>
+    <div class="prose"><p>Aşağıdaki şema tüm sistemin tek karede özetidir: dış kaynaklardan gelen verinin arka plan işçilerinden geçip veritabanına, oradan web servisi üzerinden kullanıcıya nasıl ulaştığını ve yapay zeka katmanının bu akışın neresinde devrede olduğunu gösterir. Sonraki bölümler bu resmin her parçasını tek tek açar.</p></div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#38bdf8"></span><span class="t">Master · Uçtan Uca Akış</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 560" role="img" aria-label="Kuşbakışı mimari">
+          <defs>
+            <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#5b6f8c"/>
+            </marker>
+            <marker id="art" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#2dd4bf"/>
+            </marker>
+            <linearGradient id="gSrc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12324a"/><stop offset="1" stop-color="#0e2536"/></linearGradient>
+            <linearGradient id="gWork" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2f12"/><stop offset="1" stop-color="#2a2410"/></linearGradient>
+            <linearGradient id="gDb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#123528"/><stop offset="1" stop-color="#0e2a20"/></linearGradient>
+            <linearGradient id="gApi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f3b38"/><stop offset="1" stop-color="#0c2e2c"/></linearGradient>
+            <linearGradient id="gAi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1a4d"/><stop offset="1" stop-color="#20143b"/></linearGradient>
+          </defs>
+
+          <!-- columns headers -->
+          <text x="110" y="30" fill="#6b7d99" font-size="12" letter-spacing="2" font-weight="700">DIŞ KAYNAKLAR</text>
+          <text x="370" y="30" fill="#6b7d99" font-size="12" letter-spacing="2" font-weight="700">ARKA PLAN İŞÇİLERİ</text>
+          <text x="648" y="30" fill="#6b7d99" font-size="12" letter-spacing="2" font-weight="700">VERİTABANI</text>
+          <text x="860" y="30" fill="#6b7d99" font-size="12" letter-spacing="2" font-weight="700">KULLANICI</text>
+
+          <!-- SOURCES -->
+          <g font-size="13" fill="#cfe0f2">
+            <rect x="30" y="52" width="170" height="40" rx="10" fill="url(#gSrc)" stroke="#1f4a63"/><text x="46" y="77">▶ YouTube</text>
+            <rect x="30" y="100" width="170" height="40" rx="10" fill="url(#gSrc)" stroke="#1f4a63"/><text x="46" y="125">𝕏 X</text>
+            <rect x="30" y="148" width="170" height="40" rx="10" fill="url(#gSrc)" stroke="#1f4a63"/><text x="46" y="173">✦ Bluesky</text>
+            <rect x="30" y="196" width="170" height="40" rx="10" fill="url(#gSrc)" stroke="#1f4a63"/><text x="46" y="221">◆ Trakt (bölüm bazlı)</text>
+            <rect x="30" y="244" width="170" height="36" rx="10" fill="none" stroke="#33465f" stroke-dasharray="4 4"/><text x="46" y="267" fill="#6b7d99">Reddit · Threads (hazır)</text>
+          </g>
+
+          <!-- WORKERS pipeline -->
+          <g font-size="12.5" fill="#f2e6c9">
+            <rect x="300" y="60" width="200" height="46" rx="11" fill="url(#gWork)" stroke="#5b4a1e"/>
+            <text x="316" y="80" font-weight="700">IngestWorker</text><text x="316" y="97" fill="#b9a978" font-size="11">topla · sıcak/soğuk poll</text>
+            <rect x="300" y="118" width="200" height="46" rx="11" fill="url(#gWork)" stroke="#5b4a1e"/>
+            <text x="316" y="138" font-weight="700">NormalizeWorker</text><text x="316" y="155" fill="#b9a978" font-size="11">dil/uzunluk elemesi</text>
+            <rect x="300" y="176" width="200" height="60" rx="11" fill="url(#gWork)" stroke="#5b4a1e"/>
+            <text x="316" y="196" font-weight="700">EnrichmentWorker</text><text x="316" y="213" fill="#b9a978" font-size="11">embed · dedupe · hizala</text><text x="316" y="228" fill="#b9a978" font-size="11">spoiler · çeviri · yayınla</text>
+          </g>
+          <!-- worker vertical flow -->
+          <line x1="400" y1="106" x2="400" y2="118" stroke="#5b6f8c" marker-end="url(#ar)"/>
+          <line x1="400" y1="164" x2="400" y2="176" stroke="#5b6f8c" marker-end="url(#ar)"/>
+
+          <!-- AI box feeding enrichment -->
+          <rect x="300" y="256" width="200" height="66" rx="11" fill="url(#gAi)" stroke="#4a3a7a"/>
+          <text x="316" y="277" fill="#d8ccf7" font-size="12.5" font-weight="700">OpenAI</text>
+          <text x="316" y="294" fill="#a892e0" font-size="11">embedding · sohbet modeli</text>
+          <text x="316" y="310" fill="#a892e0" font-size="11">segment · spoiler · moderatör</text>
+          <line x1="400" y1="256" x2="400" y2="236" stroke="#7c3aed" marker-end="url(#ar)" opacity=".8"/>
+
+          <!-- ModeratorWorker + PreparationWorker -->
+          <g font-size="12.5">
+            <rect x="300" y="336" width="96" height="52" rx="11" fill="url(#gAi)" stroke="#4a3a7a"/>
+            <text x="314" y="358" fill="#d8ccf7" font-weight="700" font-size="11.5">Moderatör</text><text x="314" y="374" fill="#a892e0" font-size="10.5">AI işçisi</text>
+            <rect x="404" y="336" width="96" height="52" rx="11" fill="url(#gWork)" stroke="#5b4a1e"/>
+            <text x="418" y="358" fill="#f2e6c9" font-weight="700" font-size="11.5">Hazırlık</text><text x="418" y="374" fill="#b9a978" font-size="10.5">işçisi</text>
+          </g>
+
+          <!-- sources -> ingest -->
+          <path d="M200 150 C 250 150, 255 83, 300 83" stroke="#5b6f8c" fill="none" marker-end="url(#ar)"/>
+
+          <!-- DATABASE cylinder -->
+          <g>
+            <ellipse cx="700" cy="150" rx="90" ry="20" fill="#124030" stroke="#1c6047"/>
+            <path d="M610 150 L610 360 A90 20 0 0 0 790 360 L790 150" fill="url(#gDb)" stroke="#1c6047"/>
+            <ellipse cx="700" cy="150" rx="90" ry="20" fill="#155a44" stroke="#1c6047"/>
+            <text x="700" y="145" text-anchor="middle" fill="#8ff0c9" font-size="13" font-weight="800">PostgreSQL 18</text>
+            <text x="700" y="182" text-anchor="middle" fill="#bfeeda" font-size="11.5">+ pgvector</text>
+            <g font-size="11" fill="#a7d9c4" text-anchor="middle">
+              <text x="700" y="212">ham → kürasyonlu yorum</text>
+              <text x="700" y="234">segment + embedding</text>
+              <text x="700" y="256">kanal · kullanıcı · mesaj</text>
+              <text x="700" y="278">abonelik · tercih</text>
+            </g>
+            <text x="700" y="330" text-anchor="middle" fill="#5fae90" font-size="10.5">tek canlı kaynak</text>
+          </g>
+
+          <!-- workers -> db -->
+          <path d="M500 200 C 560 200, 560 175, 610 175" stroke="#fbbf24" fill="none" marker-end="url(#ar)" opacity=".85"/>
+          <!-- prep/mod -> db -->
+          <path d="M500 360 C 560 360, 570 330, 612 320" stroke="#5b6f8c" fill="none" marker-end="url(#ar)" opacity=".6"/>
+
+          <!-- API -->
+          <rect x="828" y="120" width="150" height="120" rx="14" fill="url(#gApi)" stroke="#1c5a55"/>
+          <text x="903" y="150" text-anchor="middle" fill="#8ff0e6" font-size="13" font-weight="800">Echo.Api</text>
+          <text x="903" y="174" text-anchor="middle" fill="#bfeee8" font-size="11">akış uçları</text>
+          <text x="903" y="192" text-anchor="middle" fill="#bfeee8" font-size="11">SignalR canlı</text>
+          <text x="903" y="210" text-anchor="middle" fill="#bfeee8" font-size="11">admin · asistan</text>
+          <text x="903" y="228" text-anchor="middle" fill="#bfeee8" font-size="11">spoiler denetimi</text>
+
+          <!-- db <-> api -->
+          <path d="M790 200 C 808 200, 812 180, 828 180" stroke="#2dd4bf" fill="none" marker-end="url(#art)"/>
+          <path d="M828 205 C 812 205, 808 225, 792 225" stroke="#2dd4bf" fill="none" marker-end="url(#ar)" opacity=".55"/>
+
+          <!-- users -->
+          <g font-size="12.5" fill="#cfe0f2">
+            <rect x="828" y="270" width="150" height="46" rx="12" fill="#10233b" stroke="#26405f"/>
+            <text x="903" y="290" text-anchor="middle" font-weight="700">Kanal · Sohbet</text>
+            <text x="903" y="307" text-anchor="middle" fill="#8aa0bf" font-size="11">web arayüzü (Next.js)</text>
+            <rect x="828" y="326" width="150" height="40" rx="12" fill="#1a1533" stroke="#3a2f5f"/>
+            <text x="903" y="351" text-anchor="middle" fill="#d8ccf7" font-weight="700">Yönetim Paneli</text>
+          </g>
+          <path d="M903 240 L903 270" stroke="#2dd4bf" fill="none" marker-end="url(#art)"/>
+
+          <!-- caddy ribbon -->
+          <rect x="828" y="392" width="150" height="34" rx="10" fill="#0e2233" stroke="#274a5f"/>
+          <text x="903" y="414" text-anchor="middle" fill="#7fd0ee" font-size="11.5" font-weight="700">Caddy · HTTPS</text>
+          <path d="M903 366 L903 392" stroke="#38bdf8" fill="none" marker-end="url(#ar)" opacity=".7"/>
+
+          <!-- flow caption bottom -->
+          <rect x="30" y="470" width="948" height="60" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="52" y="497" fill="#93a4bb" font-size="12.5">Akışın özü:</text>
+          <text x="120" y="497" fill="#cfe0f2" font-size="12.5">dış yorum  →  topla  →  temizle  →  <tspan fill="#a78bfa">embed + hizala + spoiler + çevir</tspan>  →  veritabanı  →  <tspan fill="#2dd4bf">web servisi</tspan>  →  kullanıcı akışı</text>
+          <text x="52" y="518" fill="#6b7d99" font-size="11.5">Kullanıcı yazınca ters yön: mesaj → spoiler denetimi → veritabanı → SignalR ile herkese anında. Moderatör AI aynı yazım noktasından besler.</text>
+        </svg>
+      </div>
+      <figcaption>Tek karede Echo: dört katman, dört kaynak, üç yapay zeka kurgusu ve tek canlı veritabanı.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 1 ===================== -->
+  <section id="s1">
+    <div class="sec-head"><div class="sec-num">1</div>
+      <div><div class="sec-sub">Ürün</div><h2>Echo Nedir, Hangi Problemi Çözer</h2></div></div>
+    <div class="prose">
+      <p>Echo, bir dizi ya da filmi izleyen insanların o içerik hakkındaki konuşmalarını tek bir kürasyonlu sohbet kanalında bir araya getiren bir platform. Klasik bir sohbet uygulamasından ayrıldığı iki temel nokta var. Birincisi, kanaldaki içerik sadece o an odada yazan kullanıcılardan gelmiyor; sistem YouTube, X, Bluesky ve Trakt gibi platformlardaki o içerikle ilgili gerçek yorumları arka planda sürekli toplayıp, temizleyip, işleyip aynı akışa karıştırıyor. Yani bir kanala girdiğinde kanal boş değil, o dizinin dünyanın dört bir yanındaki izleyicilerinin canlı nabzıyla dolu. İkincisi, bu akış içeriğe özel olarak yönetiliyor; hangi yorum hangi bölümün hangi dakikasına ait, hangisi spoiler içeriyor, kullanıcı içeriğin neresine kadar izlemiş, bunların hepsi biliniyor ve akış buna göre filtreleniyor. Üstüne bir de kanala özel bir moderatör yapay zekası var; gerçek bir insan moderatör gibi sohbeti canlı tutuyor, gerginlikleri yatıştırıyor, kendisine seslenildiğinde cevap veriyor.</p>
+      <p>Bugün platformda House of the Dragon 3. sezon ve Silo 3. sezon içerikleri canlı. İki içerik de sıfırdan, tamamen sistemin hazırlık hattı üzerinden yayına alındı; elle veri girişi yapılmadı, sistem içeriğin verisini kendisi toplayıp kendini hazırladı.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#2dd4bf"></span><span class="t">Kavram · Tek Akışta Buluşan İki Dünya</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 420" role="img" aria-label="Echo kavram şeması">
+          <defs>
+            <marker id="a1" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6f8c"/></marker>
+            <linearGradient id="chan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10233b"/><stop offset="1" stop-color="#0c1a2e"/></linearGradient>
+          </defs>
+          <!-- left: world pulse -->
+          <text x="60" y="40" fill="#38bdf8" font-size="13" font-weight="700" letter-spacing="1">DÜNYANIN NABZI</text>
+          <g font-size="12" fill="#bcd3ea">
+            <rect x="60" y="60" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="76" y="82">▶ YouTube yorumu</text>
+            <rect x="60" y="102" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="76" y="124">𝕏 tweet</text>
+            <rect x="60" y="144" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="76" y="166">✦ Bluesky gönderisi</text>
+            <rect x="60" y="186" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="76" y="208">◆ Trakt bölüm yorumu</text>
+          </g>
+          <!-- bottom left: live users -->
+          <text x="60" y="272" fill="#2dd4bf" font-size="13" font-weight="700" letter-spacing="1">ODADAKİ SOHBET</text>
+          <g font-size="12" fill="#bcd3ea">
+            <rect x="60" y="290" width="150" height="34" rx="9" fill="#0f2a28" stroke="#1c5a55"/><text x="76" y="312">👤 canlı kullanıcı</text>
+            <rect x="60" y="332" width="150" height="34" rx="9" fill="#0f2a28" stroke="#1c5a55"/><text x="76" y="354">👤 canlı kullanıcı</text>
+          </g>
+
+          <!-- arrows to channel -->
+          <path d="M210 160 C 320 160, 320 195, 420 195" stroke="#38bdf8" fill="none" marker-end="url(#a1)" opacity=".8"/>
+          <path d="M210 320 C 320 320, 330 235, 420 225" stroke="#2dd4bf" fill="none" marker-end="url(#a1)" opacity=".8"/>
+
+          <!-- center: unified channel -->
+          <rect x="420" y="70" width="300" height="290" rx="20" fill="url(#chan)" stroke="#294a63"/>
+          <text x="570" y="100" text-anchor="middle" fill="#e8eef8" font-size="15" font-weight="800">TEK KARMA AKIŞ</text>
+          <text x="570" y="120" text-anchor="middle" fill="#7d93b0" font-size="11">yazılma zamanına göre sıralı</text>
+          <g font-size="11.5">
+            <rect x="440" y="136" width="200" height="30" rx="8" fill="#12283f" stroke="#22405c"/><text x="452" y="156" fill="#bcd3ea">▶ "bu sahne efsaneydi"</text>
+            <rect x="480" y="172" width="220" height="30" rx="8" fill="#0f2f2c" stroke="#1c5a55"/><text x="492" y="192" fill="#bff0e6">👤 katılıyorum, tüylerim…</text>
+            <rect x="440" y="208" width="205" height="30" rx="8" fill="#12283f" stroke="#22405c"/><text x="452" y="228" fill="#bcd3ea">◆ Trakt: karakter analizi</text>
+            <rect x="470" y="244" width="230" height="30" rx="8" fill="#1e1840" stroke="#3b2f66"/><text x="482" y="264" fill="#d6c9f5">✦ Moderatör: favori sahneniz?</text>
+            <rect x="440" y="280" width="210" height="30" rx="8" fill="#0f2f2c" stroke="#1c5a55"/><text x="452" y="300" fill="#bff0e6">👤 3. bölüm her şeyi değiştirdi</text>
+          </g>
+          <text x="570" y="342" text-anchor="middle" font-size="10.5" fill="#6b7d99">kaynak rozetli · dile göre · spoiler korumalı</text>
+
+          <!-- right: AI governance overlay -->
+          <text x="770" y="40" fill="#a78bfa" font-size="13" font-weight="700" letter-spacing="1">İÇERİĞE ÖZEL ZEKÂ</text>
+          <g font-size="12">
+            <rect x="770" y="60" width="190" height="58" rx="12" fill="#1c1440" stroke="#4a3a7a"/>
+            <text x="786" y="82" fill="#d8ccf7" font-weight="700">Hizalama</text>
+            <text x="786" y="102" fill="#a892e0" font-size="11">hangi bölüm · hangi dakika</text>
+            <rect x="770" y="126" width="190" height="58" rx="12" fill="#2a1531" stroke="#6b2f52"/>
+            <text x="786" y="148" fill="#f7c9e0" font-weight="700">Spoiler denetimi</text>
+            <text x="786" y="168" fill="#e08fc0" font-size="11">konuma göre gizle</text>
+            <rect x="770" y="192" width="190" height="58" rx="12" fill="#1c1440" stroke="#4a3a7a"/>
+            <text x="786" y="214" fill="#d8ccf7" font-weight="700">Moderatör AI</text>
+            <text x="786" y="234" fill="#a892e0" font-size="11">canlı tut · yatıştır · yanıtla</text>
+            <rect x="770" y="258" width="190" height="58" rx="12" fill="#132f2c" stroke="#1c5a55"/>
+            <text x="786" y="280" fill="#bff0e6" font-weight="700">Zaman çizgisi</text>
+            <text x="786" y="300" fill="#7fd6c4" font-size="11">izlediğin yere kadar</text>
+          </g>
+          <path d="M720 200 C 745 200, 748 150, 770 150" stroke="#7c3aed" fill="none" marker-end="url(#a1)" opacity=".6"/>
+        </svg>
+      </div>
+      <figcaption>Dışarıdan gelen dünya nabzı ve odadaki canlı sohbet tek akışta birleşir; içeriğe özel yapay zeka bu akışı yönetir.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 2 ===================== -->
+  <section id="s2">
+    <div class="sec-head"><div class="sec-num">2</div>
+      <div><div class="sec-sub">Mimari</div><h2>Büyük Resim: Sistem Nasıl Kurgulandı</h2></div></div>
+    <div class="prose">
+      <p>Echo dört ana yazılım parçasından oluşuyor ve bunlar birbirinden net sınırlarla ayrılmış durumda. Bu ayrım keyfi değil; her parçanın farklı bir yaşam döngüsü, farklı bir ölçeklenme ihtiyacı ve farklı bir sorumluluğu var.</p>
+      <p>Birinci parça <b>Echo.Domain</b>, sistemin iş kavramlarının yaşadığı yer. İçerik, bölüm, segment, kanal, mesaj, kullanıcı, abonelik gibi kavramların tanımları burada. Hiçbir teknik bağımlılığı yok; sadece "Echo dünyası neyden oluşur" sorusunun cevabı. İkinci parça <b>Echo.Infrastructure</b>, bu dünyanın veritabanıyla ve dış yapay zeka servisleriyle konuştuğu katman; PostgreSQL erişimi, OpenAI istemcisi burada. Üçüncü parça <b>Echo.Api</b>, kullanıcıların ve yönetim panelinin konuştuğu web servisi; kanal akışını sunan, mesaj yazmayı kabul eden, canlı bağlantıyı yöneten, admin işlemlerini yürüten uçlar burada. Dördüncü parça <b>Echo.Workers</b>, arka planda hiç durmadan çalışan işçiler topluluğu; veri toplama, temizleme, zenginleştirme, içerik hazırlama ve moderatörlük bu süreçte dönüyor.</p>
+      <p>Bu dörtlü ayrımın kritik sonucu şu: web servisi (kullanıcının anlık deneyimi) ile arka plan işçileri (ağır veri işleme) birbirinden bağımsız çalışıyor. Kullanıcı mesaj yazarken arka planda milyonlarca yorum işlense bile kullanıcının deneyimi yavaşlamıyor, çünkü bu iki iş farklı süreçlerde koşuyor ve yalnızca ortak veritabanı üzerinden buluşuyorlar.</p>
+      <p>Teknoloji tarafında omurga .NET 10 ve C# üzerine kurulu. Veritabanı PostgreSQL 18, üzerine pgvector eklentisiyle; bu eklenti sayesinde metinlerin matematiksel vektör temsillerini veritabanının içinde saklayıp anlamsal benzerlik hesabı yapabiliyoruz, buna birazdan detaylı geleceğim. Ön yüz Next.js 16 ve React ile yazıldı. Canlı bağlantı için SignalR kullanılıyor. Tüm sistem Docker konteynerleri içinde paketlenmiş halde bir Azure sunucusunda çalışıyor; önünde Caddy adında bir ters vekil sunucu var, hem güvenli HTTPS bağlantısını hem de gelen isteklerin doğru parçaya yönlendirilmesini o sağlıyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#2dd4bf"></span><span class="t">Katmanlar · Dört Proje, İki Bağımsız Süreç</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 430" role="img" aria-label="Katman mimarisi">
+          <defs><marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#5b6f8c"/></marker></defs>
+
+          <!-- Domain base -->
+          <rect x="140" y="330" width="720" height="66" rx="14" fill="#0e1b2f" stroke="#26405f"/>
+          <text x="500" y="358" text-anchor="middle" fill="#cfe0f2" font-size="14" font-weight="800">Echo.Domain</text>
+          <text x="500" y="379" text-anchor="middle" fill="#7d93b0" font-size="11.5">iş kavramları · içerik · bölüm · segment · kanal · mesaj · kullanıcı  (teknik bağımlılık yok)</text>
+
+          <!-- Infrastructure -->
+          <rect x="140" y="252" width="720" height="62" rx="14" fill="#0f2233" stroke="#274a5f"/>
+          <text x="500" y="279" text-anchor="middle" fill="#bfeee8" font-size="14" font-weight="800">Echo.Infrastructure</text>
+          <text x="500" y="299" text-anchor="middle" fill="#78a9a2" font-size="11.5">PostgreSQL erişimi (EF Core) · OpenAI istemcisi · dış servis köprüleri</text>
+          <line x1="500" y1="330" x2="500" y2="314" stroke="#5b6f8c" marker-end="url(#a2)"/>
+
+          <!-- two runtime processes -->
+          <!-- API -->
+          <rect x="140" y="80" width="330" height="150" rx="16" fill="#0e2e2b" stroke="#1c5a55"/>
+          <text x="305" y="108" text-anchor="middle" fill="#8ff0e6" font-size="15" font-weight="800">Echo.Api</text>
+          <text x="305" y="127" text-anchor="middle" fill="#5fae90" font-size="11" letter-spacing="1">WEB SÜRECİ · KULLANICI DENEYİMİ</text>
+          <g font-size="11.5" fill="#bfeee8">
+            <rect x="162" y="142" width="140" height="30" rx="8" fill="#0c2523" stroke="#1c5a55"/><text x="176" y="162">kanal akışı uçları</text>
+            <rect x="310" y="142" width="138" height="30" rx="8" fill="#0c2523" stroke="#1c5a55"/><text x="324" y="162">SignalR canlı hub</text>
+            <rect x="162" y="180" width="140" height="30" rx="8" fill="#0c2523" stroke="#1c5a55"/><text x="176" y="200">spoiler denetimi</text>
+            <rect x="310" y="180" width="138" height="30" rx="8" fill="#0c2523" stroke="#1c5a55"/><text x="324" y="200">admin · asistan</text>
+          </g>
+
+          <!-- Workers -->
+          <rect x="530" y="80" width="330" height="150" rx="16" fill="#2a2410" stroke="#5b4a1e"/>
+          <text x="695" y="108" text-anchor="middle" fill="#f6e4b8" font-size="15" font-weight="800">Echo.Workers</text>
+          <text x="695" y="127" text-anchor="middle" fill="#b9a978" font-size="11" letter-spacing="1">ARKA PLAN SÜRECİ · AĞIR İŞLEME</text>
+          <g font-size="11.5" fill="#f2e6c9">
+            <rect x="552" y="142" width="138" height="30" rx="8" fill="#241f0e" stroke="#5b4a1e"/><text x="566" y="162">toplama işçisi</text>
+            <rect x="698" y="142" width="140" height="30" rx="8" fill="#241f0e" stroke="#5b4a1e"/><text x="712" y="162">zenginleştirme</text>
+            <rect x="552" y="180" width="138" height="30" rx="8" fill="#1e1840" stroke="#4a3a7a"/><text x="566" y="200" fill="#d6c9f5">moderatör AI</text>
+            <rect x="698" y="180" width="140" height="30" rx="8" fill="#241f0e" stroke="#5b4a1e"/><text x="712" y="200">hazırlık işçisi</text>
+          </g>
+
+          <line x1="305" y1="230" x2="305" y2="252" stroke="#5b6f8c" marker-end="url(#a2)"/>
+          <line x1="695" y1="230" x2="695" y2="252" stroke="#5b6f8c" marker-end="url(#a2)"/>
+
+          <!-- separation note -->
+          <rect x="486" y="96" width="28" height="118" rx="8" fill="#0b1424" stroke="#22324c"/>
+          <text x="500" y="160" text-anchor="middle" fill="#6b7d99" font-size="11" transform="rotate(90 500 160)">bağımsız süreçler · yalnız DB'de buluşur</text>
+
+          <text x="140" y="46" fill="#6b7d99" font-size="12" letter-spacing="1.5" font-weight="700">İKİ AYRI ÇALIŞMA SÜRECİ</text>
+        </svg>
+      </div>
+      <figcaption>Domain ve Infrastructure ortak temel; API ve Workers ise ayrı süreçlerde koşar, yalnızca veritabanı üzerinden buluşur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 3 ===================== -->
+  <section id="s3">
+    <div class="sec-head"><div class="sec-num">3</div>
+      <div><div class="sec-sub">Veri Modeli</div><h2>Sistem Neleri Hatırlıyor</h2></div></div>
+    <div class="prose">
+      <p>Sistemin bütün zekası aslında birbiriyle ilişkili birkaç kavramın üzerine kurulu. Bunları anlamak, sistemin geri kalanını anlamanın anahtarı.</p>
+      <p>En tepede <b>İçerik</b> var; bu bir dizi sezonu ya da bir film. Örneğin "Silo 3. Sezon" bir içerik. Her içeriğin bir kısa adı, bir başlığı, ait olduğu evren (franchise) bilgisi, sezon numarası, kaç bölüm olduğu, hangi arama terimleriyle taranacağı ve bir de içerik bağlam özeti var. Bu bağlam özeti çok önemli; dizinin dünyasını, ana karakterlerini ve tonunu spoiler vermeden anlatan bir metin ve moderatör ile spoiler yapay zekalarının içeriği tanımasını sağlıyor.</p>
+      <p>İçeriğin altında <b>Bölümler</b> var. Her bölümün numarası, adı, süresi, yayın tarihi, yayınlanıp yayınlanmadığı bilgisi bulunuyor. Bir de bölüme yüklenebilen zaman damgalı altyazı metni; bu SRT altyazısından üretiliyor ve bölümün sahne sahne ne zaman ne olduğunu söylüyor.</p>
+      <p>Bölümün altında <b>Segmentler</b> var ve bunlar sistemin en kritik yapı taşlarından biri. Bir segment, bir bölümün belirli bir zaman aralığındaki olay parçası. Örneğin "0 ile 240 saniye arası: Juliette silodan dönüyor, hafızasının eksik olduğunu fark ediyor" bir segment olabilir. Her segmentin başlangıç ve bitiş saniyesi, kısa bir başlığı, ne olduğunu açıkça anlatan bir özeti ve en önemlisi bu özetin matematiksel vektör temsili (embedding) var. Bu segmentler hem yorumların hangi bölümün hangi dakikasına ait olduğunu bulmanın hem de spoiler denetiminin temelini oluşturuyor.</p>
+      <p>Bir de <b>Kanal</b> var. Kanal, bir içeriğe bağlı, kullanıcıların sohbet ettiği yer. Her kanalın bir yaşam döngüsü durumu var: Taslak, Hazırlanıyor, Hazır, Yayında, Arşiv. Kanalın bir de kapsam bilgisi var; ya tüm sezona açık genel bir kanal ya da yalnızca belirli bir bölüme özel bir kanal olabiliyor. Bu kapsam, hem hangi mesajların görüneceğini hem de spoiler kurallarının nasıl işleyeceğini belirliyor.</p>
+      <p>Bunların yanında toplama sürecinin izini tutan <b>Toplama Hedefi</b> kavramı, ham yorumları tutan <b>Ham Yorum</b> kavramı, işlenmiş ve yayına hazır yorumları tutan <b>Kürasyonlu Mesaj</b> kavramı, kullanıcıların yazdığı <b>Kullanıcı Mesajı</b> kavramı var. Kullanıcı mesajının içinde moderatör mesajı olup olmadığını ve hangi mesaja cevap verildiğini tutan alanlar da bulunuyor, çünkü moderatör de teknik olarak bir kullanıcı gibi mesaj yazıyor, sadece özel bir sistem hesabıyla. Son olarak kullanıcının kimliği, aboneliği, kanala üyeliği ve kanaldaki tercihleri (izleme pozisyonu, spoiler koruması açık mı, dil tercihi) ayrı kavramlarda saklanıyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#34d399"></span><span class="t">Veri Modeli · Kavramlar ve İlişkiler</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 470" role="img" aria-label="Veri modeli ilişki şeması">
+          <defs><marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#3f6f5a"/></marker></defs>
+          <style>
+            .ent{fill:#0e2a20;stroke:#1f6a4d}
+            .eh{fill:#8ff0c9;font-size:13.5px;font-weight:800}
+            .ef{fill:#8fbfa8;font-size:11px}
+            .rel{stroke:#3f6f5a;stroke-width:1.6;fill:none}
+            .rl{fill:#6b9c86;font-size:10.5px}
+          </style>
+
+          <!-- Content -->
+          <rect class="ent" x="60" y="40" width="200" height="118" rx="12"/>
+          <text class="eh" x="76" y="66">İçerik</text>
+          <line x1="60" y1="76" x2="260" y2="76" stroke="#1f6a4d"/>
+          <text class="ef" x="76" y="94">slug · başlık · franchise</text>
+          <text class="ef" x="76" y="112">sezon · bölüm sayısı</text>
+          <text class="ef" x="76" y="130">arama terimleri</text>
+          <text class="ef" x="76" y="148" fill="#c9a8f0">bağlam özeti (AI için)</text>
+
+          <!-- Episode -->
+          <rect class="ent" x="60" y="200" width="200" height="104" rx="12"/>
+          <text class="eh" x="76" y="226">Bölüm</text>
+          <line x1="60" y1="236" x2="260" y2="236" stroke="#1f6a4d"/>
+          <text class="ef" x="76" y="254">numara · ad · süre</text>
+          <text class="ef" x="76" y="272">yayın tarihi · yayında mı</text>
+          <text class="ef" x="76" y="290" fill="#9fd0f0">altyazı metni (SRT)</text>
+
+          <!-- Segment -->
+          <rect class="ent" x="60" y="344" width="200" height="104" rx="12"/>
+          <text class="eh" x="76" y="370">Segment</text>
+          <line x1="60" y1="380" x2="260" y2="380" stroke="#1f6a4d"/>
+          <text class="ef" x="76" y="398">başlangıç–bitiş saniye</text>
+          <text class="ef" x="76" y="416">olay özeti</text>
+          <text class="ef" x="76" y="434" fill="#c9a8f0">embedding (1536 boyut)</text>
+
+          <line class="rel" x1="160" y1="158" x2="160" y2="200" marker-end="url(#a3)"/>
+          <text class="rl" x="168" y="182">1 — N</text>
+          <line class="rel" x1="160" y1="304" x2="160" y2="344" marker-end="url(#a3)"/>
+          <text class="rl" x="168" y="328">1 — N</text>
+
+          <!-- Channel -->
+          <rect class="ent" x="400" y="40" width="210" height="118" rx="12" style="fill:#0e2233;stroke:#2a5a5a"/>
+          <text class="eh" x="416" y="66" style="fill:#8fe6e0">Kanal</text>
+          <line x1="400" y1="76" x2="610" y2="76" stroke="#2a5a5a"/>
+          <text class="ef" x="416" y="94" style="fill:#8fb8b8">içeriğe bağlı</text>
+          <text class="ef" x="416" y="112" style="fill:#8fb8b8">durum: taslak→…→yayında</text>
+          <text class="ef" x="416" y="130" style="fill:#8fb8b8">kapsam: sezon / bölüm</text>
+          <text class="ef" x="416" y="148" style="fill:#8fb8b8">açılış · kapanış zamanı</text>
+          <line class="rel" x1="260" y1="90" x2="400" y2="95" marker-end="url(#a3)" style="stroke:#2a5a5a"/>
+          <text class="rl" x="300" y="82">içerik 1 — N kanal</text>
+
+          <!-- Ingest target + raw + curated -->
+          <rect class="ent" x="400" y="200" width="210" height="70" rx="12" style="fill:#241f0e;stroke:#5b4a1e"/>
+          <text class="eh" x="416" y="226" style="fill:#f6e4b8">Toplama Hedefi</text>
+          <text class="ef" x="416" y="250" style="fill:#c4ad78">platform · anahtar · imleç · sıcaklık</text>
+
+          <rect class="ent" x="400" y="286" width="210" height="60" rx="12" style="fill:#241f0e;stroke:#5b4a1e"/>
+          <text class="eh" x="416" y="310" style="fill:#f6e4b8">Ham Yorum</text>
+          <text class="ef" x="416" y="332" style="fill:#c4ad78">durum makinesi · anonim yazar</text>
+
+          <rect class="ent" x="400" y="362" width="210" height="72" rx="12"/>
+          <text class="eh" x="416" y="388">Kürasyonlu Mesaj</text>
+          <text class="ef" x="416" y="408">hizalı · çevrili · spoiler bayraklı</text>
+          <text class="ef" x="416" y="426" fill="#c9a8f0">embedding · benzer sayısı</text>
+
+          <line class="rel" x1="505" y1="270" x2="505" y2="286" marker-end="url(#a3)" style="stroke:#5b4a1e"/>
+          <line class="rel" x1="505" y1="346" x2="505" y2="362" marker-end="url(#a3)" style="stroke:#3f6f5a"/>
+          <text class="rl" x="514" y="358" style="fill:#c4ad78">işlenince</text>
+
+          <!-- User side -->
+          <rect class="ent" x="740" y="40" width="210" height="96" rx="12" style="fill:#10233b;stroke:#2a4a6a"/>
+          <text class="eh" x="756" y="66" style="fill:#bcd3ea">Kullanıcı</text>
+          <line x1="740" y1="76" x2="950" y2="76" stroke="#2a4a6a"/>
+          <text class="ef" x="756" y="94" style="fill:#9fb4cf">Google kimliği · takma ad</text>
+          <text class="ef" x="756" y="112" style="fill:#9fb4cf">avatar</text>
+          <text class="ef" x="756" y="128" style="fill:#c9a8f0">sistem hesabı = moderatör</text>
+
+          <rect class="ent" x="740" y="160" width="210" height="70" rx="12" style="fill:#1a1533;stroke:#3b2f66"/>
+          <text class="eh" x="756" y="186" style="fill:#d6c9f5">Kullanıcı Mesajı</text>
+          <text class="ef" x="756" y="208" style="fill:#b6a6dd">moderatör mü · cevap zinciri</text>
+          <text class="ef" x="756" y="224" style="fill:#b6a6dd">bölüm · saniye çapası</text>
+
+          <rect class="ent" x="740" y="254" width="210" height="60" rx="12" style="fill:#10233b;stroke:#2a4a6a"/>
+          <text class="eh" x="756" y="280" style="fill:#bcd3ea">Kanal Tercihi</text>
+          <text class="ef" x="756" y="300" style="fill:#9fb4cf">izleme konumu · spoiler · dil</text>
+
+          <rect class="ent" x="740" y="330" width="210" height="60" rx="12" style="fill:#10233b;stroke:#2a4a6a"/>
+          <text class="eh" x="756" y="356" style="fill:#bcd3ea">Abonelik · Üyelik</text>
+          <text class="ef" x="756" y="376" style="fill:#9fb4cf">Pro planı · kanal üyeliği</text>
+
+          <line class="rel" x1="740" y1="192" x2="610" y2="300" marker-end="url(#a3)" style="stroke:#3b2f66"/>
+          <text class="rl" x="640" y="250" style="fill:#b6a6dd">aynı akış</text>
+          <line class="rel" x1="845" y1="136" x2="845" y2="160" marker-end="url(#a3)" style="stroke:#3b2f66"/>
+          <line class="rel" x1="740" y1="284" x2="618" y2="110" marker-end="url(#a3)" style="stroke:#2a4a6a" opacity=".5"/>
+          <text class="rl" x="640" y="150" style="fill:#6b9c86">tercih → kanal</text>
+        </svg>
+      </div>
+      <figcaption>İçerik → Bölüm → Segment omurgası solda; kanal, toplama hattı ve kullanıcı tarafı sağda. Hepsi aynı akışta buluşur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 4 ===================== -->
+  <section id="s4">
+    <div class="sec-head"><div class="sec-num">4</div>
+      <div><div class="sec-sub">Veri Toplama</div><h2>Veri Nereden ve Nasıl Toplanıyor</h2></div></div>
+    <div class="prose">
+      <p>Sistemin damarlarında akan veri, dış platformlardaki gerçek insan yorumlarından geliyor. Şu an dört kaynak aktif: YouTube, X, Bluesky ve Trakt. Reddit ve Threads için kod hazır ama bu platformların erişim onayları beklendiği için şimdilik kapalı. Twitch ve ekşi sözlük de yol haritasında.</p>
+      <p>Bu kaynakların her biri birbirinden çok farklı çalışıyor; YouTube'da bir videonun altındaki yorumlar var, X'te bir arama sorgusuna düşen tweetler var, Bluesky'da anahtarsız açık bir arama var, Trakt'ta ise doğrudan dizinin ve bölümlerin altındaki yorumlar var. Bu farklılığı sistemin geri kalanından gizlemek için ortak bir sözleşme tanımladık. Her kaynak, aynı iki soruyu cevaplayabilen bir adaptör olarak yazıldı: "Bu arama terimini hangi somut hedeflere genişletebilirsin" ve "Bu somut hedeften bana yeni yorumları getir." Bu sayede sistemin toplama motoru, karşısında YouTube mu Trakt mı olduğunu bilmeden hepsini aynı şekilde yönetebiliyor. Yeni bir kaynak eklemek, yalnızca bu sözleşmeyi dolduran yeni bir adaptör yazmak demek; sistemin geri kalanına dokunmuyoruz.</p>
+      <p>Toplama işini yöneten işçi, canlı ve hazırlanan kanalları sürekli dolaşıyor. Her içerik için önce hedefler kuruluyor. YouTube ve X gibi kaynaklarda içeriğin arama terimleri (örneğin "Silo season 3", "#Silo", "Juliette Nichols") birer hedef olarak kaydediliyor. Trakt gibi kaynaklarda ise hedefler doğrudan içeriğin kendisinden türetiliyor; dizinin ana yorum akışı, sezonun yorum akışı ve yayınlanmış her bölümün ayrı yorum akışı birer hedef oluyor. Trakt'ın bu özelliği çok değerli, çünkü bir bölümün altındaki yorum zaten o bölüme ait olduğu bilinerek geliyor; hizalama işi kaynakta halloluyor. Üstelik yeni bir bölüm yayınlanıp işaretlendiğinde, sonraki toplama turunda o bölümün hedefi kendiliğinden doğuyor, elle müdahale gerekmiyor.</p>
+      <p>Toplamanın hızı akıllıca ayarlanıyor. Her hedef için sistem, son taramada yeni yorum gelip gelmediğine bakıyor. Yeni yorum gelen hedefler "sıcak" kabul edilip çok kısa aralıklarla (birkaç dakikada bir, hatta Bluesky gibi cömert kaynaklarda 60 saniyede bir) tekrar taranıyor; ölü hedefler "soğuk" kabul edilip çok daha seyrek yoklanıyor. Bunun iki faydası var: canlı bir tartışma varken yeni yorumlar neredeyse anında akıyor, ölü bir içeriğe boşuna istek harcanmıyor ve platformların istek kotaları korunuyor. X gibi aylık istek limiti olan kaynaklarda ayrıca statik bir bütçe sayacı ve minimum bekleme süresi de var, böylece limiti asla aşmıyoruz.</p>
+      <p>Toplanan her yorum, "ham yorum" olarak veritabanına yazılıyor. Burada kritik bir güvenlik var: aynı yorumun iki kez kaydedilmesini engellemek için her kaydın platform ve dış kimlik bilgisi birlikte benzersiz olmak zorunda. Aynı anda birden fazla toplama denemesi olsa bile bu benzersizlik kuralı ikinci kaydı reddediyor. Yorumu yazan kişinin kimliği ise asla ham haliyle saklanmıyor; tek yönlü bir kriptografik özet fonksiyonundan geçirilerek anonimleştiriliyor, yani "aynı yazar mı" sorusunu cevaplayabiliyoruz ama yazarın kim olduğunu geri döndüremiyoruz.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#38bdf8"></span><span class="t">Toplama · Ortak Adaptör Sözleşmesi ve Sıcak/Soğuk Tempo</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 460" role="img" aria-label="Veri toplama akışı">
+          <defs><marker id="a4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3d6a8c"/></marker>
+            <marker id="a4h" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#fb7185"/></marker>
+          </defs>
+
+          <!-- sources -->
+          <text x="40" y="34" fill="#6b7d99" font-size="12" letter-spacing="1.5" font-weight="700">KAYNAKLAR (her biri bir adaptör)</text>
+          <g font-size="12">
+            <rect x="40" y="50" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="56" y="72" fill="#bcd3ea">▶ YouTube · video→yorum</text>
+            <rect x="40" y="92" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="56" y="114" fill="#bcd3ea">𝕏 X · sorgu→tweet</text>
+            <rect x="40" y="134" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="56" y="156" fill="#bcd3ea">✦ Bluesky · açık arama</text>
+            <rect x="40" y="176" width="150" height="34" rx="9" fill="#0e2536" stroke="#1f4a63"/><text x="56" y="198" fill="#bcd3ea">◆ Trakt · içerik→bölüm</text>
+            <rect x="40" y="218" width="150" height="30" rx="9" fill="none" stroke="#33465f" stroke-dasharray="4 4"/><text x="56" y="238" fill="#6b7d99">Reddit·Threads·Twitch (hazır)</text>
+          </g>
+
+          <!-- contract -->
+          <rect x="250" y="70" width="180" height="150" rx="14" fill="#0d1f30" stroke="#284a63"/>
+          <text x="340" y="98" text-anchor="middle" fill="#9fd0f0" font-size="13" font-weight="800">Ortak Sözleşme</text>
+          <text x="340" y="116" text-anchor="middle" fill="#6b8aa5" font-size="10.5">(kaynağı gizler)</text>
+          <rect x="266" y="128" width="148" height="38" rx="9" fill="#102a3f" stroke="#2a5271"/>
+          <text x="276" y="146" fill="#bcd3ea" font-size="11">① terimi hedefe</text><text x="276" y="160" fill="#7d99b5" font-size="10">genişlet</text>
+          <rect x="266" y="172" width="148" height="38" rx="9" fill="#102a3f" stroke="#2a5271"/>
+          <text x="276" y="190" fill="#bcd3ea" font-size="11">② hedeften yeni</text><text x="276" y="204" fill="#7d99b5" font-size="10">yorumları getir</text>
+          <path d="M190 145 C 218 145, 222 145, 250 145" stroke="#3d6a8c" fill="none" marker-end="url(#a4)"/>
+
+          <!-- ingest worker -->
+          <rect x="470" y="60" width="200" height="170" rx="14" fill="#2a2410" stroke="#5b4a1e"/>
+          <text x="570" y="88" text-anchor="middle" fill="#f6e4b8" font-size="13.5" font-weight="800">Toplama İşçisi</text>
+          <text x="486" y="116" fill="#c4ad78" font-size="11.5">• hedefleri kur (terim / içerik)</text>
+          <text x="486" y="138" fill="#c4ad78" font-size="11.5">• YouTube: arama→video genişlet</text>
+          <text x="486" y="160" fill="#c4ad78" font-size="11.5">• Trakt: bölüm hedefi türet</text>
+          <rect x="486" y="176" width="168" height="42" rx="9" fill="#241f0e" stroke="#5b4a1e"/>
+          <text x="496" y="194" fill="#fbbf24" font-size="11.5" font-weight="700">Sıcak / Soğuk poll</text>
+          <text x="496" y="210" fill="#c4ad78" font-size="10.5">yeni gelen = 60sn–2dk · ölü = seyrek</text>
+          <path d="M430 145 C 450 145, 452 145, 470 145" stroke="#3d6a8c" fill="none" marker-end="url(#a4)"/>
+
+          <!-- budget guard -->
+          <rect x="470" y="248" width="200" height="52" rx="12" fill="#2a1531" stroke="#6b2f52"/>
+          <text x="486" y="272" fill="#f7c9e0" font-size="12" font-weight="700">Kota / Bütçe Freni</text>
+          <text x="486" y="290" fill="#e08fc0" font-size="10.5">X aylık limit · min bekleme · haftalık sayaç</text>
+          <path d="M570 230 L570 248" stroke="#fb7185" fill="none" marker-end="url(#a4h)" opacity=".8"/>
+
+          <!-- raw persist -->
+          <rect x="720" y="90" width="230" height="120" rx="14" fill="#0e2a20" stroke="#1f6a4d"/>
+          <text x="835" y="118" text-anchor="middle" fill="#8ff0c9" font-size="13" font-weight="800">Ham Yorum Kaydı</text>
+          <rect x="738" y="130" width="194" height="34" rx="9" fill="#0c2018" stroke="#1f6a4d"/>
+          <text x="748" y="151" fill="#a7d9c4" font-size="11">🔒 (platform + dış-id) benzersiz</text>
+          <rect x="738" y="170" width="194" height="30" rx="9" fill="#0c2018" stroke="#1f6a4d"/>
+          <text x="748" y="190" fill="#a7d9c4" font-size="11">yazar → tek yönlü özet (anonim)</text>
+          <path d="M670 145 C 695 145, 698 145, 720 145" stroke="#3d6a8c" fill="none" marker-end="url(#a4)"/>
+
+          <!-- to pipeline -->
+          <rect x="720" y="248" width="230" height="52" rx="12" fill="#0d1a2e" stroke="#22324c"/>
+          <text x="835" y="272" text-anchor="middle" fill="#9fb4cf" font-size="12">sıradaki adım →</text>
+          <text x="835" y="290" text-anchor="middle" fill="#6b7d99" font-size="10.5">temizleme &amp; zenginleştirme hattı (Bölüm 5)</text>
+          <path d="M835 210 L835 248" stroke="#3d6a8c" fill="none" marker-end="url(#a4)"/>
+
+          <!-- footer example -->
+          <rect x="40" y="330" width="910" height="96" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="60" y="356" fill="#93a4bb" font-size="12" font-weight="700">Silo örneği (gerçek):</text>
+          <text x="60" y="378" fill="#cfe0f2" font-size="12">sezon kanalı açıldı → toplama başladı → dakikalar içinde <tspan fill="#38bdf8">binlerce ham yorum</tspan> → temizlenip <tspan fill="#34d399">yüzlerce işlenmiş mesaj</tspan></text>
+          <text x="60" y="400" fill="#cfe0f2" font-size="12">Trakt bölüm hedefleri: <tspan class="mono" fill="#f6e4b8">show:silo</tspan> · <tspan class="mono" fill="#f6e4b8">season:silo:3</tspan> · <tspan class="mono" fill="#f6e4b8">episode:silo:3:1</tspan> — yeni bölümde bir sonraki hedef kendiliğinden doğar</text>
+        </svg>
+      </div>
+      <figcaption>Her kaynak ortak sözleşmeyi dolduran bir adaptör; toplama işçisi hepsini aynı şekilde yönetir, sıcak/soğuk tempoyla kotaları korur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 5 ===================== -->
+  <section id="s5">
+    <div class="sec-head"><div class="sec-num">5</div>
+      <div><div class="sec-sub">İşleme Hattı</div><h2>Veri Nasıl Temizleniyor ve İşleniyor</h2></div></div>
+    <div class="prose">
+      <p>Ham yorum toplandığı haliyle işe yaramaz; içinde spam var, alakasız içerik var, farklı dillerde metinler var, aynı şeyi söyleyen onlarca kopya var, hangi bölüme ait olduğu belli değil. Ham yorumu kullanıcının göreceği kaliteli bir mesaja çeviren süreç üç aşamalı bir boru hattı ve her aşama ayrı bir işçi tarafından yürütülüyor. Bu ayrım bilinçli; her aşama kendi hızında çalışabiliyor ve bir aşama tıkanırsa diğerleri etkilenmiyor.</p>
+      <p>Birinci aşama <b>normalizasyon</b>. Burada ham yorum temel bir elemeden geçiyor. Boş ya da anlamsız içerikler, kabul ettiğimiz diller (İngilizce ve Türkçe) dışındaki metinler, çok kısa ya da değersiz parçalar buraya takılıyor ve elenip düşürülüyor. Bu aşamayı geçen yorum "normalize edildi" durumuna geçiyor.</p>
+      <p>İkinci ve en zengin aşama <b>zenginleştirme</b>. Burada her yorum için sırayla birkaç iş yapılıyor. İlk iş, yorumun matematiksel vektör temsilini yani embedding'ini üretmek. Bunu birazdan ayrı bir başlıkta detaylandıracağım ama kısaca, yorumun anlamını bir sayı dizisine dönüştürüyoruz. İkinci iş, anlamsal tekilleştirme; yeni gelen yorumun vektörü daha önce yayınlanmış yorumların vektörleriyle karşılaştırılıyor ve eğer anlamca çok yakın bir kopyası zaten varsa, yeni yorum ayrı bir mesaj olarak eklenmiyor, bunun yerine mevcut mesajın "benzer sayısı" artırılıyor. Böylece kanal aynı "çok iyi bölümdü" cümlesinin elli kopyasıyla dolmuyor, tek bir mesaj yanında "elli kişi benzer şey söyledi" bilgisiyle duruyor. Üçüncü iş hizalama, yani yorumun hangi bölümün hangi dakikasına ait olduğunu bulmak; bu da ayrı bir başlığı hak ediyor. Dördüncü iş spoiler denetimi, yani yorumun ileri bir olayı ifşa edip etmediğine karar vermek. Beşinci iş çeviri; yorum hem Türkçe hem İngilizce hazırlanıyor ki kullanıcı dil tercihine göre okuyabilsin. Tüm bunlar bittiğinde yorum "yayınlandı" durumuna geçiyor ve artık kürasyonlu mesaj olarak kanalın akışına girmeye hazır.</p>
+      <p>Bu boru hattının tamamı hataya dayanıklı tasarlandı. Her yorumun bir durumu var ve bu durum adım adım ilerliyor; bir aşamada bir sorun olursa yorum "başarısız" olarak işaretleniyor ve akışın geri kalanı durmuyor. Dış yapay zeka servisi geçici olarak cevap vermezse, o yorum bir sonraki turda tekrar deneniyor. Yani sistem kendini toparlayan bir yapıda; bir anlık aksaklık kalıcı veri kaybına dönüşmüyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#fbbf24"></span><span class="t">Boru Hattı · Ham Yorumun Durum Yolculuğu</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 440" role="img" aria-label="Temizleme ve zenginleştirme boru hattı">
+          <defs><marker id="a5" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8a6d2a"/></marker>
+            <marker id="a5d" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#6b2f52"/></marker>
+          </defs>
+
+          <!-- state track -->
+          <text x="40" y="34" fill="#6b7d99" font-size="12" letter-spacing="1.5" font-weight="700">DURUM MAKİNESİ (her yorumun bir durumu var)</text>
+          <g font-size="12" text-anchor="middle">
+            <rect x="40" y="52" width="120" height="40" rx="20" fill="#241f0e" stroke="#5b4a1e"/><text x="100" y="77" fill="#f6e4b8">Bekliyor</text>
+            <rect x="210" y="52" width="130" height="40" rx="20" fill="#241f0e" stroke="#5b4a1e"/><text x="275" y="77" fill="#f6e4b8">Normalize</text>
+            <rect x="700" y="52" width="130" height="40" rx="20" fill="#0e2a20" stroke="#1f6a4d"/><text x="765" y="77" fill="#8ff0c9">Yayınlandı ✓</text>
+          </g>
+          <line x1="160" y1="72" x2="210" y2="72" stroke="#8a6d2a" marker-end="url(#a5)"/>
+          <line x1="340" y1="72" x2="392" y2="72" stroke="#8a6d2a" marker-end="url(#a5)"/>
+          <line x1="648" y1="72" x2="700" y2="72" stroke="#8a6d2a" marker-end="url(#a5)"/>
+
+          <!-- worker 1 -->
+          <rect x="188" y="118" width="176" height="70" rx="12" fill="#181307" stroke="#5b4a1e" stroke-dasharray="0"/>
+          <text x="276" y="142" text-anchor="middle" fill="#f6e4b8" font-size="12.5" font-weight="700">NormalizeWorker</text>
+          <text x="276" y="162" text-anchor="middle" fill="#c4ad78" font-size="10.5">dil (EN/TR) · uzunluk · boş eleme</text>
+          <text x="276" y="178" text-anchor="middle" fill="#8a6d2a" font-size="10">takılan → düşürülür</text>
+          <line x1="276" y1="92" x2="276" y2="118" stroke="#8a6d2a" marker-end="url(#a5)"/>
+
+          <!-- enrichment big box -->
+          <rect x="392" y="108" width="256" height="230" rx="14" fill="#181307" stroke="#5b4a1e"/>
+          <text x="520" y="132" text-anchor="middle" fill="#fbbf24" font-size="13.5" font-weight="800">EnrichmentWorker</text>
+          <text x="520" y="150" text-anchor="middle" fill="#8a6d2a" font-size="10.5">sırayla beş iş · her yorum için</text>
+          <g font-size="11.5">
+            <rect x="410" y="162" width="220" height="30" rx="8" fill="#2a1a4d" stroke="#4a3a7a"/><text x="422" y="182" fill="#d8ccf7">① embedding üret <tspan fill="#a892e0">(1536 boyut)</tspan></text>
+            <rect x="410" y="198" width="220" height="30" rx="8" fill="#132f2c" stroke="#1c5a55"/><text x="422" y="218" fill="#bff0e6">② anlamsal tekilleştir <tspan fill="#7fd6c4">(kopya→sayaç)</tspan></text>
+            <rect x="410" y="234" width="220" height="30" rx="8" fill="#2a1a4d" stroke="#4a3a7a"/><text x="422" y="254" fill="#d8ccf7">③ hizala <tspan fill="#a892e0">(bölüm + saniye)</tspan></text>
+            <rect x="410" y="270" width="220" height="30" rx="8" fill="#2a1531" stroke="#6b2f52"/><text x="422" y="290" fill="#f7c9e0">④ spoiler denetimi</text>
+            <rect x="410" y="306" width="220" height="26" rx="8" fill="#0e2536" stroke="#1f4a63"/><text x="422" y="324" fill="#bcd3ea">⑤ çeviri (TR + EN)</text>
+          </g>
+
+          <!-- OpenAI feeding -->
+          <rect x="700" y="150" width="180" height="90" rx="12" fill="#1c1440" stroke="#4a3a7a"/>
+          <text x="790" y="176" text-anchor="middle" fill="#d8ccf7" font-size="12.5" font-weight="700">OpenAI</text>
+          <text x="790" y="196" text-anchor="middle" fill="#a892e0" font-size="10.5">embedding modeli</text>
+          <text x="790" y="212" text-anchor="middle" fill="#a892e0" font-size="10.5">sohbet modeli</text>
+          <text x="790" y="230" text-anchor="middle" fill="#8873c0" font-size="10">(spoiler · çeviri kararları)</text>
+          <line x1="648" y1="200" x2="700" y2="195" stroke="#7c3aed" fill="none" marker-end="url(#a5d)" opacity=".7"/>
+          <line x1="700" y1="215" x2="650" y2="285" stroke="#7c3aed" fill="none" marker-end="url(#a5d)" opacity=".5"/>
+
+          <!-- resilience note -->
+          <rect x="40" y="360" width="840" height="62" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="60" y="386" fill="#93a4bb" font-size="12" font-weight="700">Hataya dayanıklılık:</text>
+          <text x="176" y="386" fill="#cfe0f2" font-size="12">bir aşama tıkanırsa diğerleri durmaz · yorum <tspan fill="#fb7185">"başarısız"</tspan> işaretlenir · dış servis cevap vermezse <tspan fill="#34d399">sonraki turda tekrar denenir</tspan></text>
+          <text x="60" y="408" fill="#6b7d99" font-size="11">Sonuç: bir anlık aksaklık kalıcı veri kaybına dönüşmez; sistem kendini toparlar.</text>
+        </svg>
+      </div>
+      <figcaption>Ham yorum üç bağımsız işçiden geçer; zenginleştirmede beş iş sırayla yapılır, tümü bitince yorum yayına hazır kürasyonlu mesaj olur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 6 ===================== -->
+  <section id="s6" class="v">
+    <div class="sec-head"><div class="sec-num">6</div>
+      <div><div class="sec-sub">Yapay Zeka · Anlam</div><h2>Vektör ve Embedding: Sistemin Anlamı Nasıl Anladığı</h2></div></div>
+    <div class="prose">
+      <p>Bu başlık, senin özellikle detay istediğin en teknik ama en belirleyici konu, o yüzden sindire sindire anlatayım.</p>
+      <p>Bilgisayarlar metni doğrudan "anlamıyor"; onlar için "harika bölümdü" ve "muhteşem bir bölüm" iki farklı karakter dizisi. Ama biz bu iki cümlenin aynı şeyi söylediğini biliyoruz. Embedding, işte tam bu boşluğu kapatan teknoloji. Bir metni alıp onu yüzlerce boyutlu bir uzayda bir noktaya, yani uzun bir sayı dizisine dönüştürüyor. Bizim kullandığımız model her metni 1536 sayıdan oluşan bir diziye çeviriyor. Bu dönüşümün sihri şu: anlamca yakın metinler bu uzayda birbirine yakın noktalara düşüyor, anlamca uzak metinler uzak noktalara. Yani "harika bölümdü" ile "muhteşem bir bölüm" neredeyse aynı yere düşerken, "yemek çok güzeldi" bambaşka bir bölgeye düşüyor.</p>
+      <p>Bu vektörleri OpenAI'nin embedding modeli üretiyor ve biz onları PostgreSQL veritabanının içinde, pgvector eklentisi sayesinde özel bir vektör sütununda saklıyoruz. Veritabanının içinde saklamanın avantajı büyük; iki vektör arasındaki uzaklığı, yani iki metnin anlamsal yakınlığını, veriyi dışarı taşımadan doğrudan veritabanında hesaplayabiliyoruz.</p>
+      <p>Sistemde embedding iki yerde hayati rol oynuyor. Birincisi, az önce anlattığım anlamsal tekilleştirme; yeni yorumun vektörü mevcutlarla karşılaştırılıp kopya olup olmadığı bir eşik değerine göre belirleniyor. İkincisi ve daha önemlisi, yorumun hangi olaya ait olduğunu bulmak. Her segmentin de bir embedding'i olduğunu hatırla; bir yorumun vektörünü, o dizinin tüm segmentlerinin vektörleriyle karşılaştırdığımızda, yoruma anlamca en yakın segment hangisiyse, yorumun o segmentteki olaydan bahsettiğini çıkarıyoruz. Bu, hizalamanın çekirdeği.</p>
+      <p>Burada önemli bir netleştirme yapayım, çünkü kavram karışıklığı olmasın. Biz kendi başımıza sıfırdan bir yapay zeka modeli "eğitmiyoruz"; klasik anlamda haftalarca süren bir model eğitimi yok. Bunun yerine, hazır ve çok güçlü dil modellerini içeriğe özel verilerle besliyoruz. "Embedding eğitme" dediğimizde kastettiğimiz şey, içeriğin segmentlerini ve toplanan yorumları embedding'e çevirip bu vektör havuzunu oluşturmak ve sürekli güncel tutmak. İçerik hakkında ne kadar çok yorum toplanırsa ve segment haritası ne kadar zenginse, sistemin o içeriği "anlaması" o kadar keskinleşiyor. Yani içeriğe özelleşme, model ağırlıklarını değiştirerek değil, her içeriğin kendi vektör havuzunu ve kendi bağlam bilgisini oluşturarak sağlanıyor. Bu yaklaşım hem çok daha hızlı hem çok daha esnek; yeni bir dizi eklediğimizde günlerce eğitim beklemiyoruz, içeriğin verisi toplandıkça sistem o içerikte kendiliğinden ustalaşıyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#a78bfa"></span><span class="t">Anlam Uzayı · Yakın Anlamlar Yakın Noktalara Düşer</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 440" role="img" aria-label="Embedding anlam uzayı">
+          <defs>
+            <marker id="a6" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6d5aa0"/></marker>
+            <radialGradient id="cl1" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#134e4a" stop-opacity=".55"/><stop offset="1" stop-color="#134e4a" stop-opacity="0"/></radialGradient>
+            <radialGradient id="cl2" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#4c1d95" stop-opacity=".5"/><stop offset="1" stop-color="#4c1d95" stop-opacity="0"/></radialGradient>
+            <radialGradient id="cl3" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#7c2d12" stop-opacity=".45"/><stop offset="1" stop-color="#7c2d12" stop-opacity="0"/></radialGradient>
+          </defs>
+
+          <!-- left: transform -->
+          <text x="40" y="34" fill="#8873c0" font-size="12" letter-spacing="1.5" font-weight="700">METİN → SAYI DİZİSİ</text>
+          <rect x="40" y="52" width="220" height="40" rx="10" fill="#0e2536" stroke="#1f4a63"/>
+          <text x="54" y="77" fill="#bcd3ea" font-size="12.5">"bu sahne efsaneydi"</text>
+          <rect x="40" y="104" width="220" height="40" rx="10" fill="#1c1440" stroke="#4a3a7a"/>
+          <text x="54" y="122" fill="#d8ccf7" font-size="11" font-weight="700">OpenAI embedding modeli</text>
+          <text x="54" y="137" fill="#8873c0" font-size="10">metnin anlamını çıkarır</text>
+          <rect x="40" y="156" width="220" height="46" rx="10" fill="#0f1d33" stroke="#28405f"/>
+          <text x="54" y="176" class="mono" fill="#8ff0c9" font-size="11">[0.021, -0.44, 0.18, …]</text>
+          <text x="54" y="194" fill="#6b7d99" font-size="10.5">1536 sayı = uzaydaki bir nokta</text>
+          <line x1="150" y1="92" x2="150" y2="104" stroke="#6d5aa0" marker-end="url(#a6)"/>
+          <line x1="150" y1="144" x2="150" y2="156" stroke="#6d5aa0" marker-end="url(#a6)"/>
+
+          <!-- right: 2D projected space -->
+          <text x="470" y="34" fill="#8873c0" font-size="12" letter-spacing="1.5" font-weight="700">ANLAM UZAYI (2 boyuta indirgenmiş temsil)</text>
+          <rect x="470" y="48" width="490" height="288" rx="16" fill="#0a1526" stroke="#22324c"/>
+
+          <!-- cluster 1: positive -->
+          <ellipse cx="600" cy="130" rx="95" ry="70" fill="url(#cl1)"/>
+          <circle cx="585" cy="115" r="6" fill="#2dd4bf"/><text x="596" y="119" fill="#a7e8dd" font-size="10.5">harika bölümdü</text>
+          <circle cx="628" cy="140" r="6" fill="#2dd4bf"/><text x="639" y="144" fill="#a7e8dd" font-size="10.5">muhteşem bir bölüm</text>
+          <circle cx="575" cy="158" r="6" fill="#2dd4bf"/><text x="500" y="178" fill="#5fae90" font-size="10">≈ aynı yer (yakın anlam)</text>
+
+          <!-- cluster 2: plot -->
+          <ellipse cx="820" cy="140" rx="95" ry="68" fill="url(#cl2)"/>
+          <circle cx="815" cy="120" r="6" fill="#a78bfa"/><text x="826" y="124" fill="#cbb9f2" font-size="10.5">3. bölüm sürprizi</text>
+          <circle cx="800" cy="152" r="6" fill="#a78bfa"/><text x="811" y="156" fill="#cbb9f2" font-size="10.5">final sahnesi şoke etti</text>
+          <text x="760" y="192" fill="#8873c0" font-size="10">olay örgüsü bölgesi</text>
+
+          <!-- cluster 3: off-topic -->
+          <ellipse cx="640" cy="270" rx="80" ry="52" fill="url(#cl3)"/>
+          <circle cx="640" cy="262" r="6" fill="#fb923c"/><text x="651" y="266" fill="#f0b48a" font-size="10.5">yemek çok güzeldi</text>
+          <text x="576" y="304" fill="#b06a3a" font-size="10">uzak bölge (alakasız)</text>
+
+          <!-- new comment arrow finding nearest -->
+          <circle cx="700" cy="150" r="7" fill="#fff" stroke="#a78bfa" stroke-width="2"/>
+          <text x="702" y="140" fill="#e8eef8" font-size="10.5">yeni yorum</text>
+          <line x1="700" y1="150" x2="632" y2="140" stroke="#2dd4bf" stroke-dasharray="4 3" marker-end="url(#a6)"/>
+          <line x1="700" y1="150" x2="798" y2="150" stroke="#a78bfa" stroke-dasharray="4 3" opacity=".5"/>
+
+          <!-- uses row -->
+          <rect x="40" y="360" width="920" height="66" rx="12" fill="#150e2c" stroke="#2e2450"/>
+          <text x="60" y="386" fill="#a892e0" font-size="12" font-weight="700">İki kritik kullanım:</text>
+          <text x="176" y="386" fill="#d8ccf7" font-size="12"><tspan fill="#2dd4bf" font-weight="700">① Tekilleştirme</tspan> — yeni yorum mevcut bir kümeye çok yakınsa kopya sayılır, sayaç artar.  <tspan fill="#a78bfa" font-weight="700">② Hizalama</tspan> — yorumun vektörü en yakın segment vektörüyle eşleşir, olay bulunur.</text>
+          <text x="60" y="408" fill="#6b7d99" font-size="11">Not: sıfırdan model eğitimi YOK. İçeriğe özelleşme = her içeriğin kendi vektör havuzu + bağlam özeti. Veri arttıkça sistem o içerikte keskinleşir.</text>
+        </svg>
+      </div>
+      <figcaption>Her metin anlam uzayında bir noktaya dönüşür; yakın anlamlar kümelenir. Tekilleştirme ve hizalama bu yakınlık hesabına dayanır.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 7 ===================== -->
+  <section id="s7" class="v">
+    <div class="sec-head"><div class="sec-num">7</div>
+      <div><div class="sec-sub">Yapay Zeka · Zaman</div><h2>Segment Haritaları: Zamanın İskeleti</h2></div></div>
+    <div class="prose">
+      <p>Bir yorumun hangi dakikaya ait olduğunu bulabilmek için önce o bölümde hangi dakikada ne olduğunu bilmemiz gerekiyor. İşte segment haritası bunu sağlıyor ve üretimi başlı başına akıllı bir süreç.</p>
+      <p>Bir bölümün segment haritasını üretirken iki kaynaktan besleniyoruz. Birinci kaynak, o bölümün olay örgüsü; bunu Wikipedia'dan çekiyoruz, önce bölümün kendi sayfasına, yoksa sezon sayfasına, o da yoksa dizi sayfasına bakıyoruz. Bu kaynak bize "ne olduğunu" anlatıyor. İkinci kaynak, eğer yüklenmişse, bölümün zaman damgalı altyazısı; bu bize "ne zaman olduğunu" söylüyor. Altyazıyı SRT dosyasından alıp sahne sahne "şu dakikada şu konuşma geçti" biçiminde işliyoruz.</p>
+      <p>Bu iki kaynağı bir dil modeline verip ondan bölümü 8 ila 12 ardışık zaman dilimine bölmesini istiyoruz. Model her dilim için başlangıç ve bitiş saniyesini, kısa bir başlığı ve o dilimde tam olarak ne olduğunu açıkça yazan bir özet üretiyor. Kritik nokta şu: eğer altyazı varsa, modele "zaman damgaları kesin gerçektir, segment sınırlarını sahne değişimlerinin gerçekten olduğu yerlere oturt" talimatı veriyoruz; böylece segment sınırları tahminî değil, gerçek sahne zamanlarına dayanıyor ve hizalama isabeti ciddi şekilde artıyor. Altyazı yoksa model olay örgüsüne dayanarak makul bir zaman dağılımı yapıyor. Wikipedia sayfası olmayan çok yeni ya da niş içeriklerde ise yalnız altyazıyla da üretim yapabiliyoruz.</p>
+      <p>Üretilen her segmentin özeti embedding'e çevrilip veritabanına yazılıyor. Bu haritalar bir kez üretiliyor ama gerektiğinde yeniden üretilebiliyor; örneğin bir bölümün altyazısı sonradan yüklenirse, o bölümün haritasını daha isabetli hale getirmek için tekrar üretebiliyoruz.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#a78bfa"></span><span class="t">Segment Üretimi · İki Kaynak Birleşiyor</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 430" role="img" aria-label="Segment haritası üretimi">
+          <defs><marker id="a7" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6d5aa0"/></marker></defs>
+
+          <!-- source 1 -->
+          <rect x="40" y="60" width="210" height="86" rx="12" fill="#0e2536" stroke="#1f4a63"/>
+          <text x="56" y="86" fill="#9fd0f0" font-size="13" font-weight="800">Wikipedia · olay örgüsü</text>
+          <text x="56" y="108" fill="#7fa8c9" font-size="11">bölüm → sezon → dizi sayfası</text>
+          <text x="56" y="128" fill="#5f88a9" font-size="11">"NE olduğu"</text>
+
+          <!-- source 2 -->
+          <rect x="40" y="166" width="210" height="90" rx="12" fill="#132f2c" stroke="#1c5a55"/>
+          <text x="56" y="192" fill="#8ff0e6" font-size="13" font-weight="800">SRT altyazı (varsa)</text>
+          <text x="56" y="214" fill="#7fd6c4" font-size="11">[mm:ss] sahne sahne diyalog</text>
+          <text x="56" y="234" fill="#5fae90" font-size="11">"NE ZAMAN olduğu" · gerçek zaman</text>
+
+          <!-- LLM -->
+          <rect x="330" y="98" width="200" height="120" rx="14" fill="#1c1440" stroke="#4a3a7a"/>
+          <text x="430" y="128" text-anchor="middle" fill="#d8ccf7" font-size="13.5" font-weight="800">Dil Modeli</text>
+          <text x="430" y="150" text-anchor="middle" fill="#a892e0" font-size="11">bölümü 8–12 dilime böl</text>
+          <text x="430" y="170" text-anchor="middle" fill="#a892e0" font-size="11">altyazı varsa: zaman</text>
+          <text x="430" y="186" text-anchor="middle" fill="#a892e0" font-size="11">damgaları KESİN gerçek</text>
+          <text x="430" y="206" text-anchor="middle" fill="#8873c0" font-size="10">yoksa olay örgüsüne göre dağıt</text>
+
+          <path d="M250 103 C 295 103, 295 130, 330 130" stroke="#6d5aa0" fill="none" marker-end="url(#a7)"/>
+          <path d="M250 210 C 295 210, 295 180, 330 180" stroke="#6d5aa0" fill="none" marker-end="url(#a7)"/>
+
+          <!-- output segments timeline -->
+          <text x="600" y="52" fill="#8873c0" font-size="12" letter-spacing="1.5" font-weight="700">ÜRETİLEN SEGMENT HARİTASI</text>
+          <rect x="600" y="66" width="360" height="18" rx="6" fill="#0f1d33" stroke="#28405f"/>
+          <rect x="600" y="66" width="70" height="18" rx="6" fill="#2a1a4d"/>
+          <rect x="672" y="66" width="90" height="18" fill="#1c5a55" opacity=".7"/>
+          <rect x="764" y="66" width="80" height="18" fill="#2a1a4d" opacity=".8"/>
+          <rect x="846" y="66" width="114" height="18" rx="6" fill="#1c5a55" opacity=".55"/>
+          <text x="600" y="98" fill="#6b7d99" font-size="10">0sn</text><text x="936" y="98" fill="#6b7d99" font-size="10">bölüm sonu</text>
+
+          <g font-size="11">
+            <rect x="600" y="112" width="360" height="42" rx="9" fill="#150e2c" stroke="#2e2450"/>
+            <text x="614" y="130" fill="#d8ccf7" font-weight="700">① 0–240sn · "Dönüş"</text>
+            <text x="614" y="147" fill="#a892e0">Juliette silodan döner, hafızası eksik</text>
+            <rect x="600" y="160" width="360" height="42" rx="9" fill="#150e2c" stroke="#2e2450"/>
+            <text x="614" y="178" fill="#d8ccf7" font-weight="700">② 240–520sn · "Şüphe"</text>
+            <text x="614" y="195" fill="#a892e0">etrafındakiler ona ne düşüneceğini söyler</text>
+            <rect x="600" y="208" width="360" height="30" rx="9" fill="#0f1d33" stroke="#28405f"/>
+            <text x="614" y="228" fill="#8873c0">③ … ⑫  her segment + embedding</text>
+          </g>
+          <path d="M530 158 C 560 158, 570 158, 600 158" stroke="#6d5aa0" fill="none" marker-end="url(#a7)"/>
+
+          <!-- each summary -> embedding -->
+          <rect x="600" y="252" width="360" height="40" rx="10" fill="#0e2233" stroke="#2a5a5a"/>
+          <text x="614" y="270" fill="#8fe6e0" font-size="11.5" font-weight="700">her özet → embedding → veritabanı</text>
+          <text x="614" y="286" fill="#5f9e98" font-size="10.5">hizalama ve spoiler denetiminin temeli olur</text>
+          <line x1="780" y1="238" x2="780" y2="252" stroke="#6d5aa0" marker-end="url(#a7)"/>
+
+          <!-- note -->
+          <rect x="40" y="320" width="920" height="86" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="60" y="346" fill="#93a4bb" font-size="12" font-weight="700">Neden bu kadar önemli?</text>
+          <text x="60" y="368" fill="#cfe0f2" font-size="12">Segment haritası, "bölümde hangi dakikada ne oldu" iskeletidir. Bir yorumun hangi ana ait olduğunu bulmak (hizalama) ve bir şeyin</text>
+          <text x="60" y="388" fill="#cfe0f2" font-size="12">spoiler olup olmadığına karar vermek, tamamen bu haritanın üstünde çalışır. Altyazı yüklenince harita daha da isabetli yeniden üretilir.</text>
+        </svg>
+      </div>
+      <figcaption>Wikipedia "ne olduğunu", altyazı "ne zaman olduğunu" verir; model bunları zaman dilimli segmentlere böler, her özet embedding'e çevrilir.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 8 ===================== -->
+  <section id="s8">
+    <div class="sec-head"><div class="sec-num">8</div>
+      <div><div class="sec-sub">Otomasyon</div><h2>Yeni Bir İçerik İçin Hazırlık</h2></div></div>
+    <div class="prose">
+      <p>Bu kısım, sistemin en olgun ve en otomatik parçalarından biri. Yeni bir dizi için kanal açmak istediğimizde, hiçbir teknik iş elle yapılmıyor; sistem gereken tüm altyapıyı kendisi kuruyor.</p>
+      <p>Süreç bir yaşam döngüsü üzerinden ilerliyor. Kanal önce Taslak durumunda oluşturuluyor. Yönetici "Hazırlığı Başlat" dediğinde sistem önce bir kontrol listesinden geçiyor; içeriğin arama terimleri tanımlı mı, bağlam özeti girilmiş mi, en az bir yayınlanmış bölüm var mı, bölüm süreleri girilmiş mi diye bakıyor ve eksik varsa bunları tek bir listede yöneticiye söyleyip başlamıyor. Bu, yarım yamalak bir kanalın yanlışlıkla yayına çıkmasını engelliyor.</p>
+      <p>Eksik yoksa kanal Hazırlanıyor durumuna geçiyor ve burada sistem devreye giriyor. Toplama motoru bu kanal için hemen veri toplamaya başlıyor; yayını beklemiyor, kanal hazırlanırken havuz dolmaya başlıyor. Aynı anda hazırlık işçisi, yayınlanmış ama henüz segment haritası olmayan bölümler için segment üretimini tetikliyor. Normalizasyon ve zenginleştirme hattı da paralel çalışıp toplanan ham yorumları embedding'leriyle, çevirileriyle, hizalamalarıyla işlenmiş mesajlara dönüştürüyor. Yönetici panelde bu ilerlemeyi canlı izliyor: yorum havuzu kaç oldu, hedef ne, kaç bölümün segmenti eksik, işlenmeyi bekleyen kuyrukta ne var. Panel bu bilgileri kendiliğinden tazeliyor.</p>
+      <p>Sistem iki koşulu birden sağladığında kanalı Hazır durumuna alıyor: yorum havuzunda yeterli sayıda işlenmiş mesaj birikmiş olmalı ve yayınlanmış tüm bölümlerin segment haritaları tamamlanmış olmalı. Kanal Hazır rozetine döndüğünde yönetici tek tıkla "Yayına Al" diyor ve kanal Live oluyor, kullanıcılara görünür hale geliyor. Kullanıcı asla Taslak, Hazırlanıyor ya da Hazır durumundaki kanalları görmüyor; bunlar mutfağın içi.</p>
+      <p>Burada bir mimari incelik var. Bölüme özel kanallar kendi başlarına veri toplamıyor; onlar içeriğin ortak havuzundan besleniyor. Havuzu dolduran, içeriğin sezon geneli kanalı. Bu yüzden sistem, bir bölüm kanalını, havuzu dolduracak bir sezon kanalı olmadan hazırlığa almaya çalışırsan seni uyarıyor. Bu kural, "kanal hazırlanıyor diyor ama sayaçlar sıfırda duruyor" gibi bir kafa karışıklığını baştan engelliyor.</p>
+      <p>Silo örneğinde bu süreç gerçek dünyada birebir işledi. İçerik girildi, bölüm ve altyazı yüklendi, bağlam özeti onaylandı, kanallar açıldı, hazırlık başlatıldı ve sistem dakikalar içinde binlerce ham yorum toplayıp yüzlerce işlenmiş mesaj üretti, eşiği geçince kanalları otomatik Hazır yaptı.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#2dd4bf"></span><span class="t">Yaşam Döngüsü · Taslaktan Yayına</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 440" role="img" aria-label="Kanal hazırlık yaşam döngüsü">
+          <defs><marker id="a8" markerWidth="11" markerHeight="11" refX="8" refY="3.2" orient="auto"><path d="M0,0 L9,3.2 L0,6.4 Z" fill="#4a7d8c"/></marker></defs>
+
+          <!-- states row -->
+          <g text-anchor="middle" font-size="13" font-weight="800">
+            <rect x="30" y="60" width="140" height="54" rx="14" fill="#241f0e" stroke="#7a6222"/><text x="100" y="86" fill="#f6e4b8">TASLAK</text><text x="100" y="104" fill="#b9a978" font-size="10" font-weight="500">oluşturuldu</text>
+            <rect x="245" y="60" width="150" height="54" rx="14" fill="#0e2a3f" stroke="#2a6a9a"/><text x="320" y="86" fill="#9fd0f0">HAZIRLANIYOR</text><text x="320" y="104" fill="#7fa8c9" font-size="10" font-weight="500">pipeline çalışıyor</text>
+            <rect x="470" y="60" width="140" height="54" rx="14" fill="#1c1440" stroke="#6d55a8"/><text x="540" y="86" fill="#d8ccf7">HAZIR</text><text x="540" y="104" fill="#a892e0" font-size="10" font-weight="500">yayına alınabilir</text>
+            <rect x="685" y="60" width="140" height="54" rx="14" fill="#0e2a20" stroke="#2a8a63"/><text x="755" y="86" fill="#8ff0c9">YAYINDA</text><text x="755" y="104" fill="#5fae90" font-size="10" font-weight="500">kullanıcıya açık</text>
+            <rect x="855" y="60" width="120" height="54" rx="14" fill="#161d29" stroke="#3a4a5f"/><text x="915" y="86" fill="#9fb0c9">ARŞİV</text><text x="915" y="104" fill="#6b7d99" font-size="10" font-weight="500">salt okunur</text>
+          </g>
+          <line x1="170" y1="87" x2="243" y2="87" stroke="#4a7d8c" marker-end="url(#a8)"/>
+          <line x1="395" y1="87" x2="468" y2="87" stroke="#4a7d8c" marker-end="url(#a8)"/>
+          <line x1="610" y1="87" x2="683" y2="87" stroke="#4a7d8c" marker-end="url(#a8)"/>
+          <line x1="825" y1="87" x2="853" y2="87" stroke="#4a7d8c" marker-end="url(#a8)"/>
+          <text x="207" y="50" text-anchor="middle" fill="#7fa8c9" font-size="10">"Hazırlığı Başlat"</text>
+          <text x="540" y="140" text-anchor="middle" fill="#5fae90" font-size="10">tek tık: "Yayına Al"</text>
+
+          <!-- gate before preparing -->
+          <rect x="245" y="150" width="150" height="70" rx="12" fill="#2a1531" stroke="#6b2f52"/>
+          <text x="320" y="172" text-anchor="middle" fill="#f7c9e0" font-size="11.5" font-weight="700">Ön Kontrol</text>
+          <text x="320" y="190" text-anchor="middle" fill="#e08fc0" font-size="10">arama terimi · bağlam özeti</text>
+          <text x="320" y="205" text-anchor="middle" fill="#e08fc0" font-size="10">yayınlanmış bölüm · süre</text>
+          <line x1="320" y1="114" x2="320" y2="150" stroke="#6b2f52" marker-end="url(#a8)" opacity=".7"/>
+          <text x="410" y="188" fill="#b06a8a" font-size="10">eksikse başlamaz</text>
+
+          <!-- preparing engine -->
+          <rect x="150" y="250" width="640" height="120" rx="16" fill="#0b1728" stroke="#22324c"/>
+          <text x="170" y="276" fill="#6b7d99" font-size="12" letter-spacing="1.5" font-weight="700">HAZIRLANIYOR SÜRESİNCE OTOMATİK ÇALIŞAN</text>
+          <g font-size="11.5">
+            <rect x="170" y="290" width="140" height="62" rx="11" fill="#241f0e" stroke="#5b4a1e"/>
+            <text x="240" y="312" text-anchor="middle" fill="#f6e4b8" font-weight="700">Toplama</text>
+            <text x="240" y="330" text-anchor="middle" fill="#c4ad78">yayını beklemez</text><text x="240" y="344" text-anchor="middle" fill="#c4ad78">havuz dolmaya başlar</text>
+            <rect x="326" y="290" width="140" height="62" rx="11" fill="#1c1440" stroke="#4a3a7a"/>
+            <text x="396" y="312" text-anchor="middle" fill="#d8ccf7" font-weight="700">Segment üretimi</text>
+            <text x="396" y="330" text-anchor="middle" fill="#a892e0">eksik bölümler için</text><text x="396" y="344" text-anchor="middle" fill="#a892e0">otomatik tetiklenir</text>
+            <rect x="482" y="290" width="140" height="62" rx="11" fill="#181307" stroke="#5b4a1e"/>
+            <text x="552" y="312" text-anchor="middle" fill="#fbbf24" font-weight="700">Zenginleştirme</text>
+            <text x="552" y="330" text-anchor="middle" fill="#c4ad78">embed · hizala</text><text x="552" y="344" text-anchor="middle" fill="#c4ad78">çevir · yayınla</text>
+            <rect x="638" y="290" width="134" height="62" rx="11" fill="#0e2233" stroke="#2a5a5a"/>
+            <text x="705" y="312" text-anchor="middle" fill="#8fe6e0" font-weight="700">Canlı ilerleme</text>
+            <text x="705" y="330" text-anchor="middle" fill="#5f9e98">panelde izlenir</text><text x="705" y="344" text-anchor="middle" fill="#5f9e98">kendiliğinden tazelenir</text>
+          </g>
+          <line x1="320" y1="114" x2="320" y2="126" stroke="#4a7d8c"/>
+          <path d="M320 220 C 320 235, 350 240, 380 250" stroke="#4a7d8c" fill="none" marker-end="url(#a8)" opacity=".6"/>
+
+          <!-- ready condition -->
+          <rect x="150" y="390" width="640" height="36" rx="10" fill="#150e2c" stroke="#2e2450"/>
+          <text x="170" y="413" fill="#a892e0" font-size="12" font-weight="700">HAZIR koşulu:</text>
+          <text x="280" y="413" fill="#d8ccf7" font-size="12">havuzda yeterli işlenmiş mesaj  <tspan fill="#6b7d99">VE</tspan>  yayınlanmış tüm bölümlerin segmentleri tamam  →  otomatik HAZIR</text>
+
+          <!-- architecture note -->
+          <rect x="810" y="250" width="165" height="176" rx="12" fill="#2a1531" stroke="#6b2f52"/>
+          <text x="892" y="276" text-anchor="middle" fill="#f7c9e0" font-size="12" font-weight="700">Mimari kural</text>
+          <text x="826" y="300" fill="#e6a8c8" font-size="10.5">Bölüm kanalı kendi</text>
+          <text x="826" y="316" fill="#e6a8c8" font-size="10.5">başına toplamaz;</text>
+          <text x="826" y="332" fill="#e6a8c8" font-size="10.5">içeriğin ortak</text>
+          <text x="826" y="348" fill="#e6a8c8" font-size="10.5">havuzundan beslenir.</text>
+          <text x="826" y="372" fill="#f7c9e0" font-size="10.5">Havuzu dolduran =</text>
+          <text x="826" y="388" fill="#f7c9e0" font-size="10.5">sezon geneli kanal.</text>
+          <text x="826" y="410" fill="#b06a8a" font-size="10">Yoksa sistem uyarır.</text>
+        </svg>
+      </div>
+      <figcaption>Kanal beş durumdan geçer; "Hazırlanıyor" boyunca toplama, segment üretimi ve zenginleştirme paralel koşar, iki koşul sağlanınca otomatik "Hazır" olur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 9 ===================== -->
+  <section id="s9">
+    <div class="sec-head"><div class="sec-num">9</div>
+      <div><div class="sec-sub">Deneyim</div><h2>Kanal Akışı: Kullanıcı Ne Görüyor</h2></div></div>
+    <div class="prose">
+      <p>Kullanıcı bir kanala girdiğinde tek bir karma akış görüyor. Bu akışta iki tür mesaj var: web'den toplanıp işlenmiş kürasyonlu yorumlar ve kullanıcıların canlı yazdığı mesajlar. İkisi de yazılma zamanına göre, en yenisi en altta olacak şekilde tek bir zaman çizgisinde sıralanıyor. Yani kullanıcı, dışarıdan gelen dünya nabzıyla odadaki canlı sohbeti aynı akışta, doğal bir konuşma gibi görüyor.</p>
+      <p>Kullanıcının bu akış üzerinde birkaç kontrolü var. Kaynak filtresiyle yalnızca belirli bir platformdan gelen yorumları görebiliyor. "Yalnız canlı" seçeneğiyle web yorumlarını kapatıp sadece odadaki insanların mesajlarını görebiliyor. Dil tercihiyle yorumları Türkçe ya da İngilizce okuyabiliyor. Spoiler koruması açık ya da kapalı olabiliyor. Ve en önemlisi, bir zaman çizgisi kaydırıcısı var.</p>
+      <p>Her mesaj balonu, geldiği kaynağı bir rozetle gösteriyor; YouTube'un kırmızı oynatma simgesi, X'in siyah işareti, Bluesky'ın kelebeği, Trakt'ın rozeti. Moderatör mesajları mor renkte ve özel bir işaretle ayrışıyor. Kullanıcının kendi mesajları sağ tarafta farklı renkte duruyor. Spoiler işaretli mesajlar bulanıklaştırılıp üzerine tıklanınca açılıyor, yani engellenmiyor ama kullanıcıyı koruyacak şekilde gizleniyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#2dd4bf"></span><span class="t">Arayüz · Karma Akış ve Kontroller</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 420" role="img" aria-label="Kanal arayüzü">
+          <!-- phone/panel frame -->
+          <rect x="300" y="30" width="400" height="360" rx="22" fill="#0a1420" stroke="#26405f"/>
+          <rect x="300" y="30" width="400" height="52" rx="22" fill="#10233b"/>
+          <rect x="300" y="60" width="400" height="22" fill="#10233b"/>
+          <text x="322" y="58" fill="#e8eef8" font-size="14" font-weight="800">Silo · S3 Sezon Kanalı</text>
+          <circle cx="640" cy="56" r="4" fill="#34d399"/><text x="650" y="60" fill="#7fae90" font-size="10">128 aktif</text>
+
+          <!-- messages -->
+          <g font-size="10.5">
+            <rect x="316" y="94" width="230" height="34" rx="9" fill="#12283f" stroke="#22405c"/>
+            <circle cx="330" cy="111" r="8" fill="#dc2626"/><text x="342" y="115" fill="#bcd3ea">▶ görüntü kalitesi muhteşem</text>
+            <rect x="316" y="134" width="250" height="34" rx="9" fill="#12283f" stroke="#22405c"/>
+            <circle cx="330" cy="151" r="8" fill="#0ea5e9"/><text x="342" y="155" fill="#bcd3ea">✦ Juliette karakteri çok güçlü</text>
+            <rect x="440" y="174" width="244" height="34" rx="9" fill="#0e3d38" stroke="#1c5a55"/>
+            <text x="452" y="194" fill="#bff0e6">katılıyorum, oyunculuk zirve 👤 (siz)</text>
+            <rect x="316" y="214" width="236" height="34" rx="9" fill="#12283f" stroke="#22405c"/>
+            <circle cx="330" cy="231" r="8" fill="#b91c1c"/><text x="342" y="235" fill="#bcd3ea">◆ Trakt: sezon temposu ideal</text>
+            <!-- spoiler blurred -->
+            <rect x="316" y="254" width="250" height="34" rx="9" fill="#2a1220" stroke="#6b2f52"/>
+            <text x="330" y="274" fill="#7a5563" font-size="10.5" style="letter-spacing:2px">▓▓▓ spoiler — görmek için dokun ▓▓</text>
+            <!-- moderator -->
+            <rect x="316" y="294" width="260" height="34" rx="9" fill="#1e1840" stroke="#4a3a7a"/>
+            <circle cx="330" cy="311" r="8" fill="#7c3aed"/><text x="342" y="309" fill="#a78bfa" font-size="8" font-weight="700">MOD</text><text x="342" y="320" fill="#d6c9f5">Favori sahneniz hangisiydi? 🐉</text>
+          </g>
+
+          <!-- controls bar -->
+          <rect x="316" y="338" width="368" height="42" rx="10" fill="#0d1a2c" stroke="#22324c"/>
+          <rect x="326" y="348" width="52" height="22" rx="11" fill="#0d9488"/><text x="338" y="363" fill="#04121a" font-size="9.5" font-weight="700">Tümü</text>
+          <rect x="384" y="348" width="42" height="22" rx="11" fill="#132537" stroke="#22405c"/><text x="393" y="363" fill="#8aa0bf" font-size="9.5">canlı</text>
+          <rect x="432" y="348" width="34" height="22" rx="11" fill="#132537" stroke="#22405c"/><text x="440" y="363" fill="#8aa0bf" font-size="9.5">TR</text>
+          <rect x="472" y="348" width="80" height="22" rx="11" fill="#2a1220" stroke="#6b2f52"/><text x="482" y="363" fill="#e08fc0" font-size="9.5">spoiler ✓</text>
+          <rect x="558" y="348" width="116" height="22" rx="11" fill="#132537" stroke="#22405c"/>
+          <rect x="558" y="357" width="70" height="4" rx="2" fill="#2dd4bf"/><circle cx="628" cy="359" r="6" fill="#2dd4bf"/><text x="640" y="363" fill="#8aa0bf" font-size="9">zaman</text>
+
+          <!-- left legend -->
+          <text x="40" y="60" fill="#6b7d99" font-size="12" font-weight="700" letter-spacing="1">TEK AKIŞTA</text>
+          <g font-size="12">
+            <rect x="40" y="80" width="200" height="34" rx="9" fill="#12283f" stroke="#22405c"/><text x="54" y="102" fill="#bcd3ea">web'den kürasyonlu yorum</text>
+            <rect x="40" y="122" width="200" height="34" rx="9" fill="#0e3d38" stroke="#1c5a55"/><text x="54" y="144" fill="#bff0e6">canlı kullanıcı mesajı</text>
+            <rect x="40" y="164" width="200" height="34" rx="9" fill="#1e1840" stroke="#4a3a7a"/><text x="54" y="186" fill="#d6c9f5">moderatör mesajı</text>
+          </g>
+          <text x="40" y="238" fill="#6b7d99" font-size="11">→ yazılma zamanına göre</text>
+          <text x="40" y="256" fill="#6b7d99" font-size="11">→ en yeni en altta</text>
+
+          <!-- right legend -->
+          <text x="756" y="60" fill="#6b7d99" font-size="12" font-weight="700" letter-spacing="1">KONTROLLER</text>
+          <g font-size="11.5" fill="#9fb4cf">
+            <text x="756" y="86">• kaynak filtresi</text>
+            <text x="756" y="110">• yalnız canlı</text>
+            <text x="756" y="134">• dil (TR/EN)</text>
+            <text x="756" y="158">• spoiler koruması</text>
+            <text x="756" y="182">• zaman çizgisi kaydırıcı</text>
+          </g>
+          <text x="756" y="222" fill="#6b7d99" font-size="11">rozetler kaynağı gösterir</text>
+          <text x="756" y="240" fill="#6b7d99" font-size="11">spoiler → bulanık, tıkla-aç</text>
+        </svg>
+      </div>
+      <figcaption>Kürasyonlu yorum, canlı mesaj ve moderatör tek zaman çizgisinde; kaynak rozetleri, dil, spoiler ve zaman kaydırıcısı kullanıcının elinde.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 10 ===================== -->
+  <section id="s10">
+    <div class="sec-head"><div class="sec-num">10</div>
+      <div><div class="sec-sub">Senkron İzleme</div><h2>Zaman Aralığına Göre Filtreleme</h2></div></div>
+    <div class="prose">
+      <p>Bu, senin özellikle vurguladığın kurgu ve sistemin en zarif parçalarından biri. Mantık şu: bir kullanıcı diziyi izlerken kanala giriyorsa, henüz izlemediği kısımların yorumlarını görmemeli; ama izlediği yere kadar olan tüm tartışmayı görmeli.</p>
+      <p>Bunu zaman çizgisi kaydırıcısı sağlıyor. Sezon geneli bir kanalda bu kaydırıcı tüm sezonun kümülatif zaman çizgisi; kullanıcı kaydırıcıyı 2. bölümün 14. dakikasına getirdiğinde, sistem bunun sezonun başından itibaren kaçıncı saniyeye denk geldiğini hesaplıyor. Bölüme özel bir kanalda ise kaydırıcı yalnızca o bölümün süresi. Kullanıcı bir konum seçtiğinde akış, o konumdan sonraki olaylara ait yorumları gizliyor.</p>
+      <p>Kritik incelik şurada: bu zaman filtresi yalnızca web'den toplanan kürasyonlu yorumlara uygulanıyor, kullanıcıların canlı mesajlarına uygulanmıyor. Çünkü canlı mesajlar sohbetin kendisi; onları zamana göre gizlersek sohbet kopar. Kullanıcı mesajlarının spoiler içerenleri zaten bulanıklaştırma mekanizmasıyla korunuyor, ayrıca zaman filtresine gerek yok. Bu ayrımı yapmamak başta bir hataya yol açmıştı; kullanıcı kaydırıcıyı geri çektiğinde odadaki canlı mesajlar da kayboluyordu. Şimdi canlı mesajlar zaman filtresinden tamamen muaf.</p>
+      <p>Bir de kaydırıcı seçildiği yerden itibaren otomatik ilerliyor; kullanıcı diziyi izlerken kanalın zamanı da gerçek zamanla akıyor ve akış buna göre kendini genişletiyor. Sezon kanalında bir bölümün sonuna gelindiğinde otomatik olarak sonraki yayınlanmış bölüme geçiyor. Kullanıcı kaydırıcıyı elle tuttuğunda otomatik ilerleme araya girmiyor, kullanıcının kontrolünü ezmiyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#fbbf24"></span><span class="t">Zaman Filtresi · Yalnız Kürasyonlu Yorumlara Uygulanır</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 380" role="img" aria-label="Zaman filtresi mantığı">
+          <!-- timeline -->
+          <text x="40" y="46" fill="#6b7d99" font-size="12" font-weight="700" letter-spacing="1">SEZON ZAMAN ÇİZGİSİ (kümülatif)</text>
+          <rect x="40" y="60" width="920" height="30" rx="8" fill="#0f1d33" stroke="#28405f"/>
+          <rect x="40" y="60" width="300" height="30" rx="8" fill="#12283f"/>
+          <line x1="340" y1="55" x2="340" y2="95" stroke="#3a4a5f" stroke-dasharray="3 3"/>
+          <text x="150" y="80" text-anchor="middle" fill="#8aa0bf" font-size="11">Bölüm 1</text>
+          <text x="500" y="80" text-anchor="middle" fill="#8aa0bf" font-size="11">Bölüm 2</text>
+          <text x="820" y="80" text-anchor="middle" fill="#8aa0bf" font-size="11">Bölüm 3 (yayınlanmadı)</text>
+          <line x1="660" y1="55" x2="660" y2="95" stroke="#3a4a5f" stroke-dasharray="3 3"/>
+
+          <!-- user position -->
+          <line x1="470" y1="48" x2="470" y2="112" stroke="#2dd4bf" stroke-width="2"/>
+          <circle cx="470" cy="75" r="9" fill="#2dd4bf" stroke="#0a1420" stroke-width="2"/>
+          <text x="470" y="128" text-anchor="middle" fill="#2dd4bf" font-size="11" font-weight="700">kullanıcı konumu · B2 14:30</text>
+          <path d="M478 132 L478 140" stroke="#2dd4bf"/>
+          <!-- watched shading -->
+          <rect x="40" y="60" width="430" height="30" fill="#2dd4bf" opacity=".08"/>
+          <text x="250" y="108" text-anchor="middle" fill="#5fae90" font-size="10">← izlendi (serbest)</text>
+          <text x="715" y="108" text-anchor="middle" fill="#b06a6a" font-size="10">izlenmedi (gizli) →</text>
+
+          <!-- two lanes -->
+          <!-- curated lane: filtered -->
+          <text x="40" y="185" fill="#6b7d99" font-size="12" font-weight="700">KÜRASYONLU YORUMLAR</text>
+          <text x="240" y="185" fill="#fbbf24" font-size="11">← zaman filtresi UYGULANIR</text>
+          <g font-size="10.5">
+            <rect x="40" y="196" width="150" height="30" rx="8" fill="#12283f" stroke="#22405c"/><text x="52" y="216" fill="#bcd3ea">B1 · "harika giriş"</text>
+            <rect x="200" y="196" width="150" height="30" rx="8" fill="#12283f" stroke="#22405c"/><text x="212" y="216" fill="#bcd3ea">B2 5:00 · "gerilim"</text>
+            <rect x="360" y="196" width="150" height="30" rx="8" fill="#12283f" stroke="#22405c"/><text x="372" y="216" fill="#bcd3ea">B2 12:00 · "sürpriz"</text>
+            <rect x="530" y="196" width="150" height="30" rx="8" fill="#170f14" stroke="#3a2530" stroke-dasharray="4 3"/><text x="542" y="216" fill="#5a4048">B2 40:00 · GİZLİ</text>
+            <rect x="690" y="196" width="150" height="30" rx="8" fill="#170f14" stroke="#3a2530" stroke-dasharray="4 3"/><text x="702" y="216" fill="#5a4048">B3 · GİZLİ</text>
+          </g>
+          <text x="605" y="245" fill="#8a5a5a" font-size="10">konumdan sonraki yorumlar gizlenir</text>
+
+          <!-- live lane: exempt -->
+          <text x="40" y="290" fill="#6b7d99" font-size="12" font-weight="700">CANLI KULLANICI MESAJLARI</text>
+          <text x="290" y="290" fill="#34d399" font-size="11">← zaman filtresinden MUAF (sohbet kopmaz)</text>
+          <g font-size="10.5">
+            <rect x="40" y="300" width="180" height="30" rx="8" fill="#0e3d38" stroke="#1c5a55"/><text x="52" y="320" fill="#bff0e6">👤 "şu an izliyorum!"</text>
+            <rect x="230" y="300" width="180" height="30" rx="8" fill="#0e3d38" stroke="#1c5a55"/><text x="242" y="320" fill="#bff0e6">👤 "burası çok iyi"</text>
+            <rect x="420" y="300" width="200" height="30" rx="8" fill="#2a1220" stroke="#6b2f52"/><text x="432" y="320" fill="#c99" >👤 spoiler → bulanık (ayrı koruma)</text>
+          </g>
+          <text x="40" y="356" fill="#6b7d99" font-size="10.5">Otomatik ilerleme: kaydırıcı gerçek zamanla akar, bölüm sonunda sonraki bölüme geçer; kullanıcı elle tutunca durur.</text>
+        </svg>
+      </div>
+      <figcaption>Zaman filtresi yalnızca web yorumlarını konuma göre gizler; canlı sohbet muaftır, spoiler içerenler ayrı bulanıklaştırma ile korunur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 11 ===================== -->
+  <section id="s11" class="v">
+    <div class="sec-head"><div class="sec-num">11</div>
+      <div><div class="sec-sub">Yapay Zeka · Koruma</div><h2>Spoiler Kontrol Yapay Zekası</h2></div></div>
+    <div class="prose">
+      <p>Spoiler denetimi tek bir "spoiler mı değil mi" kararından çok daha ince bir iş, çünkü bir şeyin spoiler olup olmadığı tamamen kime ve nerede söylendiğine bağlı. 3. bölümdeki bir ölüm, 5. bölümü izleyen biri için spoiler değil ama 2. bölümde olan biri için tam bir spoiler. İşte bu yüzden spoiler denetimimiz kanalın kapsamına ve kullanıcının konumuna göre çalışıyor.</p>
+      <p>Denetim yapay zekaya üç bilgiyi birden veriyor. Birincisi kanalın kapsam kuralları; kanal belirli bir bölüme mi özel yoksa sezon geneli mi, kullanıcının konumu neresi. İkincisi içeriğin bağlam özeti; dizinin dünyası ve karakterleri, ki model neyin önemli bir olay olduğunu bilsin. Üçüncüsü ve en önemlisi, o sezonun yayınlanmış bölümlerinin zaman damgalı segment haritaları; yani hangi olayın hangi dakikada olduğu. Model bu bağlamla birlikte bir kullanıcı mesajını alıyor ve mesajın, kanal kurallarının spoiler saydığı bir alanı ifşa edip etmediğine karar veriyor.</p>
+      <p>Kapsam kuralları netçe tanımlı. Bölüme özel bir kanalda, o bölümden önceki tüm bölümler izlenmiş kabul ediliyor ve onların olayları asla spoiler değil, ne kadar açık söylenirse söylensin. O bölümün içinde ise kullanıcının konumundan sonraki olaylar ve sonraki bölümler spoiler bölgesi. Sezon geneli bir kanalda kullanıcının bir izleme konumu varsa, o konuma kadar her şey serbest, sonrası spoiler. Konum yoksa yayınlanmış tüm bölümler izlenmiş sayılıyor, yalnızca henüz yayınlanmamış ya da sızıntı içerik spoiler kabul ediliyor.</p>
+      <p>Model katı ama dengeli davranacak şekilde yönlendiriliyor: açık ifşalar (ölümler, ihanetler, finaller, kimin kazanıp kaybettiği) konusunda sert, ama belirsiz heyecan ifadeleri, şakalar, tepkiler ve olay dışı muhabbet konusunda hoşgörülü. Bir mesaj spoiler olarak işaretlense bile engellenmiyor; sadece bulanıklaştırılıp kullanıcının isterse tıklayıp görebileceği hale getiriliyor. Ve bir emniyet kuralı var: eğer spoiler denetimi bir sebeple çalışmazsa, mesaj spoiler değil kabul edilip akış durdurulmuyor; yani denetim mekanizmasındaki bir aksaklık sohbeti kilitlemez.</p>
+      <p>Aynı mantık, web'den toplanan kürasyonlu yorumlara da uygulanıyor; onlar da hizalandıkları segmente göre bir spoiler bayrağı taşıyor ve kullanıcının konumuna göre filtreleniyor. Yani hem canlı mesajlar hem toplanan yorumlar, kullanıcının izleme konumuna göre tutarlı bir spoiler koruması altında.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#fb7185"></span><span class="t">Spoiler Kararı · Kime ve Nerede Söylendiğine Göre</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 400" role="img" aria-label="Spoiler denetimi">
+          <defs><marker id="a11" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8a4a63"/></marker></defs>
+
+          <!-- three inputs -->
+          <text x="40" y="34" fill="#8a4a63" font-size="12" font-weight="700" letter-spacing="1">MODELE VERİLEN ÜÇ BİLGİ</text>
+          <rect x="40" y="50" width="240" height="56" rx="11" fill="#0e2233" stroke="#2a5a5a"/>
+          <text x="56" y="72" fill="#8fe6e0" font-size="12" font-weight="700">① Kapsam kuralları</text>
+          <text x="56" y="92" fill="#6f9e98" font-size="10.5">kanal bölüm mü/sezon mu · konum neresi</text>
+          <rect x="40" y="116" width="240" height="56" rx="11" fill="#1c1440" stroke="#4a3a7a"/>
+          <text x="56" y="138" fill="#d8ccf7" font-size="12" font-weight="700">② İçerik bağlam özeti</text>
+          <text x="56" y="158" fill="#8873c0" font-size="10.5">dünya · karakterler · neyin önemli olduğu</text>
+          <rect x="40" y="182" width="240" height="56" rx="11" fill="#150e2c" stroke="#2e2450"/>
+          <text x="56" y="204" fill="#c9a8f0" font-size="12" font-weight="700">③ Segment haritaları</text>
+          <text x="56" y="224" fill="#8873c0" font-size="10.5">hangi olay hangi dakikada (zaman damgalı)</text>
+
+          <!-- message -->
+          <rect x="40" y="256" width="240" height="46" rx="11" fill="#0e3d38" stroke="#1c5a55"/>
+          <text x="56" y="278" fill="#bff0e6" font-size="12" font-weight="700">+ değerlendirilecek mesaj</text>
+          <text x="56" y="296" fill="#5fae90" font-size="10.5">"X karakteri sonunda ölüyor ya!"</text>
+
+          <!-- model -->
+          <rect x="360" y="120" width="200" height="120" rx="16" fill="#2a1531" stroke="#6b2f52"/>
+          <text x="460" y="150" text-anchor="middle" fill="#f7c9e0" font-size="13.5" font-weight="800">Spoiler Denetim AI</text>
+          <text x="460" y="172" text-anchor="middle" fill="#e08fc0" font-size="11">konuma göre karar verir</text>
+          <text x="460" y="192" text-anchor="middle" fill="#e08fc0" font-size="11">açık ifşada sert</text>
+          <text x="460" y="208" text-anchor="middle" fill="#e08fc0" font-size="11">şaka/tepkide hoşgörülü</text>
+          <text x="460" y="228" text-anchor="middle" fill="#b06a8a" font-size="10">çalışmazsa → spoiler değil (fail-open)</text>
+
+          <path d="M280 78 C 320 78, 320 150, 360 150" stroke="#8a4a63" fill="none" marker-end="url(#a11)" opacity=".6"/>
+          <path d="M280 144 L360 165" stroke="#8a4a63" fill="none" marker-end="url(#a11)" opacity=".6"/>
+          <path d="M280 210 C 320 210, 320 180, 360 180" stroke="#8a4a63" fill="none" marker-end="url(#a11)" opacity=".6"/>
+          <path d="M280 279 C 320 279, 330 210, 360 205" stroke="#8a4a63" fill="none" marker-end="url(#a11)" opacity=".8"/>
+
+          <!-- scope rule matrix -->
+          <text x="620" y="34" fill="#8a4a63" font-size="12" font-weight="700" letter-spacing="1">AYNI OLAY, FARKLI KARAR</text>
+          <g font-size="11">
+            <rect x="620" y="50" width="340" height="46" rx="10" fill="#0e2a20" stroke="#1f6a4d"/>
+            <text x="636" y="70" fill="#8ff0c9" font-weight="700">B5'i izleyen kullanıcı</text>
+            <text x="636" y="88" fill="#5fae90">"B3'teki ölüm" → izlenmiş bölge → SPOILER DEĞİL ✓</text>
+            <rect x="620" y="104" width="340" height="46" rx="10" fill="#2a1220" stroke="#6b2f52"/>
+            <text x="636" y="124" fill="#f7c9e0" font-weight="700">B2'de olan kullanıcı</text>
+            <text x="636" y="142" fill="#e08fc0">"B3'teki ölüm" → ileri olay → SPOILER ✗ (bulanık)</text>
+            <rect x="620" y="158" width="340" height="46" rx="10" fill="#0e2a20" stroke="#1f6a4d"/>
+            <text x="636" y="178" fill="#8ff0c9" font-weight="700">Bölüm kanalı (B3'e özel)</text>
+            <text x="636" y="196" fill="#5fae90">B1–B2 olayları → asla spoiler değil</text>
+          </g>
+
+          <!-- output -->
+          <rect x="620" y="222" width="340" height="52" rx="12" fill="#170f18" stroke="#3a2530"/>
+          <text x="636" y="244" fill="#e08fc0" font-size="12" font-weight="700">Spoiler ise: engellenmez, bulanıklaştırılır</text>
+          <text x="636" y="262" fill="#b06a8a" font-size="10.5">kullanıcı tıklayıp görebilir · seçim onda</text>
+          <path d="M560 200 C 590 200, 595 240, 620 245" stroke="#8a4a63" fill="none" marker-end="url(#a11)"/>
+
+          <!-- note -->
+          <rect x="40" y="322" width="920" height="60" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="60" y="348" fill="#93a4bb" font-size="12" font-weight="700">Tutarlılık:</text>
+          <text x="140" y="348" fill="#cfe0f2" font-size="12">Aynı konum mantığı hem canlı mesajlara hem web'den toplanan kürasyonlu yorumlara uygulanır. Kürasyonlu yorum, hizalandığı</text>
+          <text x="60" y="368" fill="#cfe0f2" font-size="12">segmente göre bir spoiler bayrağı taşır; kullanıcının izleme konumuna göre filtrelenir. Böylece iki kaynak da aynı koruma altında.</text>
+        </svg>
+      </div>
+      <figcaption>Spoiler kararı kime ve nerede söylendiğine bağlı; kapsam, bağlam özeti ve segment haritaları birlikte değerlendirilir, spoiler engellenmez, bulanıklaştırılır.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 12 ===================== -->
+  <section id="s12" class="v">
+    <div class="sec-head"><div class="sec-num">12</div>
+      <div><div class="sec-sub">Yapay Zeka · Ev Sahibi</div><h2>Moderatör Yapay Zekası: Kanala Özel Dijital Ev Sahibi</h2></div></div>
+    <div class="prose">
+      <p>Bu, sistemin en karmaşık ve en insana benzeyen parçası, o yüzden en detaylı bunu anlatacağım. Amaç, her kanala gerçek bir insan moderatör gibi davranan, sahte kalabalık hissi yaratmadan sohbeti canlı ve sağlıklı tutan bir yapay zeka.</p>
+      <p>Moderatör ayrı bir işçi olarak sürekli çalışıyor ve her canlı kanalı düzenli aralıklarla değerlendiriyor. Her değerlendirmede bir öncelik sırası izliyor.</p>
+      <p>En yüksek öncelik, kendisine doğrudan seslenen kullanıcılar. Bir kullanıcı mesajında moderatöre seslenirse (ona özel bir etiketle), moderatör bunu görüp o kişiye kanalın kapsamına uygun, kişisel bir cevap veriyor. Ama burada bir savunma mekanizması var: eğer kısa sürede birçok kişiden üst üste ona yönelik dalga geçen ya da trol mesajlar gelirse, moderatör tek tek cevap vermeye çalışıp kendini rezil etmiyor; hepsine birden tek bir muzip, gönderme yapan ama kimseyi kırmayan toplu mesaj atıyor ve bir süre bu tür seslenmelere bilinçli olarak sessiz kalıyor. Yani hem kendini savunuyor hem sohbeti bozmuyor.</p>
+      <p>İkinci öncelik, sohbetin gidişatını değerlendirmek. Kanal hareketliyken moderatör son mesajlara bakıp bir karar veriyor. Eğer mesajlar kişiselleşmiş, insanlar birbirine laf sokuyor ya da tartışma sertleşiyorsa, moderatör doz kurallarını beklemeden araya giriyor; kimseyi suçlamadan, taraf tutmadan, tatlı bir mizahla havayı yumuşatıp konuyu tekrar diziye getiriyor. Gerginlik yoksa ve söyleyecek gerçekten değerli, eğlenceli bir şeyi varsa sohbete eşlik ediyor; ama söyleyecek anlamlı bir şeyi yoksa hiç konuşmuyor.</p>
+      <p>Üçüncü öncelik, sohbeti kıvılcımlamak. Kanal uzun süre sessiz kaldıysa, yeni açıldıysa ya da tam tersi çok yoğunsa moderatör sohbeti canlandıracak bir mesaj üretebiliyor. Ama burada çok önemli bir denge var ve bu dengeyi kanaldaki aktif kişi sayısı belirliyor. Kanal kalabalıksa moderatör kendiliğinden konuşmayı azaltıyor, çünkü zaten hareket var; onun yerine yazılan yorumlara bağlı espirili katkılara odaklanıyor. Kanal tenhaysa ve son mesajına kimseden yanıt gelmediyse, moderatör boşluğa konuşup kanalı kendi mesajlarıyla doldurmuyor; susuyor. Yani "az kişi varken kendi kendine konuşan bot" hissini bilinçli olarak engelliyor.</p>
+      <p>Bütün bunların üzerinde bir doz kontrol sistemi var. Moderatörün kendiliğinden attığı mesajların arasında bir minimum süre var ve bu süre kalabalık kanallarda otomatik uzuyor. Saatlik ve günlük üst sınırlar var. Ama bu sınırlar akıllıca ayrılmış: gerginlik müdahaleleri kendiliğinden mesaj dozundan muaf, çünkü bir kavga yirmi dakika bekleyemez; kullanıcıya doğrudan verilen cevaplar da spark dozunu kirletmiyor, çünkü onlar sohbetin doğal parçası.</p>
+      <p>Moderatörün her kararının arkasında zengin bir bağlam var. Karar anında ona kanalın son mesajları veriliyor; bu mesajlar hem toplanan yorumlardan hem canlı kullanıcı mesajlarından oluşan, kanalın kapsamına göre filtrelenmiş bir karışım. Ayrıca içeriğin bağlam özeti, yayınlanmış bölümler ve o anki aktif kullanıcı sayısı da veriliyor. Ve en önemli talimatlardan biri kitle profili çıkarımı: moderatör her kararda önce son mesajlardan kanalın kitlesini analiz ediyor, dilini, mizah anlayışını, hangi karakterleri sevdiklerini, iç şakalarını okuyup ifade tarzını ve tonunu o kanala özel uyarlıyor. Yani her kanalda aynı kalıpla konuşmuyor; her kanalın kendi karakterine bürünüyor.</p>
+      <p>Spoiler güvenliği moderatör için de geçerli. Ona da kanalın kapsam kuralları veriliyor ve kesinlikle kapsam ötesi bir olayı, ölümü, ihaneti ima bile etmemesi söyleniyor; şüpheye düşerse tamamen genel konuşuyor.</p>
+      <p>Teknik olarak moderatör, ürettiği mesajı doğrudan veritabanına yazmıyor; tıpkı bir kullanıcı gibi, sistemin tek mesaj yazma noktası olan iç servis üzerinden gönderiyor. Böylece mesaj hem kaydediliyor hem canlı bağlantı üzerinden anında yayınlanıyor. Moderatörün ayrı bir süreçte çalıştığını hatırla; kanaldaki aktif kişi sayısını öğrenmek için web servisine özel, korumalı bir uçtan soruyor. Bu tasarım sayesinde moderatör, gerçek zamanlı kullanıcı yoğunluğunu bir karar parametresi olarak kullanabiliyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#a78bfa"></span><span class="t">Moderatör AI · Öncelik Hattı ve Karar Parametreleri</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 560" role="img" aria-label="Moderatör yapay zekası karar akışı">
+          <defs><marker id="a12" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6d5aa0"/></marker>
+            <marker id="a12r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#8a4a63"/></marker></defs>
+
+          <!-- loop trigger -->
+          <rect x="30" y="30" width="200" height="60" rx="14" fill="#150e2c" stroke="#3a2f5f"/>
+          <text x="130" y="56" text-anchor="middle" fill="#d8ccf7" font-size="13" font-weight="800">Moderatör İşçisi</text>
+          <text x="130" y="76" text-anchor="middle" fill="#8873c0" font-size="10.5">her kanalı periyodik değerlendirir</text>
+
+          <!-- priority pipeline title -->
+          <text x="280" y="26" fill="#8873c0" font-size="12" font-weight="700" letter-spacing="1">ÖNCELİK SIRASI (yukarıdan aşağı)</text>
+
+          <!-- P1 mention -->
+          <rect x="280" y="40" width="440" height="86" rx="14" fill="#1c1240" stroke="#4a3a7a"/>
+          <text x="298" y="64" fill="#c9a8f0" font-size="13" font-weight="800">① @echo — Kendisine Seslenme</text>
+          <text x="298" y="86" fill="#a892e0" font-size="11">yanıtsız seslenme varsa → o kişiye kişisel cevap</text>
+          <rect x="298" y="96" width="404" height="22" rx="7" fill="#2a1531" stroke="#6b2f52"/>
+          <text x="308" y="111" fill="#f0a8c8" font-size="10.5">SEL: üst üste trol seslenme → tek muzip toplu uyarı + bir süre sessizlik (cooldown)</text>
+          <line x1="230" y1="70" x2="280" y2="80" stroke="#6d5aa0" marker-end="url(#a12)"/>
+
+          <!-- P2 activity -->
+          <rect x="280" y="142" width="440" height="104" rx="14" fill="#1c1240" stroke="#4a3a7a"/>
+          <text x="298" y="166" fill="#c9a8f0" font-size="13" font-weight="800">② Sohbet Gidişatı Değerlendirmesi</text>
+          <rect x="298" y="176" width="196" height="58" rx="9" fill="#2a1220" stroke="#6b2f52"/>
+          <text x="308" y="196" fill="#f7c9e0" font-size="11" font-weight="700">Gerginlik / kişiselleşme?</text>
+          <text x="308" y="213" fill="#e08fc0" font-size="10">→ araya gir, yatıştır</text>
+          <text x="308" y="227" fill="#e08fc0" font-size="10">konuyu diziye/tatlıya bağla</text>
+          <rect x="506" y="176" width="196" height="58" rx="9" fill="#132f2c" stroke="#1c5a55"/>
+          <text x="516" y="196" fill="#bff0e6" font-size="11" font-weight="700">Değerli katkı var mı?</text>
+          <text x="516" y="213" fill="#7fd6c4" font-size="10">→ eşlik et (espirili)</text>
+          <text x="516" y="227" fill="#7fd6c4" font-size="10">yoksa → hiç konuşma</text>
+          <line x1="500" y1="126" x2="500" y2="142" stroke="#6d5aa0" marker-end="url(#a12)"/>
+
+          <!-- P3 spark -->
+          <rect x="280" y="262" width="440" height="96" rx="14" fill="#1c1240" stroke="#4a3a7a"/>
+          <text x="298" y="286" fill="#c9a8f0" font-size="13" font-weight="800">③ Kıvılcım (sessizlik / açılış / yoğunluk)</text>
+          <rect x="298" y="296" width="196" height="52" rx="9" fill="#0e2a20" stroke="#1f6a4d"/>
+          <text x="308" y="316" fill="#8ff0c9" font-size="11" font-weight="700">Kalabalık kanal</text>
+          <text x="308" y="333" fill="#5fae90" font-size="10">→ seyrek konuş, yorumlara eşlik</text>
+          <rect x="506" y="296" width="196" height="52" rx="9" fill="#241f0e" stroke="#5b4a1e"/>
+          <text x="516" y="316" fill="#f6e4b8" font-size="11" font-weight="700">Tenha + yanıtsız</text>
+          <text x="516" y="333" fill="#c4ad78" font-size="10">→ boşluğa konuşma, SUS</text>
+          <line x1="500" y1="246" x2="500" y2="262" stroke="#6d5aa0" marker-end="url(#a12)"/>
+
+          <!-- decision parameters (right) -->
+          <text x="760" y="26" fill="#8873c0" font-size="12" font-weight="700" letter-spacing="1">KARAR PARAMETRELERİ</text>
+          <g font-size="11">
+            <rect x="760" y="40" width="212" height="40" rx="10" fill="#0e2233" stroke="#2a5a5a"/>
+            <text x="774" y="58" fill="#8fe6e0" font-weight="700">Aktif kişi sayısı</text><text x="774" y="73" fill="#5f9e98">canlı bağlantıdan gelir</text>
+            <rect x="760" y="88" width="212" height="40" rx="10" fill="#2a1220" stroke="#6b2f52"/>
+            <text x="774" y="106" fill="#f7c9e0" font-weight="700">Gerginlik seviyesi</text><text x="774" y="121" fill="#e08fc0">son mesajlardan okunur</text>
+            <rect x="760" y="136" width="212" height="40" rx="10" fill="#150e2c" stroke="#2e2450"/>
+            <text x="774" y="154" fill="#c9a8f0" font-weight="700">Kitle profili çıkarımı</text><text x="774" y="169" fill="#8873c0">dil · mizah · sevilen karakter</text>
+            <rect x="760" y="184" width="212" height="40" rx="10" fill="#0e2536" stroke="#1f4a63"/>
+            <text x="774" y="202" fill="#9fd0f0" font-weight="700">Bağlam: karma akış</text><text x="774" y="217" fill="#6f96b5">yorum + canlı, scope filtreli</text>
+            <rect x="760" y="232" width="212" height="40" rx="10" fill="#241f0e" stroke="#5b4a1e"/>
+            <text x="774" y="250" fill="#f6e4b8" font-weight="700">Doz kapıları</text><text x="774" y="265" fill="#c4ad78">min süre · saatlik/günlük tavan</text>
+            <rect x="760" y="280" width="212" height="40" rx="10" fill="#170f18" stroke="#3a2530"/>
+            <text x="774" y="298" fill="#f0a8c8" font-weight="700">Spoiler yasağı</text><text x="774" y="313" fill="#b06a8a">kapsam ötesini ima bile etmez</text>
+          </g>
+          <path d="M720 90 C 745 90, 745 60, 760 60" stroke="#6d5aa0" fill="none" marker-end="url(#a12)" opacity=".5"/>
+          <path d="M720 300 C 745 300, 748 250, 760 250" stroke="#6d5aa0" fill="none" marker-end="url(#a12)" opacity=".5"/>
+
+          <!-- dose nuance -->
+          <rect x="280" y="376" width="440" height="60" rx="12" fill="#0c1728" stroke="#22324c"/>
+          <text x="300" y="400" fill="#93a4bb" font-size="11.5" font-weight="700">Akıllı doz ayrımı:</text>
+          <text x="300" y="420" fill="#cfe0f2" font-size="11">gerginlik müdahalesi dozdan MUAF (kavga bekleyemez) · seslenme cevabı kıvılcım dozunu kirletmez</text>
+
+          <!-- write path -->
+          <rect x="280" y="452" width="440" height="86" rx="14" fill="#150e2c" stroke="#3a2f5f"/>
+          <text x="298" y="476" fill="#d8ccf7" font-size="12.5" font-weight="800">Mesaj Nasıl Yazılıyor</text>
+          <text x="298" y="497" fill="#a892e0" font-size="11">Doğrudan DB'ye yazmaz → tek yazım noktası olan iç servise gönderir</text>
+          <text x="298" y="516" fill="#a892e0" font-size="11">→ kaydedilir + SignalR ile herkese ANINDA yayınlanır</text>
+          <text x="298" y="532" fill="#8873c0" font-size="10">aktif kişi sayısını web servisinden korumalı uçla sorar (ayrı süreç)</text>
+
+          <!-- to feed -->
+          <rect x="760" y="452" width="212" height="86" rx="14" fill="#0e2a20" stroke="#1f6a4d"/>
+          <text x="866" y="480" text-anchor="middle" fill="#8ff0c9" font-size="12.5" font-weight="800">Kanala düşer</text>
+          <text x="866" y="502" text-anchor="middle" fill="#5fae90" font-size="10.5">mor MOD rozetiyle</text>
+          <text x="866" y="520" text-anchor="middle" fill="#5fae90" font-size="10.5">kitleye özel tonda</text>
+          <path d="M720 495 C 740 495, 742 495, 760 495" stroke="#6d5aa0" fill="none" marker-end="url(#a12)"/>
+        </svg>
+      </div>
+      <figcaption>Moderatör her turda üç öncelik hattını sırayla değerlendirir; aktif kişi sayısı, gerginlik, kitle profili ve doz kapıları kararı birlikte şekillendirir.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 13 ===================== -->
+  <section id="s13">
+    <div class="sec-head"><div class="sec-num">13</div>
+      <div><div class="sec-sub">Deneyim</div><h2>Gerçek Zamanlılık</h2></div></div>
+    <div class="prose">
+      <p>Kullanıcının asla sayfayı yenilemek zorunda kalmaması bir tasarım hedefiydi ve bunu birden fazla katmanla garantiledik. Birincil mekanizma canlı bağlantı; kullanıcı kanala girdiğinde sunucuyla kalıcı bir bağlantı kuruluyor ve yeni bir mesaj (ister kullanıcıdan ister moderatörden) düştüğü an bu bağlantı üzerinden anında ekrana geliyor. İkinci katman, bu bağlantının yanında düzenli aralıklarla akışı tazeleyen bir yoklama; canlı bağlantı bir an koparsa bile mesajlar yoklama ile akmaya devam ediyor. Üçüncü katman, tarayıcı sekmesi arka plandayken zamanlayıcıları kıstığı için, kullanıcı sekmeye geri döndüğünde, pencereye odaklandığında ya da internet bağlantısı geri geldiğinde akışın anında tazelenmesi. Canlı bağlantı koparsa sonsuz yeniden bağlanma denemesi yapıyor ve bağlantı geri geldiğinde kaçırılan mesajları da topluca çekiyor. Bütün bu katmanlar üst üste gelince kullanıcı için sonuç şu: mesajlar kendiliğinden akıyor, hiçbir koşulda elle yenileme gerekmiyor.</p>
+      <p>Kanal listesinde ve kanal başlığında görünen aktif kullanıcı sayısı da gerçek zamanlı; bu sayı, o an kanala canlı bağlı kişilerin sayısından geliyor ve moderatörün doz kararlarını da besleyen aynı veri.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#2dd4bf"></span><span class="t">Gerçek Zamanlılık · Üst Üste Üç Emniyet Katmanı</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 330" role="img" aria-label="Gerçek zamanlılık katmanları">
+          <defs><marker id="a13" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#2a7d74"/></marker></defs>
+
+          <!-- server -->
+          <rect x="40" y="120" width="150" height="90" rx="14" fill="#0e2a2c" stroke="#1c5a55"/>
+          <text x="115" y="150" text-anchor="middle" fill="#8fe6e0" font-size="13" font-weight="800">Web Servisi</text>
+          <text x="115" y="172" text-anchor="middle" fill="#5f9e98" font-size="11">yeni mesaj kaynağı</text>
+          <text x="115" y="190" text-anchor="middle" fill="#5f9e98" font-size="11">(kullanıcı + moderatör)</text>
+
+          <!-- 3 layers -->
+          <g font-size="11.5">
+            <rect x="300" y="40" width="320" height="66" rx="12" fill="#0e2a20" stroke="#1f6a4d"/>
+            <text x="318" y="64" fill="#8ff0c9" font-weight="800">① SignalR canlı bağlantı</text>
+            <text x="318" y="85" fill="#5fae90">mesaj düştüğü an anında ekrana · birincil yol</text>
+            <text x="318" y="100" fill="#3f8a6a" font-size="10">koparsa: sonsuz yeniden bağlanma + kaçanları topla</text>
+
+            <rect x="300" y="118" width="320" height="56" rx="12" fill="#0e2233" stroke="#2a5a5a"/>
+            <text x="318" y="142" fill="#8fe6e0" font-weight="800">② Düzenli yoklama (10 sn)</text>
+            <text x="318" y="162" fill="#5f9e98">bağlantı bir an koparsa bile akış devam eder</text>
+
+            <rect x="300" y="186" width="320" height="66" rx="12" fill="#0e2536" stroke="#1f4a63"/>
+            <text x="318" y="210" fill="#9fd0f0" font-weight="800">③ Olay tetikli tazeleme</text>
+            <text x="318" y="230" fill="#6f96b5">sekmeye dönüş · pencere odağı · internet geri gelişi</text>
+            <text x="318" y="245" fill="#4f7695" font-size="10">arka plan sekmesi zamanlayıcıyı kısar → anında toparla</text>
+          </g>
+          <line x1="190" y1="150" x2="300" y2="73" stroke="#2a7d74" marker-end="url(#a13)"/>
+          <line x1="190" y1="165" x2="300" y2="146" stroke="#2a7d74" marker-end="url(#a13)" opacity=".7"/>
+          <line x1="190" y1="180" x2="300" y2="215" stroke="#2a7d74" marker-end="url(#a13)" opacity=".5"/>
+
+          <!-- user -->
+          <rect x="720" y="120" width="240" height="90" rx="14" fill="#10233b" stroke="#26405f"/>
+          <text x="840" y="150" text-anchor="middle" fill="#bcd3ea" font-size="13" font-weight="800">Kullanıcı Ekranı</text>
+          <text x="840" y="174" text-anchor="middle" fill="#7fae90" font-size="11.5">✓ mesajlar kendiliğinden akar</text>
+          <text x="840" y="194" text-anchor="middle" fill="#7fae90" font-size="11.5">✓ asla elle yenileme yok</text>
+          <path d="M620 73 C 680 73, 680 150, 720 155" stroke="#2a7d74" fill="none" marker-end="url(#a13)"/>
+          <path d="M620 146 L720 165" stroke="#2a7d74" fill="none" marker-end="url(#a13)" opacity=".7"/>
+          <path d="M620 219 C 680 219, 680 180, 720 175" stroke="#2a7d74" fill="none" marker-end="url(#a13)" opacity=".5"/>
+
+          <!-- active count -->
+          <rect x="720" y="228" width="240" height="44" rx="12" fill="#0d1a2e" stroke="#22324c"/>
+          <text x="840" y="248" text-anchor="middle" fill="#93a4bb" font-size="11">aktif kullanıcı sayısı da gerçek zamanlı</text>
+          <text x="840" y="264" text-anchor="middle" fill="#6b7d99" font-size="10">→ aynı veri moderatörün dozunu besler</text>
+        </svg>
+      </div>
+      <figcaption>Canlı bağlantı, düzenli yoklama ve olay tetikli tazeleme üst üste gelir; kullanıcı hiçbir koşulda sayfa yenilemez.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 14 ===================== -->
+  <section id="s14" class="v">
+    <div class="sec-head"><div class="sec-num">14</div>
+      <div><div class="sec-sub">Yönetim</div><h2>Yönetim Paneli ve echo-admin Yapay Zekası</h2></div></div>
+    <div class="prose">
+      <p>Sistemin tüm içerik ve kanal yönetimi bir yönetim panelinden yapılıyor. Panele kullanıcı adı ve şifreyle giriliyor; giriş doğrulandığında sistem gereken yönetim anahtarını arka planda kendisi alıyor, yani yöneticinin teknik bir anahtarla uğraşması gerekmiyor ama sistemin güvenlik modeli aynı kalıyor. Panelden içerik oluşturuluyor, bölümler ve süreleri giriliyor, altyazılar yükleniyor, segment üretimi tetikleniyor, içerik bağlam özeti üretilip onaylanıyor, kanallar açılıyor ve tüm yaşam döngüsü (hazırlığı başlat, yayına al, pasife çek) buradan yönetiliyor. Hazırlanan kanalların ilerlemesi de panelde canlı görünüyor.</p>
+      <p>Panelin en üstünde echo-admin adında bir yardımcı yapay zeka var ve iki işi yapıyor. Birincisi içerik danışmanlığı; "şu an hangi içerikler için kanal açmalıyız" gibi bir soruya, arka planda Trakt'ın anlık popülerlik verilerini (o an kaç kişinin izlediği, kaç kişinin beklediği gibi gerçek sayılar) çekip bu veriyi Türkiye ve Amerika izleyici perspektifiyle harmanlayarak, popülerlik büyüklüğüne göre sıralı, gerekçeli öneriler veriyor. Her öneri için Echo'ya hazır kanal taslağı da sunuyor; önerilen içerik kısa adı, evren bilgisi ve arama terimleri. İkincisi veri temini; "şu dizinin şu bölümü için altyazı bul" gibi bir talebe, kanıtlanmış kaynak kalıplarını doldurarak nokta atışı, tıklanabilir indirme ve arama linkleri veriyor ve hangi sürümü seçmek gerektiğine dair notu da ekliyor. Bu asistan uydurma link üretmiyor; ya gerçek veriye ya da doğrulanmış URL kalıplarına dayanıyor, bilmediği bir şeyi bilmiyorum diye söylüyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#a78bfa"></span><span class="t">Yönetim · Panel ve echo-admin Asistanı</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 380" role="img" aria-label="Yönetim paneli ve asistan">
+          <defs><marker id="a14" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#6d5aa0"/></marker></defs>
+
+          <!-- login -->
+          <rect x="40" y="50" width="180" height="80" rx="14" fill="#0e2a2c" stroke="#1c5a55"/>
+          <text x="130" y="76" text-anchor="middle" fill="#8fe6e0" font-size="12.5" font-weight="800">Giriş</text>
+          <text x="130" y="97" text-anchor="middle" fill="#5f9e98" font-size="10.5">kullanıcı adı + şifre</text>
+          <text x="130" y="114" text-anchor="middle" fill="#5f9e98" font-size="10.5">→ anahtar arka planda alınır</text>
+
+          <!-- panel functions -->
+          <rect x="260" y="40" width="290" height="180" rx="16" fill="#0d1a2e" stroke="#22324c"/>
+          <text x="278" y="66" fill="#9fb0c9" font-size="12.5" font-weight="800">Yönetim Paneli</text>
+          <g font-size="11">
+            <rect x="278" y="80" width="120" height="30" rx="8" fill="#132537" stroke="#22405c"/><text x="290" y="100" fill="#bcd3ea">içerik oluştur</text>
+            <rect x="410" y="80" width="120" height="30" rx="8" fill="#132537" stroke="#22405c"/><text x="422" y="100" fill="#bcd3ea">bölüm + süre</text>
+            <rect x="278" y="116" width="120" height="30" rx="8" fill="#132537" stroke="#22405c"/><text x="290" y="136" fill="#bcd3ea">altyazı yükle</text>
+            <rect x="410" y="116" width="120" height="30" rx="8" fill="#1a1533" stroke="#3b2f66"/><text x="422" y="136" fill="#d6c9f5">bağlam özeti onayı</text>
+            <rect x="278" y="152" width="120" height="30" rx="8" fill="#1a1533" stroke="#3b2f66"/><text x="290" y="172" fill="#d6c9f5">segment üret</text>
+            <rect x="410" y="152" width="120" height="30" rx="8" fill="#0e2a20" stroke="#1f6a4d"/><text x="422" y="172" fill="#8ff0c9">yaşam döngüsü</text>
+          </g>
+          <text x="278" y="204" fill="#6b7d99" font-size="10.5">hazırlık ilerlemesi canlı görünür</text>
+          <line x1="220" y1="90" x2="260" y2="100" stroke="#6d5aa0" marker-end="url(#a14)"/>
+
+          <!-- echo-admin -->
+          <rect x="590" y="40" width="370" height="300" rx="16" fill="#150e2c" stroke="#3a2f5f"/>
+          <text x="612" y="66" fill="#d8ccf7" font-size="14" font-weight="800">✦ echo-admin AI</text>
+
+          <rect x="612" y="82" width="326" height="112" rx="12" fill="#1c1240" stroke="#4a3a7a"/>
+          <text x="628" y="104" fill="#c9a8f0" font-size="12" font-weight="700">① İçerik danışmanlığı</text>
+          <text x="628" y="124" fill="#a892e0" font-size="10.5">"hangi içerikler için kanal açmalıyız?"</text>
+          <rect x="628" y="132" width="294" height="26" rx="7" fill="#0e2536" stroke="#1f4a63"/>
+          <text x="638" y="149" fill="#9fd0f0" font-size="10">Trakt anlık popülerlik (kaç kişi izliyor/bekliyor)</text>
+          <text x="628" y="176" fill="#a892e0" font-size="10.5">→ TR+ABD perspektifi · popülerliğe göre sıralı</text>
+          <text x="628" y="190" fill="#8873c0" font-size="10">+ hazır kanal taslağı (slug · franchise · arama terimleri)</text>
+
+          <rect x="612" y="204" width="326" height="92" rx="12" fill="#1c1240" stroke="#4a3a7a"/>
+          <text x="628" y="226" fill="#c9a8f0" font-size="12" font-weight="700">② Veri temini</text>
+          <text x="628" y="246" fill="#a892e0" font-size="10.5">"şu bölüm için altyazı bul"</text>
+          <text x="628" y="266" fill="#a892e0" font-size="10.5">→ nokta atışı, tıklanabilir kaynak linkleri</text>
+          <text x="628" y="284" fill="#8873c0" font-size="10">kanıtlanmış URL kalıpları · uydurma yok · bilmezse "bilmiyorum"</text>
+
+          <rect x="612" y="306" width="326" height="24" rx="8" fill="#0c1728" stroke="#22324c"/>
+          <text x="628" y="322" fill="#7fae90" font-size="10.5">gerçek testte "Silo — 9.125 izleyici" canlı sayıyla yanıtladı</text>
+        </svg>
+      </div>
+      <figcaption>Yönetim tek panelden; echo-admin asistanı Trakt'ın gerçek popülerlik verisiyle içerik önerir ve kanıtlı kaynak linkleriyle veri temin eder.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 15 ===================== -->
+  <section id="s15">
+    <div class="sec-head"><div class="sec-num">15</div>
+      <div><div class="sec-sub">Altyapı</div><h2>Sistem Nerede ve Nasıl Yaşıyor</h2></div></div>
+    <div class="prose">
+      <p>Tüm sistem Docker konteynerleri halinde bir Azure sanal sunucusunda çalışıyor ve internete açık, güvenli bir adres üzerinden yayında. Önde Caddy adında bir ters vekil sunucu var; bu sunucu hem otomatik olarak geçerli bir HTTPS sertifikası alıp yeniliyor hem de gelen istekleri doğru parçaya yönlendiriyor. Kullanıcı arayüzüne giden istekler ön yüze, veri ve canlı bağlantı istekleri web servisine gidiyor. Veritabanı, web servisi, arka plan işçileri, ön yüz ve vekil sunucu ayrı konteynerler halinde ama tek bir düzen içinde birlikte çalışıyor.</p>
+      <p>Sistemin gözlemlenebilirliği için altyapı hazır; dağıtık izleme standartları kurulu, böylece bir isteğin sistem içinde nereden nereye gittiği izlenebiliyor. Güncellemeler kontrollü bir akışla yapılıyor; kod deposuna gönderiliyor, sunucuda çekiliyor, konteynerler yeniden inşa edilip yerine konuyor ve veritabanı şema güncellemeleri açılışta otomatik uygulanıyor. Sistemin gizli bilgileri (anahtarlar, şifreler, tokenlar) koddan ayrı, ortama özel bir yapılandırma dosyasında tutuluyor, kod deposunda saklanmıyor.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#38bdf8"></span><span class="t">Altyapı · Azure Sunucusunda Docker Düzeni</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 340" role="img" aria-label="Altyapı şeması">
+          <defs><marker id="a15" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3d6a8c"/></marker></defs>
+
+          <!-- internet -->
+          <circle cx="90" cy="150" r="42" fill="#0e2536" stroke="#1f4a63"/>
+          <text x="90" y="146" text-anchor="middle" fill="#9fd0f0" font-size="12" font-weight="700">İnternet</text>
+          <text x="90" y="164" text-anchor="middle" fill="#6f96b5" font-size="10">kullanıcılar</text>
+
+          <!-- VM boundary -->
+          <rect x="200" y="40" width="760" height="260" rx="20" fill="#0a1526" stroke="#26405f" stroke-dasharray="6 5"/>
+          <text x="224" y="66" fill="#6b7d99" font-size="12" font-weight="700" letter-spacing="1">AZURE SANAL SUNUCU · Docker</text>
+
+          <!-- caddy -->
+          <rect x="228" y="110" width="120" height="80" rx="14" fill="#0e2233" stroke="#2a5a7a"/>
+          <text x="288" y="140" text-anchor="middle" fill="#7fd0ee" font-size="12.5" font-weight="800">Caddy</text>
+          <text x="288" y="160" text-anchor="middle" fill="#5f96b5" font-size="10">HTTPS · otomatik sertifika</text>
+          <text x="288" y="176" text-anchor="middle" fill="#5f96b5" font-size="10">ters vekil</text>
+          <path d="M132 150 L228 150" stroke="#3d6a8c" marker-end="url(#a15)"/>
+
+          <!-- web + api -->
+          <rect x="400" y="70" width="150" height="70" rx="12" fill="#10233b" stroke="#26405f"/>
+          <text x="475" y="98" text-anchor="middle" fill="#bcd3ea" font-size="12" font-weight="700">Ön Yüz</text>
+          <text x="475" y="118" text-anchor="middle" fill="#7d93b0" font-size="10">Next.js arayüz</text>
+          <rect x="400" y="158" width="150" height="70" rx="12" fill="#0e2e2b" stroke="#1c5a55"/>
+          <text x="475" y="186" text-anchor="middle" fill="#8ff0e6" font-size="12" font-weight="700">Web Servisi</text>
+          <text x="475" y="206" text-anchor="middle" fill="#5f9e98" font-size="10">akış · SignalR · admin</text>
+          <path d="M348 140 C 375 140, 378 105, 400 105" stroke="#3d6a8c" fill="none" marker-end="url(#a15)"/>
+          <path d="M348 165 C 375 165, 378 190, 400 190" stroke="#3d6a8c" fill="none" marker-end="url(#a15)"/>
+
+          <!-- workers -->
+          <rect x="600" y="158" width="150" height="70" rx="12" fill="#241f0e" stroke="#5b4a1e"/>
+          <text x="675" y="186" text-anchor="middle" fill="#f6e4b8" font-size="12" font-weight="700">İşçiler</text>
+          <text x="675" y="206" text-anchor="middle" fill="#c4ad78" font-size="10">toplama · zenginleştirme · moderatör</text>
+
+          <!-- db -->
+          <g>
+            <ellipse cx="860" cy="120" rx="60" ry="16" fill="#155a44" stroke="#1c6047"/>
+            <path d="M800 120 L800 220 A60 16 0 0 0 920 220 L920 120" fill="#0e2a20" stroke="#1c6047"/>
+            <ellipse cx="860" cy="120" rx="60" ry="16" fill="#155a44" stroke="#1c6047"/>
+            <text x="860" y="116" text-anchor="middle" fill="#8ff0c9" font-size="12" font-weight="800">PostgreSQL</text>
+            <text x="860" y="160" text-anchor="middle" fill="#a7d9c4" font-size="10">+ pgvector</text>
+            <text x="860" y="185" text-anchor="middle" fill="#5fae90" font-size="10">tek canlı kaynak</text>
+          </g>
+          <path d="M550 193 L600 193" stroke="#3d6a8c" marker-end="url(#a15)"/>
+          <path d="M750 190 C 775 190, 780 175, 800 172" stroke="#2dd4bf" marker-end="url(#a15)"/>
+          <path d="M550 180 C 700 180, 740 165, 800 160" stroke="#2dd4bf" fill="none" marker-end="url(#a15)" opacity=".5"/>
+
+          <!-- ops note -->
+          <rect x="228" y="240" width="522" height="46" rx="10" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="246" y="262" fill="#93a4bb" font-size="11" font-weight="700">Operasyon:</text>
+          <text x="322" y="262" fill="#cfe0f2" font-size="11">dağıtık izleme kurulu · güncelleme = kod çek + konteyner yenile + şema otomatik uygula</text>
+          <text x="246" y="279" fill="#6b7d99" font-size="10">gizli bilgiler koddan ayrı, ortama özel dosyada (depoda saklanmaz)</text>
+        </svg>
+      </div>
+      <figcaption>Tüm parçalar Azure sunucusunda ayrı Docker konteynerleri; Caddy önde HTTPS ve yönlendirme yapar, hepsi tek düzen içinde birlikte çalışır.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 16 ===================== -->
+  <section id="s16">
+    <div class="sec-head"><div class="sec-num">16</div>
+      <div><div class="sec-sub">Kapanış</div><h2>Talep Edilen Hizmetler Nasıl Karşılanıyor</h2></div></div>
+    <div class="prose">
+      <p>Baştaki soruya dönersek, sistem istenen işleri şöyle yerine getiriyor. Geniş çaplı ve gerçek zamanlı veri toplama; dört aktif kaynaktan, her birinin doğasına uygun akıllı bir tempoyla, sıcak hedefleri neredeyse anında yoklayarak sağlanıyor ve yeni kaynak eklemek ortak bir sözleşme sayesinde küçük bir iş. Verinin temizlenmesi ve işlenmesi; üç aşamalı, hataya dayanıklı, her aşaması bağımsız çalışan bir boru hattıyla yapılıyor. Anlamı anlama ve içeriğe özelleşme; sıfırdan model eğitmeden, her içeriğin kendi vektör havuzunu ve bağlam bilgisini oluşturarak, hazır güçlü modelleri içeriğe özel verilerle besleyerek sağlanıyor. Zaman aralığına göre doğru filtreleme; segment haritaları, kullanıcı konumu ve kapsam kurallarının birleşimiyle hem yorumlarda hem spoiler denetiminde hem moderatör mesajlarında tutarlı biçimde çalışıyor. Kanala özel moderatörlük; aktif kullanıcı sayısını, sohbetin gerginliğini, kendisine gelen seslenmeleri ve kitlenin profilini birlikte değerlendirip gerçek bir insan gibi karar veren bir yapay zekayla karşılanıyor. Ve bütün bunlar, kullanıcının hiç sayfa yenilemeden, canlı ve akıcı bir deneyim yaşadığı bir arayüzde birleşiyor.</p>
+      <p>Sistem şu an iki gerçek dizi içeriğiyle canlı çalışıyor, veri gerçek platformlardan gerçek zamanlı akıyor, hazırlık hattı yeni bir içeriği uçtan uca kendi kendine hazırlayabiliyor ve tüm yapay zeka kurguları içeriğe özel bağlamlarıyla iş başında. Bundan sonrası kaynak yelpazesini genişletmek ve deneyimi zenginleştirmek üzerine.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#34d399"></span><span class="t">Özet · Talep → Çözüm Eşlemesi</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 360" role="img" aria-label="Talep çözüm özeti">
+          <g font-size="11.5">
+            <!-- row template -->
+            <rect x="40" y="40" width="290" height="46" rx="10" fill="#0e2536" stroke="#1f4a63"/><text x="56" y="60" fill="#9fd0f0" font-weight="700">Geniş &amp; gerçek zamanlı toplama</text><text x="56" y="77" fill="#6f96b5">4 kaynak · sıcak/soğuk tempo · ortak sözleşme</text>
+            <rect x="40" y="96" width="290" height="46" rx="10" fill="#241f0e" stroke="#5b4a1e"/><text x="56" y="116" fill="#f6e4b8" font-weight="700">Temizleme &amp; işleme</text><text x="56" y="133" fill="#c4ad78">3 aşamalı · hataya dayanıklı · bağımsız işçiler</text>
+            <rect x="40" y="152" width="290" height="46" rx="10" fill="#150e2c" stroke="#2e2450"/><text x="56" y="172" fill="#c9a8f0" font-weight="700">Anlama &amp; içeriğe özelleşme</text><text x="56" y="189" fill="#8873c0">vektör havuzu + bağlam · eğitim beklemez</text>
+            <rect x="40" y="208" width="290" height="46" rx="10" fill="#170f18" stroke="#3a2530"/><text x="56" y="228" fill="#f0a8c8" font-weight="700">Zamana göre filtreleme</text><text x="56" y="245" fill="#b06a8a">segment + konum + kapsam · her yerde tutarlı</text>
+            <rect x="40" y="264" width="290" height="46" rx="10" fill="#1c1240" stroke="#4a3a7a"/><text x="56" y="284" fill="#c9a8f0" font-weight="700">Kanala özel moderatörlük</text><text x="56" y="301" fill="#a892e0">aktif kişi · gerginlik · kitle profili · doz</text>
+          </g>
+
+          <!-- checkmarks column -->
+          <g>
+            <circle cx="380" cy="63" r="14" fill="#0e2a20" stroke="#1f6a4d"/><text x="380" y="68" text-anchor="middle" fill="#34d399" font-size="14">✓</text>
+            <circle cx="380" cy="119" r="14" fill="#0e2a20" stroke="#1f6a4d"/><text x="380" y="124" text-anchor="middle" fill="#34d399" font-size="14">✓</text>
+            <circle cx="380" cy="175" r="14" fill="#0e2a20" stroke="#1f6a4d"/><text x="380" y="180" text-anchor="middle" fill="#34d399" font-size="14">✓</text>
+            <circle cx="380" cy="231" r="14" fill="#0e2a20" stroke="#1f6a4d"/><text x="380" y="236" text-anchor="middle" fill="#34d399" font-size="14">✓</text>
+            <circle cx="380" cy="287" r="14" fill="#0e2a20" stroke="#1f6a4d"/><text x="380" y="292" text-anchor="middle" fill="#34d399" font-size="14">✓</text>
+          </g>
+
+          <!-- status panel -->
+          <rect x="450" y="40" width="510" height="270" rx="18" fill="#0a1526" stroke="#22324c"/>
+          <text x="474" y="70" fill="#9fb0c9" font-size="14" font-weight="800">Bugünkü Durum</text>
+          <g font-size="12.5">
+            <rect x="474" y="86" width="220" height="52" rx="12" fill="#0e2a20" stroke="#1f6a4d"/>
+            <text x="490" y="110" fill="#8ff0c9" font-weight="700">2 içerik CANLI</text><text x="490" y="128" fill="#5fae90" font-size="11">House of the Dragon S3 · Silo S3</text>
+            <rect x="716" y="86" width="220" height="52" rx="12" fill="#0e2536" stroke="#1f4a63"/>
+            <text x="732" y="110" fill="#9fd0f0" font-weight="700">4 kaynak aktif</text><text x="732" y="128" fill="#6f96b5" font-size="11">YouTube · X · Bluesky · Trakt</text>
+            <rect x="474" y="148" width="220" height="52" rx="12" fill="#150e2c" stroke="#2e2450"/>
+            <text x="490" y="172" fill="#c9a8f0" font-weight="700">3 yapay zeka kurgusu</text><text x="490" y="190" fill="#8873c0" font-size="11">hizalama · spoiler · moderatör</text>
+            <rect x="716" y="148" width="220" height="52" rx="12" fill="#241f0e" stroke="#5b4a1e"/>
+            <text x="732" y="172" fill="#f6e4b8" font-weight="700">Hazırlık hattı otomatik</text><text x="732" y="190" fill="#c4ad78" font-size="11">yeni içeriği kendi kendine kurar</text>
+          </g>
+          <rect x="474" y="212" width="462" height="76" rx="12" fill="#0c1728" stroke="#1d2c44"/>
+          <text x="490" y="236" fill="#93a4bb" font-size="12" font-weight="700">Sıradaki:</text>
+          <text x="558" y="236" fill="#cfe0f2" font-size="12">kaynak yelpazesini genişletmek (Discord · Twitch
