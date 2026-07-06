@@ -1,0 +1,918 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Echo · Veri ve Veritabanı Mimarisi</title>
+<style>
+  :root{
+    --bg:#0a1120; --bg2:#0d1526; --panel:#111d33; --panel2:#0f1a2e;
+    --border:#22324c; --border2:#2c405f;
+    --ink:#e8eef8; --ink2:#9fb0c9; --ink3:#6b7d99;
+    --teal:#2dd4bf; --tealD:#0d9488; --violet:#a78bfa; --violetD:#7c3aed;
+    --amber:#fbbf24; --sky:#38bdf8; --rose:#fb7185; --green:#34d399; --slate:#64748b;
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(124,58,237,.14), transparent 60%),
+      radial-gradient(1000px 500px at -10% 10%, rgba(13,148,136,.12), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.75; font-size:16.5px; letter-spacing:.1px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:0 24px 120px}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 40px; text-align:center; position:relative}
+  .brandmark{width:76px;height:76px;margin:0 auto 22px;display:block}
+  .kicker{font-size:12.5px; letter-spacing:3.5px; text-transform:uppercase; color:var(--teal); font-weight:700}
+  h1.title{font-size:44px; line-height:1.12; margin:14px 0 10px; font-weight:800; letter-spacing:-.5px;
+    background:linear-gradient(180deg,#fff, #b9c6dc); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .subtitle{max-width:760px; margin:0 auto; color:var(--ink2); font-size:17px}
+  .meta-row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:26px}
+  .chip{border:1px solid var(--border2); background:rgba(255,255,255,.02); color:var(--ink2);
+    padding:7px 14px; border-radius:999px; font-size:13px; font-weight:600}
+  .chip b{color:var(--ink)}
+
+  /* ---------- LEGEND ---------- */
+  .legend{margin:34px 0 8px; border:1px solid var(--border); background:linear-gradient(180deg,var(--panel),var(--panel2));
+    border-radius:var(--radius); padding:20px 22px}
+  .legend h4{margin:0 0 14px; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3)}
+  .legend-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px 22px}
+  .lg{display:flex; align-items:center; gap:10px; font-size:13.5px; color:var(--ink2)}
+  .sw{width:15px;height:15px;border-radius:5px;flex:0 0 auto}
+
+  /* ---------- TOC ---------- */
+  .toc{margin:26px 0 10px; border:1px solid var(--border); background:var(--panel2); border-radius:var(--radius); padding:20px 22px}
+  .toc h4{margin:0 0 14px; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3)}
+  .toc ol{margin:0; padding:0; list-style:none; columns:2; column-gap:36px}
+  .toc li{margin:0 0 9px; break-inside:avoid}
+  .toc a{color:var(--ink2); text-decoration:none; font-size:14.5px; display:flex; gap:10px; align-items:baseline}
+  .toc a:hover{color:var(--teal)}
+  .toc .n{color:var(--teal); font-weight:800; font-variant-numeric:tabular-nums; min-width:24px}
+
+  /* ---------- SECTION ---------- */
+  section{margin-top:64px; scroll-margin-top:24px}
+  .sec-head{display:flex; gap:16px; align-items:flex-start; margin-bottom:8px}
+  .sec-num{flex:0 0 auto; width:46px;height:46px;border-radius:14px; display:grid;place-items:center;
+    font-weight:800; font-size:18px; color:#04121a;
+    background:linear-gradient(135deg,var(--teal),var(--tealD)); box-shadow:0 8px 24px rgba(13,148,136,.35)}
+  section.v .sec-num{background:linear-gradient(135deg,var(--violet),var(--violetD)); color:#120425; box-shadow:0 8px 24px rgba(124,58,237,.35)}
+  h2{font-size:26px; margin:2px 0 2px; font-weight:800; letter-spacing:-.3px}
+  .sec-sub{color:var(--ink3); font-size:13.5px; font-weight:600; letter-spacing:.3px; text-transform:uppercase}
+  .prose p{margin:16px 0; color:#d7e0ee}
+  .prose p b{color:#fff}
+
+  /* ---------- FIGURE ---------- */
+  figure{margin:26px 0 6px; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden;
+    background:linear-gradient(180deg,#0e1a2f,#0b1424); box-shadow:0 18px 50px rgba(0,0,0,.35)}
+  .fig-top{display:flex; align-items:center; gap:9px; padding:12px 18px; border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.015)}
+  .fig-top .dot{width:10px;height:10px;border-radius:50%}
+  .fig-top .t{font-size:12.5px; letter-spacing:2px; text-transform:uppercase; color:var(--ink3); font-weight:700}
+  .fig-body{padding:22px}
+  figure svg{display:block; width:100%; height:auto}
+  figcaption{padding:2px 18px 16px; color:var(--ink3); font-size:13px; text-align:center}
+
+  /* ---------- ALAN TABLOSU ---------- */
+  .dtable{width:100%; border-collapse:collapse; font-size:13.6px; margin:16px 0 6px}
+  .dtable caption{caption-side:top; text-align:left; padding:0 0 10px; color:var(--teal); font-weight:800;
+    font-size:14px; letter-spacing:.4px}
+  .dtable th{background:rgba(45,212,191,.07); color:var(--teal); text-align:left; padding:9px 12px;
+    font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase; border-bottom:1px solid var(--border2)}
+  .dtable td{padding:9px 12px; border-bottom:1px solid var(--border); color:var(--ink2); vertical-align:top}
+  .dtable td:first-child{color:#fff; font-weight:600; white-space:nowrap; font-family:"SF Mono",ui-monospace,Consolas,monospace; font-size:12.8px}
+  .dtable .ty{color:var(--violet); font-family:"SF Mono",ui-monospace,Consolas,monospace; font-size:12px; white-space:nowrap}
+  .dtable tr:last-child td{border-bottom:none}
+
+  /* ---------- GERCEK SATIR KARTI ---------- */
+  .rowcard{border:1px solid var(--border2); border-radius:14px; background:#0b1729; padding:14px 16px; margin:12px 0;
+    font-family:"SF Mono",ui-monospace,"Cascadia Code",Consolas,monospace; font-size:12.6px; line-height:1.9; overflow-x:auto}
+  .rowcard .rk{color:var(--ink3)}
+  .rowcard .rv{color:#dbe7f7}
+  .rowcard .hl{color:var(--teal); font-weight:700}
+  .rowcard .sp{color:var(--rose); font-weight:700}
+  .rowcard-title{font-size:11.5px; letter-spacing:1.6px; text-transform:uppercase; color:var(--ink3);
+    margin:18px 0 4px; font-weight:700}
+
+  /* ---------- SQL KUTUSU ---------- */
+  .codebox{border:1px solid var(--border2); border-radius:14px; background:#081222; padding:16px 18px; margin:14px 0;
+    font-family:"SF Mono",ui-monospace,"Cascadia Code",Consolas,monospace; font-size:13px; line-height:1.8;
+    color:#cfe0f5; overflow-x:auto; white-space:pre}
+  .codebox .kw{color:var(--sky); font-weight:700}
+  .codebox .cm{color:var(--ink3)}
+  .codebox .st{color:var(--amber)}
+
+  /* svg text defaults */
+  svg text{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  .mono{font-family:"SF Mono",ui-monospace,"Cascadia Code",Consolas,monospace}
+
+  .foot{margin-top:80px; padding-top:26px; border-top:1px solid var(--border); color:var(--ink3); font-size:13.5px; text-align:center}
+  @media (max-width:720px){
+    h1.title{font-size:33px} .toc ol{columns:1} .fig-body{padding:14px} .wrap{padding:0 16px 80px}
+  }
+
+  @media print{
+    *{-webkit-print-color-adjust:exact !important; print-color-adjust:exact !important}
+    @page{size:A4; margin:14mm 12mm}
+    body{background:#0a1120 !important; font-size:12.5px}
+    .wrap{max-width:100%; padding:0}
+    .hero{padding:8px 0 22px}
+    h1.title{font-size:34px}
+    section{margin-top:26px}
+    figure{break-inside:avoid; page-break-inside:avoid; box-shadow:none}
+    .fig-body{break-inside:avoid}
+    .sec-head{break-after:avoid; page-break-after:avoid}
+    h2{break-after:avoid}
+    .prose p{orphans:3; widows:3}
+    .toc,.legend{break-inside:avoid}
+    .dtable{break-inside:avoid}
+    .rowcard,.codebox{break-inside:avoid}
+    figcaption{break-before:avoid}
+    a{color:inherit; text-decoration:none}
+  }
+</style>
+
+<a href="https://echo-dev-app.germanywestcentral.cloudapp.azure.com" target="_blank" rel="noopener" style="position:fixed;bottom:22px;right:22px;z-index:99999;display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:999px;background:linear-gradient(135deg,#2dd4bf,#7c3aed);color:#04121a;font:800 14.5px -apple-system,Segoe UI,Roboto,Arial,sans-serif;letter-spacing:.2px;text-decoration:none;box-shadow:0 12px 34px rgba(124,58,237,.45);border:1px solid rgba(255,255,255,.18)"><span style="font-size:15px">&#9654;</span> Uygulamay&#305; A&#231;</a>
+<div class="wrap">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <svg class="brandmark" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="14" stroke="#2dd4bf" stroke-width="5"/>
+      <circle cx="50" cy="50" r="28" stroke="#7c3aed" stroke-width="4" opacity=".75"/>
+      <circle cx="50" cy="50" r="42" stroke="#38bdf8" stroke-width="3" opacity=".45"/>
+    </svg>
+    <div class="kicker">Echo Platformu · Veri Katmanı Anlatımı</div>
+    <h1 class="title">Veri ve Veritabanı Mimarisi</h1>
+    <p class="subtitle">Tablo tablo, alan alan veri modeli; vektör deposu, embedding ve segment kavramlarının hangi süreçte, nerede, ne amaçla kullanıldığının şemalarla ve gerçek veriden örneklerle eksiksiz anlatımı.</p>
+    <div class="meta-row">
+      <span class="chip"><b>15</b> tablo, tek veritabanı</span>
+      <span class="chip"><b>3</b> vektör kolonu</span>
+      <span class="chip"><b>9</b> durumlu işleme hattı</span>
+      <span class="chip">PostgreSQL 18 · pgvector · UUIDv7 · UTC</span>
+    </div>
+  </header>
+
+  <!-- ===================== LEGEND ===================== -->
+  <div class="legend">
+    <h4>Şemalarda renk kodu</h4>
+    <div class="legend-grid">
+      <div class="lg"><span class="sw" style="background:#34d399"></span>İçerik omurgası (içerik → bölüm → segment)</div>
+      <div class="lg"><span class="sw" style="background:#fbbf24"></span>Toplama ve işleme hattı</div>
+      <div class="lg"><span class="sw" style="background:#a78bfa"></span>Vektör / yapay zeka verisi</div>
+      <div class="lg"><span class="sw" style="background:#2dd4bf"></span>Kanal ve canlı sohbet</div>
+      <div class="lg"><span class="sw" style="background:#38bdf8"></span>Kullanıcı ve erişim</div>
+      <div class="lg"><span class="sw" style="background:#fb7185"></span>Koruma / benzersizlik / kısıt</div>
+    </div>
+  </div>
+
+  <!-- ===================== TOC ===================== -->
+  <nav class="toc">
+    <h4>İçindekiler</h4>
+    <ol>
+      <li><a href="#d1"><span class="n">01</span>Tek Veritabanı Felsefesi: PostgreSQL + pgvector</a></li>
+      <li><a href="#d2"><span class="n">02</span>Şema Haritası: Tablolar ve İlişkiler</a></li>
+      <li><a href="#d3"><span class="n">03</span>İçerik Omurgası: contents · episodes · content_segments</a></li>
+      <li><a href="#d4"><span class="n">04</span>Toplama Hattı: ingest_targets · raw_comments</a></li>
+      <li><a href="#d5"><span class="n">05</span>Kurasyon: comment_clusters · curated_messages</a></li>
+      <li><a href="#d6"><span class="n">06</span>Kullanıcı ve Erişim: users · subscriptions · channels</a></li>
+      <li><a href="#d7"><span class="n">07</span>Etkileşim: üyelik · ziyaret · tercih · canlı mesaj</a></li>
+      <li><a href="#d8"><span class="n">08</span>Embedding: Anlamın Sayısal Temsili</a></li>
+      <li><a href="#d9"><span class="n">09</span>Vektör Deposu Olarak pgvector</a></li>
+      <li><a href="#d10"><span class="n">10</span>Segment: Zamanın Veri Modeli</a></li>
+      <li><a href="#d11"><span class="n">11</span>Bir Yorumun Veri Yolculuğu (Gerçek Örnekle)</a></li>
+      <li><a href="#d12"><span class="n">12</span>Bütünlük, Eşzamanlılık ve Performans</a></li>
+    </ol>
+  </nav>
+
+  <!-- ===================== MASTER ===================== -->
+  <section id="darch">
+    <div class="sec-head">
+      <div class="sec-num" style="background:linear-gradient(135deg,#34d399,#0d9488);color:#04121a">★</div>
+      <div>
+        <div class="sec-sub">Data Layer · High-Level</div>
+        <h2>Veri Katmanı Tek Karede</h2>
+      </div>
+    </div>
+    <div class="prose"><p>Echo'nun tüm kalıcı hafızası tek bir PostgreSQL 18 veritabanında yaşıyor; ilişkisel şema ile vektör verisi aynı çatı altında. Aşağıdaki şema, veriyi kimin yazdığını, kimin okuduğunu ve vektör katmanının bu düzenin neresinde durduğunu tek karede gösteriyor. Sonraki bölümler her tabloyu alan alan açıyor.</p></div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#34d399"></span><span class="t">Master · Tek Veritabanı, İki Dünya</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 430" role="img" aria-label="Veri katmanı kuşbakışı">
+          <defs>
+            <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b7d99"/>
+            </marker>
+          </defs>
+          <!-- yazanlar -->
+          <rect x="30" y="40" width="200" height="74" rx="12" fill="#111d33" stroke="#fbbf24" stroke-width="1.6"/>
+          <text x="130" y="70" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="700">Echo.Workers</text>
+          <text x="130" y="92" text-anchor="middle" fill="#9fb0c9" font-size="11.5">toplama · işleme · moderatör</text>
+
+          <rect x="30" y="150" width="200" height="74" rx="12" fill="#111d33" stroke="#2dd4bf" stroke-width="1.6"/>
+          <text x="130" y="180" text-anchor="middle" fill="#2dd4bf" font-size="14" font-weight="700">Echo.Api</text>
+          <text x="130" y="202" text-anchor="middle" fill="#9fb0c9" font-size="11.5">kullanıcı + panel + canlı bağlantı</text>
+
+          <rect x="30" y="260" width="200" height="74" rx="12" fill="#111d33" stroke="#a78bfa" stroke-width="1.6"/>
+          <text x="130" y="290" text-anchor="middle" fill="#a78bfa" font-size="14" font-weight="700">OpenAI API</text>
+          <text x="130" y="312" text-anchor="middle" fill="#9fb0c9" font-size="11.5">embedding + LLM üretimleri</text>
+
+          <!-- DB kutusu -->
+          <rect x="330" y="30" width="640" height="370" rx="16" fill="#0d1a30" stroke="#2c405f" stroke-width="1.6"/>
+          <text x="650" y="62" text-anchor="middle" fill="#e8eef8" font-size="15.5" font-weight="800">PostgreSQL 18 · echoapp</text>
+          <text x="650" y="82" text-anchor="middle" fill="#6b7d99" font-size="11.5">Docker konteyneri · kalıcı volume · açılışta otomatik migration</text>
+
+          <!-- iliskisel bolge -->
+          <rect x="355" y="100" width="370" height="270" rx="12" fill="#0f1a2e" stroke="#34d399" stroke-width="1.4"/>
+          <text x="540" y="126" text-anchor="middle" fill="#34d399" font-size="12.5" font-weight="700" letter-spacing="1.5">İLİŞKİSEL ŞEMA · 15 TABLO</text>
+          <text x="375" y="154" fill="#9fb0c9" font-size="11.8">contents · episodes · content_segments</text>
+          <text x="375" y="178" fill="#9fb0c9" font-size="11.8">ingest_targets · raw_comments</text>
+          <text x="375" y="202" fill="#9fb0c9" font-size="11.8">comment_clusters · curated_messages</text>
+          <text x="375" y="226" fill="#9fb0c9" font-size="11.8">channels · user_messages</text>
+          <text x="375" y="250" fill="#9fb0c9" font-size="11.8">users · subscriptions</text>
+          <text x="375" y="274" fill="#9fb0c9" font-size="11.8">channel_memberships · channel_visits</text>
+          <text x="375" y="298" fill="#9fb0c9" font-size="11.8">user_channel_prefs</text>
+          <text x="375" y="330" fill="#6b7d99" font-size="11">UUIDv7 kimlikler · UTC zaman · xmin eşzamanlılık</text>
+          <text x="375" y="350" fill="#6b7d99" font-size="11">FK + cascade zinciri · unique idempotency kısıtları</text>
+
+          <!-- vektor bolge -->
+          <rect x="745" y="100" width="200" height="270" rx="12" fill="#131028" stroke="#a78bfa" stroke-width="1.4"/>
+          <text x="845" y="126" text-anchor="middle" fill="#a78bfa" font-size="12.5" font-weight="700" letter-spacing="1.5">pgvector</text>
+          <text x="845" y="152" text-anchor="middle" fill="#9fb0c9" font-size="11.5">vector(1536) kolonları</text>
+          <text x="845" y="186" text-anchor="middle" fill="#dbe7f7" font-size="11.5">content_segments.embedding</text>
+          <text x="845" y="210" text-anchor="middle" fill="#dbe7f7" font-size="11.5">comment_clusters.centroid</text>
+          <text x="845" y="234" text-anchor="middle" fill="#dbe7f7" font-size="11.5">curated_messages.embedding</text>
+          <text x="845" y="272" text-anchor="middle" fill="#6b7d99" font-size="11">cosine distance ile</text>
+          <text x="845" y="290" text-anchor="middle" fill="#6b7d99" font-size="11">DB içinde anlam araması:</text>
+          <text x="845" y="312" text-anchor="middle" fill="#6b7d99" font-size="11">tekilleştirme · hizalama</text>
+          <text x="845" y="330" text-anchor="middle" fill="#6b7d99" font-size="11">segment eşleşmesi</text>
+
+          <!-- oklar -->
+          <line x1="230" y1="77" x2="330" y2="130" stroke="#6b7d99" stroke-width="1.6" marker-end="url(#ar)"/>
+          <line x1="230" y1="187" x2="330" y2="200" stroke="#6b7d99" stroke-width="1.6" marker-end="url(#ar)"/>
+          <line x1="230" y1="297" x2="330" y2="280" stroke="#6b7d99" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+          <text x="268" y="70" fill="#6b7d99" font-size="10.5">yazar + okur</text>
+          <text x="268" y="180" fill="#6b7d99" font-size="10.5">yazar + okur</text>
+          <text x="238" y="322" fill="#6b7d99" font-size="10.5">vektör/metin üretir</text>
+        </svg>
+      </div>
+      <figcaption>İlişkisel şema ve vektör deposu aynı veritabanında; işçiler ve web servisi yalnızca bu tek veritabanı üzerinden buluşur.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 1 ===================== -->
+  <section id="d1">
+    <div class="sec-head"><div class="sec-num">1</div>
+      <div><div class="sec-sub">Temel Karar</div><h2>Tek Veritabanı Felsefesi: PostgreSQL + pgvector</h2></div></div>
+    <div class="prose">
+      <p>Veri katmanının en temel kararı şu: ilişkisel veri ile vektör verisi ayrı sistemlere bölünmedi. Bir tarafta PostgreSQL, diğer tarafta ayrı bir vektör veritabanı (Pinecone, Qdrant, Weaviate gibi) çalıştırmak yerine, PostgreSQL 18'in üzerine pgvector eklentisini koyup her şeyi tek veritabanında topladım. Bunun üç somut gerekçesi var. Birincisi tutarlılık: bir yorumun metni, durumu ve vektörü aynı satırın parçası; tek transaction içinde birlikte yazılıyor, "metin yazıldı ama vektör kayboldu" diye bir senaryo yapısal olarak imkânsız. İkincisi sorgu gücü: anlam araması ile klasik filtre aynı SQL cümlesinde birleşiyor; örneğin "bu içeriğe ait, yayınlanmış bölümlerin segmentleri içinde şu vektöre en yakın üç segment" tek sorguda dönüyor. Üçüncüsü işletme yükü: yedeklenecek, izlenecek, göçü yönetilecek tek sistem var.</p>
+      <p>Şemanın tamamında geçerli üç sözleşme var. Her tablonun birincil anahtarı <b>UUIDv7</b>; bu, kimliklerin küresel benzersiz ama aynı zamanda zaman sıralı olması demek, yani kimlik üzerinden sıralama yaklaşık olarak oluşturulma sırasını verir ve index'ler dağınık değil ardışık büyür. Her tabloda <b>created_at_utc</b> ve <b>updated_at_utc</b> kolonları zorunlu ve daima UTC; updated_at, kayıt her değiştiğinde veri erişim katmanında otomatik güncelleniyor. Ve her tabloda eşzamanlılık koruması için PostgreSQL'in <b>xmin</b> sistem kolonu iyimser kilitleme jetonu olarak kullanılıyor; iki işlem aynı satırı aynı anda değiştirmeye kalkarsa ikincisi çakışmayı fark edip yeniden deniyor, sessiz veri ezilmesi olmuyor.</p>
+      <p>Şema değişiklikleri migration dosyalarıyla sürümleniyor ve web servisi her açılışta bekleyen migration'ları kendisi uyguluyor; yani veritabanı şeması, kodun beklediği şemanın gerisinde kalamıyor. Bugün şemada 15 tablo ve 8 migration'lık bir evrim geçmişi var.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 2 ===================== -->
+  <section id="d2">
+    <div class="sec-head"><div class="sec-num">2</div>
+      <div><div class="sec-sub">Büyük Resim</div><h2>Şema Haritası: Tablolar ve İlişkiler</h2></div></div>
+    <div class="prose">
+      <p>Şema üç kümeden oluşuyor ve bu kümelenme tesadüf değil, sistemin çalışma şeklinin birebir yansıması. Solda <b>içerik omurgası</b> var: içerik, bölümleri ve bölümlerin zaman dilimli segmentleri. Ortada <b>toplama ve kurasyon hattı</b> var ve buradaki kritik tasarım kararı şu: toplama hedefleri, ham yorumlar, anlam kümeleri ve yayınlanmış mesajların hepsi kanala değil doğrudan <b>içeriğe</b> bağlı. Sağda ise <b>kullanıcı dünyası</b> var: kimlik, abonelik, kanal üyeliği, ziyaret izi, kanal tercihleri ve canlı mesajlar. Kanal, içerik havuzunu kullanıcıya belli bir kapsamdan gösteren penceredir; bu yüzden şemada ortadaki hat kanala değil içeriğe bağlanır, kanal silinse bile havuz yaşar.</p>
+      <p>Silme davranışları bilinçli seçildi: içerik silinirse ona bağlı her şey (bölümler, segmentler, hedefler, ham ve işlenmiş yorumlar) zincirleme silinir; kullanıcı silinirse mesajları, üyelikleri, tercihleri ve ona özel moderatör yanıtları silinir; kanal silinirse yalnızca kanala ait olanlar (canlı mesajlar, üyelikler, ziyaretler, tercihler) gider, içerik havuzuna dokunulmaz. Kanalın içerik bağı ise bilerek kısıtlı: içeriği, üzerinde kanal varken silmeye çalışmak engellenir.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#34d399"></span><span class="t">ERD · 15 Tablo, Üç Küme, Tek Omurga</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 780" role="img" aria-label="Veri modeli ilişki şeması">
+          <defs>
+            <marker id="fk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b7d99"/>
+            </marker>
+          </defs>
+          <style>
+            .tbl{fill:#111d33;stroke-width:1.6;rx:10}
+            .tt{font-size:12.5px;font-weight:700}
+            .tc{font-size:10.3px;fill:#9fb0c9;font-family:"SF Mono",ui-monospace,Consolas,monospace}
+            .rel{stroke:#6b7d99;stroke-width:1.4;fill:none}
+            .rl{font-size:9.6px;fill:#6b7d99}
+          </style>
+
+          <!-- ========== SOL: ICERIK OMURGASI (yesil) ========== -->
+          <rect x="30" y="30" width="215" height="96" rx="10" class="tbl" stroke="#34d399"/>
+          <text x="137" y="52" text-anchor="middle" fill="#34d399" class="tt">contents</text>
+          <text x="44" y="74" class="tc">slug · title · franchise · seq</text>
+          <text x="44" y="92" class="tc">season_number · total_episodes</text>
+          <text x="44" y="110" class="tc">search_terms_json · context_summary</text>
+
+          <rect x="30" y="176" width="215" height="112" rx="10" class="tbl" stroke="#34d399"/>
+          <text x="137" y="198" text-anchor="middle" fill="#34d399" class="tt">episodes</text>
+          <text x="44" y="220" class="tc">content_id FK · episode_number</text>
+          <text x="44" y="238" class="tc">title · duration_seconds · air_date</text>
+          <text x="44" y="256" class="tc">is_aired · subtitle_text</text>
+          <text x="44" y="274" class="tc">context_text (bölüm bağlamı)</text>
+
+          <rect x="30" y="338" width="215" height="112" rx="10" class="tbl" stroke="#a78bfa"/>
+          <text x="137" y="360" text-anchor="middle" fill="#a78bfa" class="tt">content_segments</text>
+          <text x="44" y="382" class="tc">episode_id FK · sequence</text>
+          <text x="44" y="400" class="tc">start_seconds · end_seconds</text>
+          <text x="44" y="418" class="tc">title · summary</text>
+          <text x="44" y="436" class="tc" fill="#a78bfa">embedding vector(1536)</text>
+
+          <line class="rel" x1="137" y1="126" x2="137" y2="176" marker-end="url(#fk)"/>
+          <text x="146" y="156" class="rl">1—N · cascade</text>
+          <line class="rel" x1="137" y1="288" x2="137" y2="338" marker-end="url(#fk)"/>
+          <text x="146" y="318" class="rl">1—N · cascade</text>
+
+          <!-- ========== ORTA: TOPLAMA + KURASYON (amber) ========== -->
+          <rect x="330" y="30" width="230" height="112" rx="10" class="tbl" stroke="#fbbf24"/>
+          <text x="445" y="52" text-anchor="middle" fill="#fbbf24" class="tt">ingest_targets</text>
+          <text x="344" y="74" class="tc">content_id FK · platform · type</text>
+          <text x="344" y="92" class="tc">target_key · cursor · is_active</text>
+          <text x="344" y="110" class="tc">last_polled · last_new · failures</text>
+          <text x="344" y="128" class="tc" fill="#fb7185">UQ(content,platform,key)</text>
+
+          <rect x="330" y="192" width="230" height="112" rx="10" class="tbl" stroke="#fbbf24"/>
+          <text x="445" y="214" text-anchor="middle" fill="#fbbf24" class="tt">raw_comments</text>
+          <text x="344" y="236" class="tc">content_id FK · platform</text>
+          <text x="344" y="254" class="tc">external_id · author_hash · text</text>
+          <text x="344" y="272" class="tc">state (9 durum) · fail_reason</text>
+          <text x="344" y="290" class="tc" fill="#fb7185">UQ(content,platform,external)</text>
+
+          <rect x="330" y="354" width="230" height="94" rx="10" class="tbl" stroke="#a78bfa"/>
+          <text x="445" y="376" text-anchor="middle" fill="#a78bfa" class="tt">comment_clusters</text>
+          <text x="344" y="398" class="tc">content_id FK · member_count</text>
+          <text x="344" y="416" class="tc" fill="#a78bfa">centroid vector(1536)</text>
+          <text x="344" y="434" class="tc">anlam kümesinin merkezi</text>
+
+          <rect x="330" y="498" width="230" height="150" rx="10" class="tbl" stroke="#fbbf24"/>
+          <text x="445" y="520" text-anchor="middle" fill="#fbbf24" class="tt">curated_messages</text>
+          <text x="344" y="542" class="tc">content_id FK · cluster_id FK</text>
+          <text x="344" y="560" class="tc">source_raw_comment_id FK</text>
+          <text x="344" y="578" class="tc">episode_number · anchor_seconds</text>
+          <text x="344" y="596" class="tc">is_absolute_spoiler · spoiler_score</text>
+          <text x="344" y="614" class="tc">text_en · text_tr · similar_count</text>
+          <text x="344" y="632" class="tc" fill="#a78bfa">embedding vector(1536)</text>
+
+          <!-- orta -> contents FK oklari -->
+          <path class="rel" d="M330,86 C295,86 280,80 245,78" marker-end="url(#fk)"/>
+          <path class="rel" d="M330,248 C285,248 265,110 245,92" marker-end="url(#fk)"/>
+          <path class="rel" d="M330,400 C280,400 262,120 245,100" marker-end="url(#fk)"/>
+          <path class="rel" d="M330,560 C270,560 258,130 245,108" marker-end="url(#fk)"/>
+          <text x="256" y="66" class="rl">content_id · cascade</text>
+
+          <!-- cluster/raw -> curated ic baglar -->
+          <line class="rel" x1="445" y1="304" x2="445" y2="354" marker-end="url(#fk)"/>
+          <text x="454" y="334" class="rl">temsilci seçimi</text>
+          <line class="rel" x1="445" y1="448" x2="445" y2="498" marker-end="url(#fk)"/>
+          <text x="454" y="478" class="rl">cluster_id · set null</text>
+
+          <!-- ========== SAG: KULLANICI DUNYASI (sky/teal) ========== -->
+          <rect x="655" y="30" width="315" height="94" rx="10" class="tbl" stroke="#38bdf8"/>
+          <text x="812" y="52" text-anchor="middle" fill="#38bdf8" class="tt">users</text>
+          <text x="669" y="74" class="tc">email citext UQ · provider+sub_id UQ</text>
+          <text x="669" y="92" class="tc">display_name UQ · locked · avatar</text>
+          <text x="669" y="110" class="tc">last_login_at_utc</text>
+
+          <rect x="655" y="160" width="145" height="102" rx="10" class="tbl" stroke="#38bdf8"/>
+          <text x="727" y="182" text-anchor="middle" fill="#38bdf8" class="tt">subscriptions</text>
+          <text x="667" y="204" class="tc">user_id FK · plan</text>
+          <text x="667" y="222" class="tc">status · price_usd</text>
+          <text x="667" y="240" class="tc">started · expires</text>
+          <text x="667" y="258" class="tc" fill="#fb7185">tek Active/kullanıcı</text>
+
+          <rect x="825" y="160" width="145" height="102" rx="10" class="tbl" stroke="#2dd4bf"/>
+          <text x="897" y="182" text-anchor="middle" fill="#2dd4bf" class="tt">channels</text>
+          <text x="837" y="204" class="tc">content_id FK</text>
+          <text x="837" y="222" class="tc">slug UQ · title</text>
+          <text x="837" y="240" class="tc">episode_number?</text>
+          <text x="837" y="258" class="tc">status (5 durum)</text>
+
+          <rect x="655" y="300" width="150" height="88" rx="10" class="tbl" stroke="#38bdf8"/>
+          <text x="730" y="322" text-anchor="middle" fill="#38bdf8" class="tt">channel_memberships</text>
+          <text x="667" y="344" class="tc">user_id + channel_id</text>
+          <text x="667" y="362" class="tc">joined_at_utc</text>
+          <text x="667" y="380" class="tc" fill="#fb7185">UQ(user,channel)</text>
+
+          <rect x="820" y="300" width="150" height="88" rx="10" class="tbl" stroke="#38bdf8"/>
+          <text x="895" y="322" text-anchor="middle" fill="#38bdf8" class="tt">channel_visits</text>
+          <text x="832" y="344" class="tc">entered · left</text>
+          <text x="832" y="362" class="tc">was_member · was_pro</text>
+          <text x="832" y="380" class="tc">analitik izi</text>
+
+          <rect x="655" y="426" width="150" height="106" rx="10" class="tbl" stroke="#38bdf8"/>
+          <text x="730" y="448" text-anchor="middle" fill="#38bdf8" class="tt">user_channel_prefs</text>
+          <text x="667" y="470" class="tc">episode_number?</text>
+          <text x="667" y="488" class="tc">position_seconds?</text>
+          <text x="667" y="506" class="tc">spoiler_free · live_on</text>
+          <text x="667" y="524" class="tc">preferred_lang</text>
+
+          <rect x="820" y="426" width="150" height="150" rx="10" class="tbl" stroke="#2dd4bf"/>
+          <text x="895" y="448" text-anchor="middle" fill="#2dd4bf" class="tt">user_messages</text>
+          <text x="832" y="470" class="tc">channel_id FK</text>
+          <text x="832" y="488" class="tc">user_id FK · text</text>
+          <text x="832" y="506" class="tc">episode? · anchor?</text>
+          <text x="832" y="524" class="tc">is_spoiler · reason</text>
+          <text x="832" y="542" class="tc">is_moderator · reply_to</text>
+          <text x="832" y="560" class="tc" fill="#fb7185">visible_to_user_id?</text>
+
+          <!-- kullanici iliskileri -->
+          <line class="rel" x1="727" y1="124" x2="727" y2="160" marker-end="url(#fk)"/>
+          <path class="rel" d="M897,160 C897,146 860,132 830,124" marker-end="url(#fk)"/>
+          <line class="rel" x1="730" y1="262" x2="730" y2="300" marker-end="url(#fk)"/>
+          <line class="rel" x1="895" y1="262" x2="895" y2="300" marker-end="url(#fk)"/>
+          <line class="rel" x1="730" y1="388" x2="730" y2="426" marker-end="url(#fk)"/>
+          <line class="rel" x1="895" y1="388" x2="895" y2="426" marker-end="url(#fk)"/>
+
+          <!-- channels -> contents -->
+          <path class="rel" d="M825,200 C560,168 300,120 245,70" stroke-dasharray="6 4" marker-end="url(#fk)"/>
+          <text x="470" y="150" class="rl">channels.content_id · restrict (kanal varken içerik silinemez)</text>
+
+          <!-- visible_to -> users -->
+          <path class="rel" d="M970,470 C992,420 992,180 970,130" stroke-dasharray="4 4" marker-end="url(#fk)"/>
+          <text x="920" y="600" class="rl">visible_to_user_id → users (kişiye özel yanıt)</text>
+
+          <!-- alt not -->
+          <rect x="330" y="690" width="640" height="64" rx="10" fill="#0f1a2e" stroke="#22324c"/>
+          <text x="350" y="716" fill="#9fb0c9" font-size="11.5">Ortadaki hat kanala değil İÇERİĞE bağlıdır: kanal aç/kapa/sil, havuza dokunmaz.</text>
+          <text x="350" y="738" fill="#6b7d99" font-size="11">Mor etiketli kolonlar vector(1536) tipindedir ve pgvector ile anlam araması yapılır.</text>
+        </svg>
+      </div>
+      <figcaption>İçerik omurgası solda, içerik havuzu ortada, kullanıcı dünyası sağda; kanal içeriğin penceresi olduğu için havuz tabloları içeriğe bağlanır.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 3 ===================== -->
+  <section id="d3">
+    <div class="sec-head"><div class="sec-num">3</div>
+      <div><div class="sec-sub">İçerik Omurgası</div><h2>contents · episodes · content_segments</h2></div></div>
+    <div class="prose">
+      <p>Her şeyin çapası <b>contents</b> tablosu; bir dizi sezonunu ya da bir filmi temsil eder. Toplama hedefleri bu tablonun arama terimlerinden doğar, yapay zeka kurguları bağlam özetinden beslenir, kanallar buna bağlanır.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>contents — yönetilen içerik</caption>
+      <thead><tr><th style="width:22%">Alan</th><th style="width:20%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>slug</td><td class="ty">varchar(80) · UQ</td><td>İçeriğin benzersiz kısa adı (örn. hotd-s3); URL'lerde, panelde ve tüm operasyonel işlemlerde insan-okur kimlik.</td></tr>
+        <tr><td>title</td><td class="ty">varchar(200)</td><td>Görünen başlık. Trakt bölüm sorguları için taban ad, başlığın "House of the Dragon - Season 3" biçimindeki ilk parçasından türetilir.</td></tr>
+        <tr><td>kind</td><td class="ty">int (enum)</td><td>Series=0, Movie=1. Filmlerde tek sanal bölüm kurgusu kullanılır.</td></tr>
+        <tr><td>franchise + franchise_sequence</td><td class="ty">varchar(80) + int</td><td>Seri evreni (örn. game-of-thrones) ve evren içindeki kronolojik sıra. Evrenin önceki yapımları "izlenmiş" kabul edilir; çapraz içerik spoiler kuralının veri temeli.</td></tr>
+        <tr><td>season_number · total_episodes</td><td class="ty">int? · int?</td><td>Sezon numarası ve planlanan bölüm sayısı; asistanın Trakt sezon sorgusu ve panel gösterimleri bunu kullanır.</td></tr>
+        <tr><td>search_terms_json</td><td class="ty">jsonb</td><td>Kaynak taramalarının tohum terimleri (JSON dizi). Toplama motoru her kaynağa bu terimleri kendi diline uyarlayarak hedef olarak eker.</td></tr>
+        <tr><td>context_summary</td><td class="ty">text?</td><td>İçeriğin spoiler'sız dünya/karakter/ton özeti. Moderatör kişiliğine ve spoiler denetim istemine enjekte edilir; hazırlık hattı bunu şart koşar.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rowcard-title">Gerçek kayıt · contents (canlı veritabanından)</div>
+    <div class="rowcard">
+      <span class="rk">slug:</span> <span class="hl">hotd-s3</span> · <span class="rk">title:</span> <span class="rv">House of the Dragon - Season 3</span> · <span class="rk">franchise:</span> <span class="rv">game-of-thrones</span> (<span class="rk">seq</span> <span class="rv">1</span>)<br>
+      <span class="rk">season_number:</span> <span class="rv">3</span> · <span class="rk">total_episodes:</span> <span class="rv">8</span> · <span class="rk">context_summary:</span> <span class="hl">dolu ✓</span><br>
+      <span class="rk">search_terms_json:</span> <span class="rv">["House of the Dragon", "House of the Dragon season 3", "HotD season 3", "#HouseOfTheDragon"]</span>
+    </div>
+
+    <div class="prose">
+      <p><b>episodes</b>, içeriğin bölümlerini tutar ve içerik silinirse zincirleme silinir. (content_id, episode_number) çifti benzersizdir; aynı bölüm iki kez tanımlanamaz.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>episodes — bölüm kaydı</caption>
+      <thead><tr><th style="width:22%">Alan</th><th style="width:20%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>content_id</td><td class="ty">uuid FK · cascade</td><td>Bağlı olduğu içerik.</td></tr>
+        <tr><td>episode_number · title</td><td class="ty">int · varchar(200)</td><td>Bölüm numarası ve adı. Numara; kanal kapsamının, hizalamanın ve spoiler kurallarının ortak dili.</td></tr>
+        <tr><td>duration_seconds</td><td class="ty">int?</td><td>Bölüm süresi (saniye). Zaman kaydırıcısının tavanı ve segment haritasının toplam uzunluğu; hazırlık öncesi girilmesi zorunlu.</td></tr>
+        <tr><td>air_date · is_aired</td><td class="ty">date? · bool</td><td>Yayın tarihi ve yayınlandı bayrağı. Toplamada "yayınlanmış bölüm hedefleri", segment üretiminde ön koşul, asistan reçetesinde kapsam filtresi.</td></tr>
+        <tr><td>subtitle_text</td><td class="ty">text?</td><td>SRT/VTT'den işlenmiş, "[mm:ss] diyalog" satırlarına indirgenmiş zaman damgalı transkript. Segment üretiminde GERÇEK zaman kaynağı kabul edilir.</td></tr>
+        <tr><td>subtitle_uploaded_at_utc</td><td class="ty">timestamptz?</td><td>Transkriptin yüklendiği an.</td></tr>
+        <tr><td>context_text</td><td class="ty">text?</td><td>Bölüm bağlam metni: bölümde yaşananları açıkça anlatan, sistemin ürettiği kurasyonlu Türkçe metin. Wikipedia'sı henüz oluşmamış taze bölümlerde segment üretiminin olay örgüsü kaynağı; varsa Wikipedia'yı tamamlayan ek bilgi. Panelden .md olarak indirilebilir.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rowcard-title">Gerçek kayıtlar · episodes (canlı veritabanından)</div>
+    <div class="rowcard">
+      <span class="rk">E1</span> <span class="rv">"Salt and Sea, Fire and Blood"</span> · <span class="rk">süre</span> <span class="rv">4380 sn</span> · <span class="rk">yayın</span> <span class="rv">2026-06-21</span> · <span class="hl">altyazı ✓ · bağlam ✓</span><br>
+      <span class="rk">E2</span> <span class="rv">"Queen's Landing"</span> · <span class="rk">süre</span> <span class="rv">4080 sn</span> · <span class="rk">yayın</span> <span class="rv">2026-06-28</span> · <span class="hl">altyazı ✓ · bağlam ✓</span><br>
+      <span class="rk">E3</span> <span class="rv">"Episode 3"</span> · <span class="rk">süre</span> <span class="rv">3900 sn</span> · <span class="rk">yayın</span> <span class="rv">2026-07-06</span> · <span class="hl">altyazı ✓ · bağlam ✓</span>
+    </div>
+
+    <div class="prose">
+      <p><b>content_segments</b>, bölümün zaman dilimli olay parçalarıdır ve vektör dünyasının ilk durağıdır; detayına 10. bölümde gireceğim. Şemadaki yeri şöyle: bölüme bağlıdır (bölüm silinirse silinir), (episode_id, sequence) benzersizdir ve embedding kolonu vector(1536) tipindedir.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>content_segments — bölümün zaman dilimli olay haritası</caption>
+      <thead><tr><th style="width:22%">Alan</th><th style="width:20%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>episode_id · sequence</td><td class="ty">uuid FK · int</td><td>Bağlı bölüm ve dilimin sırası; (episode_id, sequence) benzersiz.</td></tr>
+        <tr><td>start_seconds · end_seconds</td><td class="ty">int · int</td><td>Dilimin zaman aralığı. Dilimler ardışık ve boşluksuzdur: 0'dan başlar, bölüm süresinde biter.</td></tr>
+        <tr><td>title · summary</td><td class="ty">varchar(200) · text</td><td>Kısa başlık ve o dilimde TAM OLARAK ne olduğunu (isimler, ölümler, dönüm noktaları) açıkça yazan özet. Spoiler motoru yorumları bu özetlerle eşleştirdiği için özetin açık sözlü olması bilinçli bir zorunluluk.</td></tr>
+        <tr><td>embedding</td><td class="ty">vector(1536)</td><td>Özetin anlam vektörü. Yorum-segment eşleşmesinin (hizalamanın) matematiksel tarafı bu kolonda döner.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===================== 4 ===================== -->
+  <section id="d4">
+    <div class="sec-head"><div class="sec-num">4</div>
+      <div><div class="sec-sub">Toplama Hattı</div><h2>ingest_targets · raw_comments</h2></div></div>
+    <div class="prose">
+      <p><b>ingest_targets</b>, kaçırmasız toplamanın kalbidir: her hedefin nerede kaldığı (cursor), ne kadar verimli olduğu ve sağlığı bu tabloda yaşar. Hedefler içeriğe bağlıdır ve (content_id, platform, target_key) üçlüsü benzersizdir; aynı hedef aynı içeriğe iki kez ekilemez.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>ingest_targets — kaynak tarama hedefi ve cursor durumu</caption>
+      <thead><tr><th style="width:24%">Alan</th><th style="width:19%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>content_id</td><td class="ty">uuid FK · cascade</td><td>Hedefin ait olduğu içerik; kanal değil. Kanal aç/kapa hedefleri etkilemez.</td></tr>
+        <tr><td>platform</td><td class="ty">int (enum)</td><td>YouTube=0, Threads=1, Reddit=2, X=3, Bluesky=4, Trakt=5, Discord=6, EksiSozluk=7.</td></tr>
+        <tr><td>target_type</td><td class="ty">int (enum)</td><td>Query=0 (arama ifadesi), Video=1 (somut video), Post=2 (somut gönderi/akış). YouTube'da Query keşifle Video hedeflerine genişler; X ve Bluesky'da Query'nin kendisi doğrudan akıştır; Trakt'ta Post hedefleri içerikten türetilir (show/sezon/bölüm akışları).</td></tr>
+        <tr><td>target_key · display_name</td><td class="ty">varchar(256) · varchar(300)?</td><td>Hedefin kimliği: arama terimi, video kimliği ya da akış anahtarı (örn. season:house-of-the-dragon:3) ve insan-okur adı.</td></tr>
+        <tr><td>cursor</td><td class="ty">varchar(512)?</td><td>Platforma özgü kaldığı-yer bilgisi: YouTube sayfa jetonu, Bluesky "since" zaman filigranı, keşifte publishedAfter filigranı. Kaçırmasız artımlı çekimin sırrı.</td></tr>
+        <tr><td>is_active · backfill_completed</td><td class="ty">bool · bool</td><td>Hedef canlı mı; geçmiş sayfaların tamamı bir kez çekildi mi (sonrası filigrandan devam).</td></tr>
+        <tr><td>last_polled_at_utc · last_new_count</td><td class="ty">timestamptz? · int</td><td>Son yoklama anı ve o yoklamada gelen yeni yorum sayısı. Sıcak/soğuk tempo bu iki alandan hesaplanır: yenisi gelen hedef sıcaktır, kısa aralıkla döner.</td></tr>
+        <tr><td>consecutive_failures · last_error</td><td class="ty">int · varchar(1000)?</td><td>Ardışık GERÇEK hata sayacı ve son hata metni. Eşik aşımında hedef pasife alınır; kota/kredi tükenmesi bu sayaca İŞLEMEZ, kaynak bekletmesiyle yönetilir.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rowcard-title">Gerçek kayıtlar · ingest_targets (farklı platform ve tiplerden)</div>
+    <div class="rowcard">
+      <span class="rk">YouTube·Query:</span> <span class="rv">"HotD season 3"</span> <span class="rk">aktif</span> <span class="hl">✓</span> <span class="rk">son_yeni</span> <span class="rv">10</span> · <span class="rk">YouTube·Video:</span> <span class="rv">FCZljmWuoMY</span> <span class="rk">backfill</span> <span class="hl">✓</span><br>
+      <span class="rk">X·Query:</span> <span class="rv">"House of the Dragon season 3"</span> · <span class="rk">Bluesky·Query:</span> <span class="rv">"HouseOfTheDragon"</span> <span class="rk">(etiket kelimeye indirgenmiş)</span><br>
+      <span class="rk">Trakt·Post:</span> <span class="rv">season:house-of-the-dragon:3</span> <span class="rk">(bölüm hizası kaynakta hazır)</span>
+    </div>
+
+    <div class="prose">
+      <p><b>raw_comments</b>, dış dünyadan gelen her yorumun değişmez arşividir ve aynı zamanda işleme hattının durum defteridir. İki kritik tasarım var. Birincisi idempotency: (content_id, platform, external_id) üçlüsü benzersizdir; en-az-bir-kez toplama dünyasında aynı yorum iki kez gelirse veritabanı ikinci kaydı yapısal olarak reddeder. İkincisi anonimlik: yazarın kimliği asla ham saklanmaz; SHA-256 ile tek yönlü özetlenir, "aynı yazar mı" sorusu cevaplanabilir ama kimlik geri döndürülemez.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>raw_comments — ham yorum arşivi + pipeline durumu</caption>
+      <thead><tr><th style="width:24%">Alan</th><th style="width:19%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>content_id · platform</td><td class="ty">uuid FK · int</td><td>Hangi içeriğin havuzuna ait ve hangi kaynaktan geldi.</td></tr>
+        <tr><td>external_id · source_ref</td><td class="ty">varchar(256) · varchar(512)?</td><td>Kaynak platformdaki benzersiz yorum kimliği ve bağlam referansı (yt:video:..., bsky:terim gibi).</td></tr>
+        <tr><td>author_hash</td><td class="ty">varchar(64)</td><td>Yazar kimliğinin geri döndürülemez SHA-256 özeti.</td></tr>
+        <tr><td>original_text · original_lang</td><td class="ty">text · varchar(8)?</td><td>Ham metin ve tespit edilen dil (en/tr kabul edilir; diğerleri elenir).</td></tr>
+        <tr><td>source_created_at_utc · fetched_at_utc</td><td class="ty">timestamptz? · timestamptz</td><td>Yorumun platformda gerçekten yazıldığı an ve bizim çektiğimiz an. Akış sıralaması yazılma anına göredir.</td></tr>
+        <tr><td>state · fail_reason</td><td class="ty">int (enum) · text?</td><td>Dokuz durumlu yaşam döngüsündeki yeri ve varsa düşme/başarısızlık gerekçesi.</td></tr>
+      </tbody>
+    </table>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#fbbf24"></span><span class="t">Durum Makinesi · raw_comments.state</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 300" role="img" aria-label="Ham yorum durum makinesi">
+          <defs>
+            <marker id="sm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b7d99"/>
+            </marker>
+          </defs>
+          <style>.st1{fill:#111d33;stroke-width:1.6}.sl{font-size:12px;font-weight:700}.sd{font-size:10px;fill:#6b7d99}</style>
+
+          <rect x="30" y="110" width="130" height="54" rx="12" class="st1" stroke="#fbbf24"/>
+          <text x="95" y="133" text-anchor="middle" fill="#fbbf24" class="sl">Pending (0)</text>
+          <text x="95" y="151" text-anchor="middle" class="sd">toplandı, sırada</text>
+
+          <rect x="215" y="110" width="150" height="54" rx="12" class="st1" stroke="#fbbf24"/>
+          <text x="290" y="133" text-anchor="middle" fill="#fbbf24" class="sl">Normalized (1)</text>
+          <text x="290" y="151" text-anchor="middle" class="sd">temiz + dili tespitli</text>
+
+          <rect x="420" y="110" width="140" height="54" rx="12" class="st1" stroke="#a78bfa"/>
+          <text x="490" y="133" text-anchor="middle" fill="#a78bfa" class="sl">Clustered (3)</text>
+          <text x="490" y="151" text-anchor="middle" class="sd">yeni anlam kümesi</text>
+
+          <rect x="615" y="110" width="150" height="54" rx="12" class="st1" stroke="#34d399"/>
+          <text x="690" y="133" text-anchor="middle" fill="#34d399" class="sl">Published (6)</text>
+          <text x="690" y="151" text-anchor="middle" class="sd">curated mesaj doğdu</text>
+
+          <rect x="215" y="216" width="150" height="50" rx="12" class="st1" stroke="#fb7185"/>
+          <text x="290" y="238" text-anchor="middle" fill="#fb7185" class="sl">DroppedFiltered (8)</text>
+          <text x="290" y="255" text-anchor="middle" class="sd">dil/uzunluk elemesi</text>
+
+          <rect x="420" y="216" width="150" height="50" rx="12" class="st1" stroke="#fb7185"/>
+          <text x="495" y="238" text-anchor="middle" fill="#fb7185" class="sl">DroppedDuplicate (2)</text>
+          <text x="495" y="255" text-anchor="middle" class="sd">kopya; sayaç arttı</text>
+
+          <rect x="615" y="216" width="150" height="50" rx="12" class="st1" stroke="#fb7185"/>
+          <text x="690" y="238" text-anchor="middle" fill="#fb7185" class="sl">Failed (7)</text>
+          <text x="690" y="255" text-anchor="middle" class="sd">sonraki turda denenir</text>
+
+          <rect x="810" y="110" width="160" height="54" rx="12" class="st1" stroke="#64748b" stroke-dasharray="5 4"/>
+          <text x="890" y="133" text-anchor="middle" fill="#9fb0c9" class="sl">Aligned/Translated</text>
+          <text x="890" y="151" text-anchor="middle" class="sd">(4/5) rezerve ara durumlar</text>
+
+          <line x1="160" y1="137" x2="215" y2="137" stroke="#6b7d99" stroke-width="1.6" marker-end="url(#sm)"/>
+          <line x1="365" y1="137" x2="420" y2="137" stroke="#6b7d99" stroke-width="1.6" marker-end="url(#sm)"/>
+          <line x1="560" y1="137" x2="615" y2="137" stroke="#6b7d99" stroke-width="1.6" marker-end="url(#sm)"/>
+          <text x="380" y="122" class="sd">embed + eşsiz</text>
+          <text x="572" y="122" class="sd">LLM tamam</text>
+          <line x1="240" y1="164" x2="270" y2="216" stroke="#fb7185" stroke-width="1.4" marker-end="url(#sm)"/>
+          <line x1="480" y1="164" x2="490" y2="216" stroke="#fb7185" stroke-width="1.4" marker-end="url(#sm)"/>
+          <line x1="640" y1="164" x2="670" y2="216" stroke="#fb7185" stroke-width="1.4" marker-end="url(#sm)"/>
+          <text x="60" y="40" fill="#9fb0c9" font-size="12">Toplayıcı yalnız Pending yazar; sonraki her adım durumu İLERİ taşır. Düşen kayıt silinmez, gerekçesiyle arşivde kalır:</text>
+          <text x="60" y="60" fill="#6b7d99" font-size="11.5">hem denetlenebilirlik hem de "aynı yorum tekrar gelirse yeniden işleme" korunur (idempotency zaten kayıt düzeyinde).</text>
+        </svg>
+      </div>
+      <figcaption>Dokuz durumlu yaşam döngüsü: mutlu yol Pending → Normalized → Clustered → Published; düşüşler gerekçeli ve kalıcıdır.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================== 5 ===================== -->
+  <section id="d5">
+    <div class="sec-head"><div class="sec-num">5</div>
+      <div><div class="sec-sub">Kurasyon</div><h2>comment_clusters · curated_messages</h2></div></div>
+    <div class="prose">
+      <p><b>comment_clusters</b>, "aynı şeyi söyleyen yorumlar" kümesinin veritabanındaki karşılığıdır. Her kümenin bir merkez vektörü (centroid) ve üye sayısı vardır. Yeni bir yorum işlenirken vektörü, içeriğin mevcut küme merkezleriyle karşılaştırılır; yeterince yakın bir küme varsa yorum o kümeye katılır (yeni mesaj doğmaz, kümenin temsilcisinin "benzer sayısı" artar), yoksa yorum kendi kümesini kurar. Kanal akışının "elli kişi benzer şey söyledi" rozetinin arkasındaki veri budur.</p>
+      <p><b>curated_messages</b> ise kullanıcı akışına giren nihai üründür: temizlenmiş, tekilleştirilmiş, bölüme ve saniyeye hizalanmış, spoiler değerlendirmesi yapılmış, iki dilde hazır mesaj. İçeriğe bağlıdır; kanallar bu havuzu kendi kapsamlarına göre okur.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>curated_messages — yayına hazır kürasyonlu mesaj</caption>
+      <thead><tr><th style="width:26%">Alan</th><th style="width:18%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>content_id · platform</td><td class="ty">uuid FK · int</td><td>Havuz aidiyeti ve kaynak platform (akışta rozet olarak görünür).</td></tr>
+        <tr><td>cluster_id · source_raw_comment_id</td><td class="ty">uuid? FK · uuid FK</td><td>Ait olduğu anlam kümesi (küme silinirse null'a düşer) ve temsilci seçilen ham yorum (ham kayıt curated varken silinemez; arşiv zinciri kopmaz).</td></tr>
+        <tr><td>episode_number · anchor_seconds</td><td class="ty">int? · int?</td><td>Hizalandığı bölüm ve bölüm içindeki saniye çapası. İkisi de null ise mesaj "genel"dir (zamana bağlanamayan sohbet). Zaman kaydırıcısı filtresi bu iki alanla çalışır.</td></tr>
+        <tr><td>is_absolute_spoiler · spoiler_score</td><td class="ty">bool · float?</td><td>"Hiçbir konumda güvenli değil" bayrağı (büyük twist/ölüm/final ifşası) ve modelin 0-1 arası spoiler güveni. Koruması açık kullanıcıda bulanıklaştırma bu bayrakla tetiklenir.</td></tr>
+        <tr><td>text_en · text_tr</td><td class="ty">text · text</td><td>Mesajın iki dildeki hali; kullanıcı dil tercihi hangi kolonun okunacağını seçer.</td></tr>
+        <tr><td>similar_count</td><td class="ty">int</td><td>Bu mesajla aynı anlama gelen toplanmış yorum sayısı (küme üye sayısının akıştaki yansıması).</td></tr>
+        <tr><td>embedding</td><td class="ty">vector(1536)</td><td>Mesajın anlam vektörü; sonraki yorumların tekilleştirme karşılaştırmaları ve olası anlam aramaları için saklanır.</td></tr>
+        <tr><td>published_at_utc · source_created_at_utc</td><td class="ty">timestamptz · timestamptz</td><td>Bizim yayına aldığımız an ve kaynakta gerçekten yazıldığı an. Akış sıralaması ve sayfalama imleci (keyset cursor) kaynak yazılma anı üzerindedir; index'i de buna göre kurulu.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="rowcard-title">Gerçek kayıtlar · curated_messages (canlı veritabanından, HotD)</div>
+    <div class="rowcard">
+      <span class="rk">platform:</span> <span class="rv">YouTube</span> · <span class="rk">E1 @ 3150sn</span> · <span class="sp">is_absolute_spoiler: true · score 0.95</span> · <span class="rk">benzer:</span> <span class="hl">5</span><br>
+      <span class="rk">text_tr:</span> <span class="rv">"Huzur içinde yatsın Jace ve Vermax! 🙏😭"</span><br><br>
+      <span class="rk">platform:</span> <span class="rv">X</span> · <span class="rk">E1 @ 2310sn</span> · <span class="rk">spoiler: false · score 0.60</span> · <span class="rk">benzer:</span> <span class="hl">4</span><br>
+      <span class="rk">text_tr:</span> <span class="rv">"House of the Dragon'daki şimdiye kadarki en büyük karakter suikastı mı bu? Çünkü kitap Corlys ve dizi Cor…"</span>
+    </div>
+    <div class="prose">
+      <p>Bu iki gerçek satır, modelin ayrımını güzel gösteriyor: ilki bir karakter ölümünü açıkça ifşa ettiği için mutlak spoiler bayrağı yemiş ve 3150. saniyeye (ölüm sahnesinin dilimine) çapalanmış; ikincisi kitap-dizi karşılaştırması yaptığı için spoiler sayılmamış ama yine de sahnesine hizalanmış.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 6 ===================== -->
+  <section id="d6">
+    <div class="sec-head"><div class="sec-num">6</div>
+      <div><div class="sec-sub">Kimlik ve Erişim</div><h2>users · subscriptions · channels</h2></div></div>
+    <div class="prose">
+      <p><b>users</b> tablosunda kimliğin gerçek anahtarı e-posta değil, (provider, provider_sub_id) çiftidir; kimlik doğrulama tamamen SSO sağlayıcısına delegedir ve sağlayıcının stabil kimliği esas alınır. Üç ayrı benzersizlik korunur: e-posta (citext, yani büyük/küçük harf duyarsız), sağlayıcı kimlik çifti ve görünen ad. Moderatör yapay zekası da bu tabloda yaşar: Provider=System, sub kimliği "moderator" olan bir sistem hesabıdır ve mesajları teknik olarak sıradan bir kullanıcı mesajı gibi yazılır.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>users + subscriptions — kimlik ve Pro aboneliği</caption>
+      <thead><tr><th style="width:26%">Alan</th><th style="width:19%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>users.email</td><td class="ty">citext · UQ</td><td>Sağlayıcıdan gelen e-posta; kullanıcıya gösterilmez, yalnız hesap eşleme içindir.</td></tr>
+        <tr><td>users.provider + provider_sub_id</td><td class="ty">int + varchar(255) · UQ</td><td>Google=0, Apple=1, System=99 ve sağlayıcının değişmez kullanıcı kimliği; gerçek birincil kimlik bu çifttir.</td></tr>
+        <tr><td>users.display_name · display_name_locked</td><td class="ty">varchar(40) UQ · bool</td><td>Otomatik üretilen benzersiz görünen ad ve kilit bayrağı: kullanıcı adını bir kez kendisi seçer, sonra değişmez.</td></tr>
+        <tr><td>users.avatar_initials · avatar_color_hex</td><td class="ty">varchar(2) · varchar(7)</td><td>Akıştaki avatar baş harfleri ve rengi.</td></tr>
+        <tr><td>subscriptions.plan · status</td><td class="ty">int · int</td><td>Free=0/Pro=1 ve Active=0/Expired=1/Cancelled=2. Kullanıcı başına yalnız BİR Active kayıt olabilir: status=0 üzerinde kısmi benzersiz index bunu veritabanı seviyesinde garanti eder.</td></tr>
+        <tr><td>subscriptions.price_usd · payment_ref</td><td class="ty">numeric(10,2) · varchar(128)</td><td>Satın alma anındaki fiyat ve ödeme sağlayıcısının işlem referansı; süre started/expires çiftiyle 30 gün yürür, süresi dolan kayıt arka planda Expired'a çekilir.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="prose">
+      <p><b>channels</b>, içerik havuzunun kullanıcıya açılan penceresidir. Beş durumlu yaşam döngüsü (Draft=0 → Preparing=3 → Ready=4 → Live=1 → Closed=2) doğrudan bu tablodaki status kolonunda yürür; hazırlık sürecinin başlangıç anı ve son hatası da yine burada tutulur ki panel ilerlemeyi ve takılmayı gösterebilsin. episode_number kolonu kanalın kapsamını belirler: null ise sezon geneli, doluysa yalnız o bölüme özel. Kanal içeriğe bağlıdır ama bu bağ kısıtlıdır (restrict): üzerinde kanal duran içerik silinemez; önce kanallar kaldırılır.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>channels — kürasyonlu sohbet penceresi</caption>
+      <thead><tr><th style="width:26%">Alan</th><th style="width:19%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>content_id</td><td class="ty">uuid FK · restrict</td><td>Gösterdiği içerik havuzu.</td></tr>
+        <tr><td>slug · title</td><td class="ty">varchar(80) UQ · varchar(200)</td><td>Kanal adresi ve başlığı.</td></tr>
+        <tr><td>episode_number</td><td class="ty">int?</td><td>Kapsam: null = sezon geneli; değer = yalnız o bölüm. Okuma filtreleri, spoiler kuralları ve moderatör kapsam kuralı bu alandan türeer.</td></tr>
+        <tr><td>status</td><td class="ty">int (enum) · index</td><td>Beş durumlu yaşam döngüsü; kullanıcı yalnız Live (ve arşiv okuma için Closed) görür, toplama içerik düzeyinde Live/Preparing kanal varlığına bakar.</td></tr>
+        <tr><td>opened_at · closed_at · preparation_started_at</td><td class="ty">timestamptz?</td><td>Yayına alma, kapatma ve hazırlığı başlatma anları.</td></tr>
+        <tr><td>preparation_error</td><td class="ty">text?</td><td>Hazırlık sırasındaki son hata (örn. segment üretimi başarısız); panelde görünür, sonraki turda yeniden denenir.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===================== 7 ===================== -->
+  <section id="d7">
+    <div class="sec-head"><div class="sec-num">7</div>
+      <div><div class="sec-sub">Etkileşim</div><h2>Üyelik · Ziyaret · Tercih · Canlı Mesaj</h2></div></div>
+    <div class="prose">
+      <p>Bu dörtlü, kullanıcının kanalla kurduğu ilişkinin tamamını taşır. <b>channel_memberships</b> "Katıl" butonunun kalıcı kaydıdır; (user, channel) benzersizdir ve Pro süresi dolsa bile silinmez, özellik erişimi her istekte aktif abonelik kontrolünden geçer. <b>channel_visits</b> her giriş-çıkış hareketini, giriş anındaki üyelik ve Pro durumunun fotoğrafıyla (was_member, was_pro) birlikte tutar; ürün analitiğinin ana kaynağı budur. <b>user_channel_prefs</b> kullanıcının kanal özelindeki kişisel ayarlarıdır: izleme konumu (bölüm + saniye), spoiler koruması, yalnız-canlı modu ve dil tercihi. Bu tablo aynı zamanda moderatörün kişiye özel yanıtlarının içerik sınırını da besler: kullanıcının konumu buradan okunur.</p>
+      <p><b>user_messages</b> canlı sohbetin kendisidir ve bilinçli olarak KANALA bağlıdır (içeriğe değil): sohbet, o odada yaşanan şeydir. Mesaj yazıldığı anda yazarın konumu (episode_number, anchor_seconds) mesaja mühürlenir; spoiler denetiminin kararı (is_spoiler, spoiler_reason) mesajı engellemez, işaretler. Moderatör mesajları is_moderator bayrağıyla ayrışır ve reply_to_message_id ile bir kullanıcı mesajına gönderme yapabilir. En yeni alan <b>visible_to_user_id</b>: doluysa mesaj yalnızca o kullanıcıya görünür; moderatörün kişiye özel yanıtları böyle taşınır, listeleme sorgusu bu alanı okuyucuya göre süzer ve canlı yayında da yalnız alıcının bağlantısına gider. Alıcı kullanıcı silinirse ona özel yanıtlar da zincirleme silinir; "sahipsiz özel mesajın herkese açılması" gibi bir sızıntı yapısal olarak imkânsız.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>user_messages — canlı sohbet mesajı</caption>
+      <thead><tr><th style="width:26%">Alan</th><th style="width:19%">Tip</th><th>Ne tutar, neden var</th></tr></thead>
+      <tbody>
+        <tr><td>channel_id · user_id</td><td class="ty">uuid FK · uuid FK</td><td>Mesajın odası ve yazarı (ikisi de cascade).</td></tr>
+        <tr><td>text · lang</td><td class="ty">text · varchar(8)?</td><td>Mesaj metni (1-1000 karakter) ve dili.</td></tr>
+        <tr><td>episode_number · anchor_seconds</td><td class="ty">int? · int?</td><td>Yazıldığı andaki izleme konumu mührü. Bölüm kanalında kapsam bölümü sabittir; okuyucu tarafında "konumumdan ileride yazılmış" koruması bu mühürle hesaplanır.</td></tr>
+        <tr><td>is_spoiler · spoiler_reason</td><td class="ty">bool · text?</td><td>Gerçek zamanlı spoiler denetiminin kararı ve kısa Türkçe gerekçesi. Engelleme yok; koruması açık okuyucuda bulanıklaştırma var.</td></tr>
+        <tr><td>is_moderator · reply_to_message_id</td><td class="ty">bool · uuid?</td><td>Moderatör mesajı işareti ve gönderme yapılan mesaj.</td></tr>
+        <tr><td>visible_to_user_id</td><td class="ty">uuid? FK · cascade</td><td>null = herkese açık; dolu = YALNIZ bu kullanıcı görür (kişiye özel moderatör yanıtı, "sana özel" rozeti).</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ===================== 8 ===================== -->
+  <section id="d8">
+    <div class="sec-head"><div class="sec-num">8</div>
+      <div><div class="sec-sub">Anlamın Sayısal Hali</div><h2>Embedding — Nedir, Nasıl Üretilir, Nerede Yaşar</h2></div></div>
+    <div class="prose">
+      <p>Embedding, bir metnin anlamının sayılara çevrilmiş halidir: metni sabit uzunlukta bir sayı listesine (vektöre) dönüştüren bir modelden geçiririm ve anlamca yakın metinler, bu sayı uzayında birbirine yakın noktalara düşer. "Jace öldü, yıkıldım" ile "Jacaerys'in ölümü beni mahvetti" kelime olarak neredeyse hiç örtüşmez ama vektörleri neredeyse üst üstedir. Echo'nun tekilleştirme ve hizalama zekâsının tamamı bu basit gerçeğin üzerine kuruludur.</p>
+      <p>Üretim tarafında OpenAI'nin <b>text-embedding-3-small</b> modelini kullanıyorum; her metin için <b>1536 boyutlu</b> bir vektör döner. Bu boyut, veritabanındaki üç vektör kolonunun tip tanımında sabittir: vector(1536). Embedding üretimi işleme hattının normalize sonrası adımıdır ve toplu (batch) çağrılarla yapılır; bir yorumun vektörü bir kez üretilir, kaydedilir ve ömrü boyunca yeniden hesaplanmaz.</p>
+      <p>Veritabanında embedding üç yerde yaşar ve üçünün görevi farklıdır. <b>content_segments.embedding</b> bölüm dilim özetlerinin vektörüdür; "bu yorum bölümün hangi sahnesinden bahsediyor" sorusunu cevaplar. <b>comment_clusters.centroid</b> bir anlam kümesinin merkez vektörüdür; "bu yeni yorum daha önce söylenmiş bir şeyin tekrarı mı" sorusunu cevaplar. <b>curated_messages.embedding</b> yayınlanan mesajın kendi vektörüdür; kümeden bağımsız benzerlik karşılaştırmaları ve ileriye dönük anlam aramaları için saklanır. Üç kolon da aynı modelle, aynı boyutta üretilir ki birbiriyle doğrudan karşılaştırılabilir olsunlar.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 9 ===================== -->
+  <section id="d9">
+    <div class="sec-head"><div class="sec-num">9</div>
+      <div><div class="sec-sub">Vektörlerin Evi</div><h2>Vector Store — pgvector ile Tek Veritabanında</h2></div></div>
+    <div class="prose">
+      <p>Vector store, vektörleri saklayıp "şuna en çok benzeyeni getir" sorusunu hızlı cevaplayabilen depodur. Piyasada bu iş için ayrı ürünler var (Pinecone, Qdrant, Weaviate gibi); Echo'da bilinçli olarak hiçbirini kullanmadım. PostgreSQL'in <b>pgvector</b> eklentisi, vector veri tipini ve benzerlik operatörlerini doğrudan SQL'e getiriyor; böylece vektör araması, ilişkisel filtrelerle AYNI sorguda birleşiyor. "Bu içeriğin, şu bölüme ait segmentleri içinde en benzer üçünü getir" cümlesi tek SQL'dir; ayrı bir vektör veritabanında bu, iki sistem arasında kimlik taşıma, senkron tutma ve tutarlılık dertleri demekti.</p>
+      <p>Benzerlik ölçüsü olarak kosinüs mesafesi kullanıyorum; pgvector'da bunun operatörü <b>&lt;=&gt;</b> işaretidir. Mesafe 0'a yaklaştıkça metinler anlamca aynılaşır. Kümeleme kararında eşik bu mesafe üzerinden verilir: yeni yorumun vektörü, içeriğin küme merkezlerine yeterince yakınsa (benzerlik eşiğin üstündeyse) yorum o kümeye katılır ve temsilcinin "benzer sayısı" artar; değilse kendi kümesini kurar ve yayına yeni mesaj olarak çıkar.</p>
+    </div>
+
+    <div class="codebox">
+      <div class="cb-title">Kümeleme kararı — yeni yorumun en yakın kümesini bulma (kavramsal SQL)</div>
+      <pre>SELECT id, centroid &lt;=&gt; @yeni_yorum_vektoru AS mesafe
+FROM comment_clusters
+WHERE content_id = @icerik
+ORDER BY centroid &lt;=&gt; @yeni_yorum_vektoru
+LIMIT 1;
+-- mesafe eşiğin altındaysa: kümeye katıl, similar_count++
+-- değilse: yeni küme + yeni curated mesaj</pre>
+    </div>
+
+    <div class="codebox">
+      <div class="cb-title">Hizalama — yorum bölümün hangi sahnesine ait? (kavramsal SQL)</div>
+      <pre>SELECT s.id, s.start_seconds, s.end_seconds,
+       s.embedding &lt;=&gt; @yorum_vektoru AS mesafe
+FROM content_segments s
+JOIN episodes e ON e.id = s.episode_id
+WHERE e.content_id = @icerik AND e.episode_number = @bolum
+ORDER BY s.embedding &lt;=&gt; @yorum_vektoru
+LIMIT 3;
+-- en yakın dilimler LLM'e aday olarak verilir;
+-- nihai bölüm/saniye kararını bağlamla birlikte LLM verir</pre>
+    </div>
+
+    <div class="prose">
+      <p>Bu iki sorgu, vektör dünyasının Echo'daki iki ana kullanımını özetliyor: <b>tekilleştirme</b> (kümeleme) ve <b>hizalama</b> (segment eşleştirme). İkisinde de vektör araması tek başına karar vermez; adayları daraltır, nihai kararı bağlam bilgisiyle birlikte kurasyon modeli verir. Matematik kaba işi yapar, dil modeli inceliği ekler; maliyet ve isabet dengesi böyle kurulur.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 10 ===================== -->
+  <section id="d10">
+    <div class="sec-head"><div class="sec-num">10</div>
+      <div><div class="sec-sub">Zamanın Haritası</div><h2>Segment — Bölümü Dilimleyen Olay Haritası</h2></div></div>
+    <div class="prose">
+      <p>Segment, bir bölümün zaman çizgisi üzerindeki olay dilimidir: başlangıç ve bitiş saniyesi belli, o aralıkta ne yaşandığını açıkça anlatan bir özet ve bu özetin embedding'i. Bölümün tamamı, boşluksuz ve ardışık dilimlerle 0'dan son saniyeye kadar kaplanır. Segmentler Echo'nun zaman zekâsının temelidir; onlar olmadan ne yorumları saniyeye çapalayabilirim, ne kaydırıcı konumuna göre spoiler koruyabilirim, ne de moderatörün kişiye özel yanıtını kullanıcının izlediği yere sınırlayabilirim.</p>
+      <p>Üretim süreci üç kaynaktan beslenir ve kanal hazırlığı (Preparing) sırasında arka planda koşar. Birinci ve en değerli kaynak <b>zaman damgalı transkript</b>: bölümün SRT altyazısı yüklendiyse, diyaloglar "[mm:ss] metin" halinde modele verilir ve dilim sınırları GERÇEK zamana oturur. İkinci kaynak <b>Wikipedia bölüm özeti</b>: olay örgüsünün doğrulanmış anlatısı. Üçüncü kaynak <b>bölüm bağlam metni</b> (episodes.context_text): Wikipedia'sı henüz yazılmamış taze bölümlerde olay örgüsünün yerini tutar, varsa Wikipedia'yı tamamlar. Model bu kaynaklardan, her dilim için başlık ve açık sözlü özet üretir; özetler embedding'lenip content_segments'e yazılır.</p>
+    </div>
+
+    <div class="rowcard-title">Gerçek kayıtlar · content_segments (HotD S3 · Bölüm 1'in ilk üç dilimi, canlı veritabanından)</div>
+    <div class="rowcard">
+      <span class="rk">seq 1</span> · <span class="rk">0 → 480 sn</span> · <span class="rv">"Aegon's Flight and Capture"</span> · <span class="rk">embedding:</span> <span class="hl">vector(1536) ✓</span><br>
+      <span class="rk">seq 2</span> · <span class="rk">480 → 840 sn</span> · <span class="rv">"Aemond Declares Himself King"</span> · <span class="rk">embedding:</span> <span class="hl">vector(1536) ✓</span><br>
+      <span class="rk">seq 3</span> · <span class="rk">840 → 1020 sn</span> · <span class="rv">"Rhaenyra Plans to Attack King's Landing"</span> · <span class="rk">embedding:</span> <span class="hl">vector(1536) ✓</span><br>
+      <span class="rk">toplam:</span> <span class="rv">E1 için 10 dilim, 0'dan 4380. saniyeye boşluksuz; üç bölümde 32 dilim</span>
+    </div>
+
+    <div class="prose">
+      <p>Segmentin tüketildiği dört yer var. <b>Hizalama:</b> yeni yorumun vektörü bölümün dilim vektörleriyle karşılaştırılır, yorum en anlamlı dilimin zaman aralığına çapalanır (anchor_seconds). <b>Kaydırıcı filtresi:</b> kullanıcı "38. dakikadayım" dediğinde, akışa yalnız çapası o konumun gerisinde kalan mesajlar girer. <b>Spoiler karar desteği:</b> canlı mesaj denetiminde kullanıcının konumuna kadarki dilim özetleri "bilinen olaylar", sonrası "ifşa edilmemesi gerekenler" olarak modele verilir. <b>Kişiye özel moderatör yanıtı:</b> @echo mention'ına cevap üretilirken, soran kullanıcının konumuna kadarki dilim özetleri modelin bilgi evrenini çizer; model o sınırın ötesini bilmiyormuş gibi konuşur.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 11 ===================== -->
+  <section id="d11">
+    <div class="sec-head"><div class="sec-num">11</div>
+      <div><div class="sec-sub">Uçtan Uca</div><h2>Bir Yorumun Veri Yolculuğu — Gerçek Bir Kayıtla</h2></div></div>
+    <div class="prose">
+      <p>Yukarıdaki tüm parçaları tek bir gerçek kayıt üzerinde birleştiriyorum. Aşağıdaki yolculuk, canlı veritabanında duran bir mesajın gerçekten yaşadığı adımlardır: YouTube'da HotD S3'ün ilk bölümü altına yazılmış bir taziye yorumu, sistemin içinden geçip "E1 @ 3150. saniye, mutlak spoiler" etiketiyle yayına çıktı.</p>
+    </div>
+
+    <figure>
+      <div class="fig-top"><span class="dot" style="background:#34d399"></span><span class="t">Veri Yolculuğu · toplama → yayın → koruma</span></div>
+      <div class="fig-body">
+        <svg viewBox="0 0 1000 560" role="img" aria-label="Bir yorumun uçtan uca veri yolculuğu">
+          <defs>
+            <marker id="jm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#6b7d99"/>
+            </marker>
+          </defs>
+          <style>.jb{fill:#111d33;stroke-width:1.6}.jt{font-size:12.5px;font-weight:700}.jd{font-size:10.5px;fill:#9fb0c9}.js{font-size:10px;fill:#6b7d99}.jl{stroke:#6b7d99;stroke-width:1.6}</style>
+
+          <rect x="30" y="30" width="215" height="76" rx="12" class="jb" stroke="#fbbf24"/>
+          <text x="137" y="54" text-anchor="middle" fill="#fbbf24" class="jt">1 · Toplama</text>
+          <text x="137" y="72" text-anchor="middle" class="jd">YouTube hedefi yoklanır (cursor'dan)</text>
+          <text x="137" y="88" text-anchor="middle" class="js">ingest_targets: video FCZljmWuoMY</text>
+
+          <rect x="295" y="30" width="215" height="76" rx="12" class="jb" stroke="#fbbf24"/>
+          <text x="402" y="54" text-anchor="middle" fill="#fbbf24" class="jt">2 · Ham Kayıt</text>
+          <text x="402" y="72" text-anchor="middle" class="jd">raw_comments · state=Pending</text>
+          <text x="402" y="88" text-anchor="middle" class="js">(content, platform, external_id) UQ · yazar SHA-256</text>
+
+          <rect x="560" y="30" width="215" height="76" rx="12" class="jb" stroke="#fbbf24"/>
+          <text x="667" y="54" text-anchor="middle" fill="#fbbf24" class="jt">3 · Normalize</text>
+          <text x="667" y="72" text-anchor="middle" class="jd">temizlik + dil tespiti (en)</text>
+          <text x="667" y="88" text-anchor="middle" class="js">state=Normalized</text>
+
+          <rect x="560" y="150" width="215" height="76" rx="12" class="jb" stroke="#a78bfa"/>
+          <text x="667" y="174" text-anchor="middle" fill="#a78bfa" class="jt">4 · Embedding</text>
+          <text x="667" y="192" text-anchor="middle" class="jd">text-embedding-3-small · 1536 boyut</text>
+          <text x="667" y="208" text-anchor="middle" class="js">anlam vektörü üretildi</text>
+
+          <rect x="295" y="150" width="215" height="76" rx="12" class="jb" stroke="#a78bfa"/>
+          <text x="402" y="174" text-anchor="middle" fill="#a78bfa" class="jt">5 · Küme Kararı</text>
+          <text x="402" y="192" text-anchor="middle" class="jd">centroid &lt;=&gt; vektör · en yakın küme</text>
+          <text x="402" y="208" text-anchor="middle" class="js">eşsiz → yeni küme (similar_count 5'e çıkacak)</text>
+
+          <rect x="30" y="150" width="215" height="76" rx="12" class="jb" stroke="#a78bfa"/>
+          <text x="137" y="174" text-anchor="middle" fill="#a78bfa" class="jt">6 · LLM Kurasyonu</text>
+          <text x="137" y="192" text-anchor="middle" class="jd">hizalama adayları + bağlamla karar</text>
+          <text x="137" y="208" text-anchor="middle" class="js">E1 · 3150sn · spoiler ✓ (0.95) · TR çeviri</text>
+
+          <rect x="30" y="272" width="480" height="106" rx="12" class="jb" stroke="#34d399"/>
+          <text x="270" y="296" text-anchor="middle" fill="#34d399" class="jt">7 · Yayın · curated_messages</text>
+          <text x="270" y="317" text-anchor="middle" class="jd">"Huzur içinde yatsın Jace ve Vermax! 🙏😭"</text>
+          <text x="270" y="336" text-anchor="middle" class="js">episode=1 · anchor=3150 · is_absolute_spoiler=true · score=0.95 · similar=5</text>
+          <text x="270" y="354" text-anchor="middle" class="js">raw state=Published · kaynak arşivde değişmeden duruyor</text>
+
+          <rect x="560" y="272" width="410" height="106" rx="12" class="jb" stroke="#2dd4bf"/>
+          <text x="765" y="296" text-anchor="middle" fill="#2dd4bf" class="jt">8 · Kanal Okuması</text>
+          <text x="765" y="317" text-anchor="middle" class="jd">hotd-s3-b1 (scope=1): content + episode filtresi</text>
+          <text x="765" y="336" text-anchor="middle" class="js">konumu 3150'nin gerisindeki kullanıcıya akışta HİÇ görünmez;</text>
+          <text x="765" y="354" text-anchor="middle" class="js">3150'yi geçmiş kullanıcıya normal akar</text>
+
+          <rect x="200" y="428" width="600" height="96" rx="12" class="jb" stroke="#fb7185"/>
+          <text x="500" y="452" text-anchor="middle" fill="#fb7185" class="jt">9 · Kişisel Koruma Katmanı</text>
+          <text x="500" y="473" text-anchor="middle" class="jd">Konum kurmamış ama spoiler koruması AÇIK kullanıcıda: mesaj bulanık gelir,</text>
+          <text x="500" y="491" text-anchor="middle" class="jd">"Korunan içerik — görmek için tıkla" der; koruma KAPALI kullanıcıda açık görünür.</text>
+          <text x="500" y="509" text-anchor="middle" class="js">is_absolute_spoiler bayrağı burada devreye girer — karar mesajda, uygulama okuyucuda</text>
+
+          <line x1="245" y1="68" x2="295" y2="68" class="jl" marker-end="url(#jm)"/>
+          <line x1="510" y1="68" x2="560" y2="68" class="jl" marker-end="url(#jm)"/>
+          <line x1="667" y1="106" x2="667" y2="150" class="jl" marker-end="url(#jm)"/>
+          <line x1="560" y1="188" x2="510" y2="188" class="jl" marker-end="url(#jm)"/>
+          <line x1="295" y1="188" x2="245" y2="188" class="jl" marker-end="url(#jm)"/>
+          <line x1="137" y1="226" x2="137" y2="272" class="jl" marker-end="url(#jm)"/>
+          <line x1="510" y1="325" x2="560" y2="325" class="jl" marker-end="url(#jm)"/>
+          <line x1="700" y1="378" x2="560" y2="428" class="jl" marker-end="url(#jm)"/>
+        </svg>
+      </div>
+      <figcaption>Canlı veritabanındaki gerçek bir kaydın dokuz adımlık yolculuğu: Jacaerys'in ölümüne yazılmış taziye, ölüm sahnesinin saniyesine çapalanıp mutlak spoiler olarak işaretlendi; kimin ne göreceğine artık okuyucunun kendi ayarları karar veriyor.</figcaption>
+    </figure>
+
+    <div class="prose">
+      <p>Bu yolculuğun en önemli tasarım cümlesi şu: <b>karar mesajda, uygulama okuyucuda.</b> Spoiler kararı bir kez, kurasyon anında verilir ve mesaja yazılır; ama o mesajın bulanık mı açık mı görüneceği her okuyucu için ayrı hesaplanır. Aynı mesaj, konumunu 55. dakikaya kurmuş kullanıcıya normal akarken, korumasını açmış başka bir kullanıcıya bulanık gider, korumasız üçüncüsüne açık görünür. Veri tek, deneyim kişiseldir.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 12 ===================== -->
+  <section id="d12">
+    <div class="sec-head"><div class="sec-num">12</div>
+      <div><div class="sec-sub">Güvence Katmanı</div><h2>Bütünlük, Eşzamanlılık ve Performans</h2></div></div>
+    <div class="prose">
+      <p><b>Silme siyaseti bilinçli olarak iki uçludur.</b> İçerik havuzunun içinde zincirleme silme (cascade) geçerlidir: bir içerik silinirse bölümleri, segmentleri, hedefleri, ham yorumları, kümeleri ve kürasyonlu mesajları birlikte gider; yarım kalıntı kalmaz. Ama iki yerde zincir bilerek kırılır. Kanal→içerik bağı kısıtlıdır (restrict): üzerinde kanal duran içerik silinemez, önce kanallar kapatılıp kaldırılır; yanlışlıkla koca havuzu götürmenin yolu kapalıdır. Curated→raw bağı da kısıtlıdır: yayına çıkmış bir mesajın kaynak ham kaydı silinemez; arşiv zinciri (hangi yayın hangi ham veriden doğdu) her zaman geriye doğru izlenebilir kalır.</p>
+      <p><b>Eşzamanlılık için ayrı bir versiyon kolonu taşımıyorum.</b> PostgreSQL'in her satırda zaten tuttuğu xmin sistem kolonu, EF Core'a iyimser kilitlenme (optimistic concurrency) jetonu olarak tanıtıldı: iki işlem aynı satırı aynı anda güncellerse ikincisi çakışma hatası alır ve yeniden dener. Şemaya sıfır ek alan, tam çakışma koruması.</p>
+      <p><b>Benzersizlik kuralları uygulama koduna değil, veritabanına gömülüdür.</b> Aynı yorum ikinci kez kaydedilemez ((content, platform, external_id)), aynı hedef ikinci kez ekilemez ((content, platform, target_key)), aynı kullanıcı aynı kanala iki kez üye olamaz, bir kullanıcının iki aktif aboneliği olamaz (status=Active üzerinde kısmi benzersiz index), iki kullanıcı aynı görünen adı alamaz. En-az-bir-kez teslimat dünyasında son savunma hattı her zaman şemadır; kod hata yapsa bile veri bozulmaz.</p>
+      <p><b>Okuma yolu index'lerle döşelidir.</b> Kanal akışının ana sorgusu (içerik + bölüm + kaynak yazılma zamanı) kendi bileşik index'i üzerinde koşar; sayfalama, OFFSET yerine keyset cursor ile yapılır (son görülen kaydın zamanı ve kimliği imleç olur), bu sayede yüz binlerce mesajlık havuzda bile "daha eskiyi yükle" maliyeti sabittir. Hizalama sorguları (içerik + bölüm + çapa) ve durum taramaları (state, is_active, status) da kendi index'lerini kullanır.</p>
+    </div>
+
+    <table class="dtable">
+      <caption>Canlı veritabanının bugünkü fotoğrafı (7 Temmuz 2026, HotD S3 demo kurulumu)</caption>
+      <thead><tr><th style="width:34%">Tablo</th><th style="width:18%">Satır</th><th>Not</th></tr></thead>
+      <tbody>
+        <tr><td>contents / episodes / content_segments</td><td class="ty">1 / 3 / 32</td><td>hotd-s3; E1-E2-E3, üçünde de altyazı + bağlam metni dolu; 32 zaman dilimi.</td></tr>
+        <tr><td>ingest_targets</td><td class="ty">132</td><td>YouTube arama+video, X, Bluesky, Trakt akışları; hepsi içerik düzeyinde.</td></tr>
+        <tr><td>raw_comments</td><td class="ty">20.329</td><td>Değişmez arşiv; durum dağılımıyla birlikte işleme hattının defteri.</td></tr>
+        <tr><td>comment_clusters / curated_messages</td><td class="ty">16.577 / 16.408</td><td>Anlam kümeleri ve yayına hazır havuz; kanallar bu havuzu kapsamlarına göre okur.</td></tr>
+        <tr><td>channels</td><td class="ty">3</td><td>B1/B2/B3 bölüm kanalları (temiz demo kurulumu).</td></tr>
+        <tr><td>users / subscriptions / user_messages</td><td class="ty">6 / 5 / 102</td><td>Moderatör sistem hesabı dahil; canlı sohbet kanal-bağlı yaşıyor.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="prose">
+      <p>Bu tablo aynı zamanda mimarinin ölçek hikâyesini de anlatıyor: yirmi bin ham yorum, on altı bin kürasyonlu mesaja damıtılmış; kullanıcının gördüğü akış, ham gürültünün değil bu damıtılmış havuzun üzerinde akıyor. Toplama içeriğe, sohbet kanala, deneyim kişiye bağlı; her katman kendi tablosunda, tek veritabanında, birbirine yabancı kalmadan duruyor.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    <div class="foot-line"></div>
+    <p>Echo · Veri ve Veritabanı Mimarisi — PostgreSQL 18 + pgvector üzerinde tek veritabanı, 15 tablo, 3 vektör kolonu.<br>
+    Bu doküman canlı sistemin gerçek şemasından ve gerçek kayıtlarından derlenmiştir · Temmuz 2026</p>
+  </div>
+
+</div>
+
+<a class="open-app" href="https://echo-dev-app.germanywestcentral.cloudapp.azure.com" target="_blank" rel="noopener">Uygulamayı Aç ↗</a>
+
+</body>
+</html>
