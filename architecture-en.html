@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo — Technical Architecture &amp; AI Systems Design</title>
+<style>
+:root{
+  --bg:#070a10; --panel:#0e1420; --panel2:#111a2a; --line:#1e2a3e;
+  --text:#dbe4f0; --muted:#8494ab; --faint:#5a6a82;
+  --red:#e62238; --red-soft:rgba(230,34,56,.14);
+  --green:#2fd66f; --green-soft:rgba(47,214,111,.12);
+  --violet:#9d6bff; --violet-soft:rgba(157,107,255,.13);
+  --blue:#4aa8ff; --blue-soft:rgba(74,168,255,.12);
+  --amber:#ffb84a; --amber-soft:rgba(255,184,74,.12);
+  --cyan:#3fd6d0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.65;font-size:16px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 90px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* HERO */
+.hero{padding:84px 0 46px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;top:-140px;left:50%;transform:translateX(-50%);width:900px;height:420px;
+  background:radial-gradient(ellipse, rgba(230,34,56,.16), transparent 65%);pointer-events:none}
+.hero .brand{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+.hero .logo{width:54px;height:54px;border-radius:14px;background:#0c0c0f;border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(230,34,56,.35)}
+.hero h1{font-size:2.5rem;font-weight:800;letter-spacing:-.5px;line-height:1.16}
+.hero h1 .accent{color:var(--red)}
+.hero p.lede{margin-top:18px;max-width:860px;color:var(--muted);font-size:1.08rem}
+.meta-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.badge{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:7px 16px;font-size:.82rem;color:var(--muted)}
+.badge b{color:var(--text);font-weight:600}
+.badge .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:7px;
+  animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,214,111,.55)}70%{box-shadow:0 0 0 9px rgba(47,214,111,0)}100%{box-shadow:0 0 0 0 rgba(47,214,111,0)}}
+
+/* SECTIONS */
+section{margin-top:74px;opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+section.vis{opacity:1;transform:none}
+.kicker{color:var(--red);font-size:.8rem;font-weight:700;letter-spacing:2.6px;text-transform:uppercase;margin-bottom:10px}
+h2{font-size:1.72rem;font-weight:750;letter-spacing:-.3px;margin-bottom:14px}
+h3{font-size:1.12rem;font-weight:650;margin:26px 0 10px}
+p.body{color:var(--muted);max-width:940px;margin-bottom:14px}
+p.body b, p.body strong{color:var(--text);font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:26px;margin-top:20px}
+.grid{display:grid;gap:16px;margin-top:20px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(340px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;transition:transform .25s ease,border-color .25s ease}
+.card:hover{transform:translateY(-4px);border-color:#2c3d58}
+.card h4{font-size:1rem;font-weight:650;margin-bottom:8px;display:flex;align-items:center;gap:9px}
+.card p{color:var(--muted);font-size:.9rem}
+.card .tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  border-radius:6px;padding:3px 9px;margin-bottom:12px}
+.ic{width:30px;height:30px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex:0 0 auto}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px}
+.metric{background:linear-gradient(160deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+.metric .num{font-size:1.85rem;font-weight:800;letter-spacing:-.5px}
+.metric .lbl{color:var(--muted);font-size:.82rem;margin-top:4px}
+
+/* DIAGRAM SHELL */
+.dia{background:linear-gradient(170deg,#0c1220,#080d16);border:1px solid var(--line);border-radius:18px;
+  padding:20px 16px 12px;margin-top:22px;overflow-x:auto}
+.dia .cap{color:var(--faint);font-size:.78rem;text-align:center;padding:10px 6px 6px;letter-spacing:.4px}
+.dia svg{display:block;margin:0 auto;min-width:720px}
+svg text{font-family:'Segoe UI',system-ui,sans-serif}
+.nlabel{fill:var(--text);font-size:12.5px;font-weight:600}
+.nsub{fill:var(--muted);font-size:10px}
+.nsub2{fill:var(--faint);font-size:9px}
+.gtitle{fill:var(--faint);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+
+/* animated flows */
+.flow{stroke-dasharray:7 6;animation:dash 1.1s linear infinite}
+.flow.slow{animation-duration:1.8s}
+@keyframes dash{to{stroke-dashoffset:-13}}
+.nodepulse{animation:npulse 2.6s ease-in-out infinite}
+@keyframes npulse{0%,100%{opacity:.55}50%{opacity:1}}
+.corePulse{transform-origin:center;transform-box:fill-box;animation:core 3.2s ease-in-out infinite}
+@keyframes core{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.blink{animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+
+/* TOC */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:22px}
+.toc a{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:13px 16px;color:var(--text);font-size:.9rem;font-weight:550;transition:border-color .2s}
+.toc a:hover{border-color:var(--red);text-decoration:none}
+.toc .n{color:var(--red);font-weight:800;font-size:.82rem}
+
+/* tables */
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.88rem}
+th{color:var(--faint);text-transform:uppercase;font-size:.7rem;letter-spacing:1.6px;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid rgba(30,42,62,.55);color:var(--muted);vertical-align:top}
+td b{color:var(--text);font-weight:600}
+tr:hover td{background:rgba(255,255,255,.018)}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.72rem;font-weight:650}
+
+.note{border-left:3px solid var(--amber);background:var(--amber-soft);border-radius:0 12px 12px 0;
+  padding:14px 18px;color:var(--muted);font-size:.9rem;margin-top:16px}
+.note b{color:var(--text)}
+footer{margin-top:90px;border-top:1px solid var(--line);padding-top:26px;color:var(--faint);font-size:.82rem}
+
+@media (max-width:760px){
+  .hero h1{font-size:1.9rem}
+  .wrap{padding:0 18px 70px}
+}
+</style>
+</head>
+<body>
+<a class="langpill" href="architecture-tr.html" style="position:fixed;top:18px;right:22px;z-index:60;background:#0e1420;border:1px solid #1e2a3e;color:#dbe4f0;font-weight:650;font-size:.82rem;padding:8px 16px;border-radius:999px;text-decoration:none">TR — Türkçe sürüm</a>
+
+<div class="wrap">
+
+<div class="hero">
+  <div class="brand">
+    <div class="logo">
+      <svg width="30" height="30" viewBox="0 0 30 30"><g fill="#e62238">
+        <rect x="4"  y="11" width="3.2" height="8"  rx="1.6" opacity=".55"/>
+        <rect x="9"  y="8"  width="3.2" height="14" rx="1.6" opacity=".8"/>
+        <rect x="14" y="5"  width="3.2" height="20" rx="1.6"/>
+        <rect x="19" y="8"  width="3.2" height="14" rx="1.6" opacity=".8"/>
+        <rect x="24" y="11" width="3.2" height="8"  rx="1.6" opacity=".55"/>
+      </g></svg>
+    </div>
+    <div style="font-weight:800;font-size:1.25rem;letter-spacing:.5px">ECHO</div>
+  </div>
+  <h1>Technical Architecture &amp;<br><span class="accent">AI Systems Design</span></h1>
+  <p class="lede">Echo is a spoiler-safe companion platform for television series: it continuously harvests real viewer
+  conversation from public platforms, aligns every comment to the exact scene it talks about, and replays that global
+  conversation to each viewer strictly according to <i>where they are</i> in the story — while an AI moderator keeps the
+  room alive. This document describes the production system as deployed today: the full service topology, the data
+  pipeline, the four LLM-powered engines at the core of the product, and how each user-facing capability is realized.</p>
+  <div class="meta-badges">
+    <span class="badge"><span class="dot"></span><b>Live</b> — public beta on Azure</span>
+    <span class="badge">Stack: <b>.NET 10 · Next.js 16 / React 19 · PostgreSQL 18 + pgvector · SignalR</b></span>
+    <span class="badge">AI: <b>gpt-4.1-mini + text-embedding-3-small</b></span>
+    <span class="badge">Document date: <b>July 2026</b></span>
+  </div>
+</div>
+
+<section id="toc-s">
+  <div class="kicker">Contents</div>
+  <div class="toc">
+    <a href="#overview"><span class="n">01</span> Executive overview</a>
+    <a href="#topology"><span class="n">02</span> System topology</a>
+    <a href="#pipeline"><span class="n">03</span> Ingestion &amp; curation pipeline</a>
+    <a href="#engines"><span class="n">04</span> The four AI engines</a>
+    <a href="#enrichment"><span class="n">05</span> Engine 1 — Enrichment</a>
+    <a href="#segments"><span class="n">06</span> Engine 2 — Segment Intelligence</a>
+    <a href="#shield"><span class="n">07</span> Engine 3 — Realtime Spoiler Shield</a>
+    <a href="#moderator"><span class="n">08</span> Engine 4 — Moderator AI</a>
+    <a href="#timeline"><span class="n">09</span> Position-aware timeline &amp; wave</a>
+    <a href="#realtime"><span class="n">10</span> Realtime layer (SignalR)</a>
+    <a href="#features"><span class="n">11</span> Feature walkthroughs</a>
+    <a href="#data"><span class="n">12</span> Data architecture</a>
+    <a href="#deploy"><span class="n">13</span> Deployment &amp; operations</a>
+    <a href="#foundations"><span class="n">14</span> Forward-ready foundations</a>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="kicker">01 · Executive overview</div>
+  <h2>What Echo does, in one pass</h2>
+  <p class="body">Watching a series a few days late usually means muting every social platform. Echo inverts that:
+  it brings the conversation to the viewer, <b>filtered by narrative time</b>. Every channel is bound to a series
+  season or a single episode. The viewer sets (or plays) a watch position — "episode 1, minute 43" — and the feed
+  shows only what is safe at that exact moment: curated comments harvested from YouTube, X, Bluesky and Trakt that
+  were aligned to earlier scenes, plus the room's live chat, with anything ahead of the viewer's position protected
+  behind a blur they can consciously reveal.</p>
+  <p class="body">Four AI engines make this possible: an <b>Enrichment engine</b> that deduplicates, scene-aligns,
+  spoiler-scores and translates every harvested comment; a <b>Segment Intelligence engine</b> that converts each
+  episode into a timed, gapless scene map (the coordinate system everything else relies on); a <b>Realtime Spoiler
+  Shield</b> that classifies live user messages the moment they are written; and a <b>Moderator AI</b> that hosts each
+  room with presence-aware pacing and private, position-safe replies. All four run on two OpenAI foundation models
+  (<b>gpt-4.1-mini</b> for JSON-mode reasoning, <b>text-embedding-3-small</b> for 1536-dimension vectors) behind a
+  single resilient client with retry/backoff.</p>
+
+  <div class="metrics">
+    <div class="metric"><div class="num" style="color:var(--red)">20.3K</div><div class="lbl">raw comments harvested (July 2026 snapshot)</div></div>
+    <div class="metric"><div class="num" style="color:var(--green)">16.4K</div><div class="lbl">curated messages published to the pool</div></div>
+    <div class="metric"><div class="num" style="color:var(--blue)">4 + 1</div><div class="lbl">source platforms live (+1 awaiting Meta approval)</div></div>
+    <div class="metric"><div class="num" style="color:var(--violet)">4</div><div class="lbl">LLM engines on 2 foundation models</div></div>
+    <div class="metric"><div class="num" style="color:var(--amber)">~10s / instant</div><div class="lbl">poll fallback / SignalR push latency</div></div>
+  </div>
+
+  <div class="note"><b>Design philosophy.</b> Spoiler protection in Echo is never censorship: no message is deleted or
+  blocked. Content is <i>classified</i> (scene-aligned, spoiler-scored) and the <i>presentation</i> is what adapts —
+  per viewer, per position, reversibly. The user always holds the final key (tap-to-reveal).</div>
+</section>
+
+<section id="topology">
+  <div class="kicker">02 · System topology</div>
+  <h2>Service map — one VM, clean seams</h2>
+  <p class="body">Echo runs as four containers behind a Caddy reverse proxy on a single Azure VM (public beta scale),
+  with clean seams that allow each tier to scale out independently later. The Next.js frontend is a PWA — installable
+  to the home screen on iOS/Android with a pinned, zoom-locked viewport so it behaves like a native app. The .NET 10
+  API serves REST + SignalR WebSockets; background workers run the harvesting and AI pipelines; PostgreSQL 18 with the
+  pgvector extension is the single source of truth — relational rows, vectors and full state machines in one database.</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 470" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+      <linearGradient id="coreG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#16233a"/><stop offset="1" stop-color="#0e1626"/>
+      </linearGradient>
+    </defs>
+
+    <!-- users -->
+    <g>
+      <rect x="20" y="150" width="150" height="170" rx="16" fill="#0d1322" stroke="#1e2a3e"/>
+      <text x="95" y="178" text-anchor="middle" class="gtitle">Viewers</text>
+      <circle cx="60" cy="215" r="14" fill="#1a2334" stroke="#2a3a54"/><text x="60" y="220" text-anchor="middle" style="font-size:12px">📱</text>
+      <text x="82" y="212" class="nlabel" style="font-size:11px">PWA (installed)</text>
+      <text x="82" y="226" class="nsub2">zoom-locked, standalone</text>
+      <circle cx="60" cy="265" r="14" fill="#1a2334" stroke="#2a3a54"/><text x="60" y="270" text-anchor="middle" style="font-size:12px">💻</text>
+      <text x="82" y="262" class="nlabel" style="font-size:11px">Web browser</text>
+      <text x="82" y="276" class="nsub2">same responsive app</text>
+    </g>
+
+    <!-- caddy -->
+    <g>
+      <rect x="235" y="185" width="130" height="100" rx="16" fill="url(#coreG)" stroke="#2a3a54"/>
+      <text x="300" y="215" text-anchor="middle" class="nlabel">Caddy</text>
+      <text x="300" y="232" text-anchor="middle" class="nsub">reverse proxy</text>
+      <text x="300" y="247" text-anchor="middle" class="nsub2">auto HTTPS · Let's Encrypt</text>
+      <text x="300" y="261" text-anchor="middle" class="nsub2">2 public hostnames</text>
+    </g>
+
+    <!-- web -->
+    <g>
+      <rect x="430" y="60" width="170" height="92" rx="16" fill="#0d1322" stroke="#2a3a54"/>
+      <text x="515" y="90" text-anchor="middle" class="nlabel">Next.js 16 · React 19</text>
+      <text x="515" y="107" text-anchor="middle" class="nsub">SSR + PWA manifest</text>
+      <text x="515" y="122" text-anchor="middle" class="nsub2">Tailwind v4 · framer-motion</text>
+      <text x="515" y="136" text-anchor="middle" class="nsub2">standalone output container</text>
+    </g>
+
+    <!-- api -->
+    <g class="corePulse">
+      <rect x="430" y="185" width="170" height="100" rx="16" fill="url(#coreG)" stroke="#e62238" stroke-width="1.4"/>
+      <text x="515" y="214" text-anchor="middle" class="nlabel">.NET 10 API</text>
+      <text x="515" y="231" text-anchor="middle" class="nsub">REST endpoints</text>
+      <text x="515" y="246" text-anchor="middle" class="nsub">SignalR hub (WebSocket)</text>
+      <text x="515" y="262" text-anchor="middle" class="nsub2">JWT auth · Google Sign-In</text>
+    </g>
+
+    <!-- workers -->
+    <g>
+      <rect x="430" y="320" width="170" height="100" rx="16" fill="#0d1322" stroke="#2a3a54"/>
+      <text x="515" y="348" text-anchor="middle" class="nlabel">Background Workers</text>
+      <text x="515" y="365" text-anchor="middle" class="nsub">harvest · enrich · prepare</text>
+      <text x="515" y="380" text-anchor="middle" class="nsub">moderator AI loop</text>
+      <text x="515" y="395" text-anchor="middle" class="nsub2">.NET hosted services</text>
+    </g>
+
+    <!-- postgres -->
+    <g>
+      <rect x="690" y="185" width="170" height="100" rx="16" fill="url(#coreG)" stroke="#4aa8ff" stroke-width="1.2"/>
+      <text x="775" y="213" text-anchor="middle" class="nlabel">PostgreSQL 18</text>
+      <text x="775" y="230" text-anchor="middle" class="nsub">+ pgvector (1536-d)</text>
+      <text x="775" y="245" text-anchor="middle" class="nsub2">single source of truth</text>
+      <text x="775" y="259" text-anchor="middle" class="nsub2">EF Core 10 · UUIDv7 · xmin</text>
+    </g>
+
+    <!-- openai -->
+    <g>
+      <rect x="690" y="330" width="170" height="86" rx="16" fill="#0d1322" stroke="#ffb84a" stroke-width="1.1"/>
+      <text x="775" y="358" text-anchor="middle" class="nlabel">OpenAI API</text>
+      <text x="775" y="375" text-anchor="middle" class="nsub">gpt-4.1-mini (JSON mode)</text>
+      <text x="775" y="390" text-anchor="middle" class="nsub">text-embedding-3-small</text>
+    </g>
+
+    <!-- sources -->
+    <g>
+      <rect x="920" y="150" width="140" height="180" rx="16" fill="#0d1322" stroke="#1e2a3e"/>
+      <text x="990" y="178" text-anchor="middle" class="gtitle">Public sources</text>
+      <text x="990" y="205" text-anchor="middle" class="nsub">YouTube</text>
+      <text x="990" y="227" text-anchor="middle" class="nsub">X (Twitter)</text>
+      <text x="990" y="249" text-anchor="middle" class="nsub">Bluesky</text>
+      <text x="990" y="271" text-anchor="middle" class="nsub">Trakt</text>
+      <text x="990" y="295" text-anchor="middle" class="nsub2">Threads: code-complete,</text>
+      <text x="990" y="308" text-anchor="middle" class="nsub2">awaiting Meta approval</text>
+    </g>
+
+    <!-- edges -->
+    <path id="pUC" d="M170 235 L235 235" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar)" class="flow"/>
+    <path id="pCW" d="M365 215 C395 200 400 130 430 112" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar)" class="flow"/>
+    <path id="pCA" d="M365 235 L430 235" stroke="#e62238" stroke-width="1.8" fill="none" marker-end="url(#ar)" class="flow"/>
+    <path id="pAD" d="M600 235 L690 235" stroke="#4aa8ff" stroke-width="1.8" fill="none" marker-end="url(#ar)" class="flow"/>
+    <path id="pWD" d="M600 355 C640 350 650 290 690 262" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar)" class="flow slow"/>
+    <path id="pWO" d="M600 385 L690 378" stroke="#ffb84a" stroke-width="1.6" fill="none" marker-end="url(#ar)" class="flow slow"/>
+    <path id="pAO" d="M560 285 C600 330 640 355 690 362" stroke="#ffb84a" stroke-width="1.3" fill="none" marker-end="url(#ar)" class="flow slow"/>
+    <path id="pSW" d="M920 240 C880 300 660 355 601 368" stroke="#2fd66f" stroke-width="1.6" fill="none" marker-end="url(#ar)" class="flow slow"/>
+    <path d="M515 152 L515 185" stroke="#3b4d6b" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+
+    <!-- moving packets -->
+    <circle r="4" fill="#e62238"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#pCA"/></animateMotion></circle>
+    <circle r="4" fill="#4aa8ff"><animateMotion dur="2.8s" repeatCount="indefinite" begin="0.7s"><mpath href="#pAD"/></animateMotion></circle>
+    <circle r="4" fill="#2fd66f"><animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#pSW"/></animateMotion></circle>
+    <circle r="4" fill="#ffb84a"><animateMotion dur="3.4s" repeatCount="indefinite" begin="1.2s"><mpath href="#pWO"/></animateMotion></circle>
+
+    <!-- websocket badge -->
+    <g class="nodepulse">
+      <rect x="380" y="292" width="112" height="22" rx="11" fill="rgba(47,214,111,.10)" stroke="#2fd66f" stroke-opacity=".5"/>
+      <text x="436" y="307" text-anchor="middle" style="fill:#2fd66f;font-size:10px;font-weight:700">⇄ live WebSocket</text>
+    </g>
+  </svg>
+  <div class="cap">Fig. 1 — Production topology. Animated particles trace the hot paths: user traffic (red), relational + vector persistence (blue), harvested comments (green), LLM calls (amber).</div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card"><span class="tag" style="background:var(--red-soft);color:var(--red)">Frontend</span>
+      <p><b>Next.js 16 (Turbopack) + React 19</b>, Tailwind v4 design system in pure black / Echo-red, framer-motion micro-interactions,
+      Radix primitives. Ships as a PWA: programmatic icon set, standalone display, portrait lock, pinch/double-tap zoom disabled at
+      the viewport level while every scroll surface stays free.</p></div>
+    <div class="card"><span class="tag" style="background:var(--blue-soft);color:var(--blue)">Backend</span>
+      <p><b>ASP.NET Core (.NET 10)</b> minimal-API endpoints with strict request validation, JWT (Google Sign-In exchange),
+      EF Core 10 with snake_case mapping, UUIDv7 keys, UTC timestamps and xmin optimistic concurrency. SignalR hub carries all
+      room-level realtime traffic.</p></div>
+    <div class="card"><span class="tag" style="background:var(--green-soft);color:var(--green)">Workers</span>
+      <p>Independent hosted services per concern: source collectors (content-scoped, quota-aware with per-source cooldowns),
+      the enrichment batch loop, channel preparation, and the moderator loop. A worker crash never touches the API's availability.</p></div>
+  </div>
+</section>
+
+
+<section id="pipeline">
+  <div class="kicker">03 · Ingestion &amp; curation</div>
+  <h2>From raw internet noise to a scene-aligned pool</h2>
+  <p class="body">Harvesting is <b>content-scoped, not channel-scoped</b>: collectors follow a series (its search queries,
+  videos, posts and Trakt episode threads) regardless of which channels are currently open, so the pool keeps growing even
+  while rooms are closed. Each raw comment enters an explicit nine-state machine — every failure is visible, idempotent
+  and resumable. The unique key <i>(content, platform, external-id)</i> makes at-least-once collection safe: re-fetching
+  the same comment can never duplicate it.</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 330" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+    </defs>
+    <!-- sources -->
+    <g>
+      <rect x="15" y="60" width="120" height="210" rx="14" fill="#0d1322" stroke="#1e2a3e"/>
+      <text x="75" y="86" text-anchor="middle" class="gtitle">Sources</text>
+      <text x="75" y="115" text-anchor="middle" class="nsub">YouTube</text>
+      <text x="75" y="145" text-anchor="middle" class="nsub">X</text>
+      <text x="75" y="175" text-anchor="middle" class="nsub">Bluesky</text>
+      <text x="75" y="205" text-anchor="middle" class="nsub">Trakt</text>
+      <text x="75" y="240" text-anchor="middle" class="nsub2">quota cooldowns</text>
+      <text x="75" y="253" text-anchor="middle" class="nsub2">per-source, 60 min</text>
+    </g>
+    <!-- collector -->
+    <rect x="185" y="120" width="128" height="86" rx="14" fill="#0d1322" stroke="#2a3a54"/>
+    <text x="249" y="150" text-anchor="middle" class="nlabel">Collector</text>
+    <text x="249" y="167" text-anchor="middle" class="nsub2">content-scoped targets</text>
+    <text x="249" y="181" text-anchor="middle" class="nsub2">author hashed (PII-free)</text>
+    <text x="249" y="195" text-anchor="middle" class="nsub2">idempotent upsert</text>
+
+    <!-- normalize -->
+    <rect x="363" y="120" width="118" height="86" rx="14" fill="#0d1322" stroke="#2a3a54"/>
+    <text x="422" y="150" text-anchor="middle" class="nlabel">Normalize</text>
+    <text x="422" y="167" text-anchor="middle" class="nsub2">language + length filter</text>
+    <text x="422" y="181" text-anchor="middle" class="nsub2">EN / TR kept</text>
+    <text x="422" y="195" text-anchor="middle" class="nsub2">noise dropped</text>
+
+    <!-- embed + dedupe -->
+    <rect x="531" y="120" width="140" height="86" rx="14" fill="#0d1322" stroke="#9d6bff" stroke-width="1.1"/>
+    <text x="601" y="146" text-anchor="middle" class="nlabel">Embed + Dedupe</text>
+    <text x="601" y="163" text-anchor="middle" class="nsub2">batch embeddings (1536-d)</text>
+    <text x="601" y="177" text-anchor="middle" class="nsub2">exact SQL + pgvector cosine</text>
+    <text x="601" y="191" text-anchor="middle" class="nsub2">cluster merge → SimilarCount</text>
+
+    <!-- LLM enrich -->
+    <g class="corePulse">
+    <rect x="721" y="112" width="150" height="102" rx="14" fill="#131a2c" stroke="#ffb84a" stroke-width="1.3"/>
+    <text x="796" y="140" text-anchor="middle" class="nlabel">LLM Enrich</text>
+    <text x="796" y="157" text-anchor="middle" class="nsub2">one JSON call per survivor:</text>
+    <text x="796" y="171" text-anchor="middle" class="nsub2">scene align + spoiler score</text>
+    <text x="796" y="185" text-anchor="middle" class="nsub2">+ translation (EN⇄TR)</text>
+    <text x="796" y="202" text-anchor="middle" class="nsub2" style="fill:#ffb84a">bounded parallelism</text>
+    </g>
+
+    <!-- pool -->
+    <rect x="921" y="112" width="144" height="102" rx="14" fill="#131a2c" stroke="#2fd66f" stroke-width="1.3"/>
+    <text x="993" y="142" text-anchor="middle" class="nlabel">Curated Pool</text>
+    <text x="993" y="159" text-anchor="middle" class="nsub2">bilingual text</text>
+    <text x="993" y="173" text-anchor="middle" class="nsub2">episode + anchorSeconds</text>
+    <text x="993" y="187" text-anchor="middle" class="nsub2">spoiler flags + vector</text>
+    <text x="993" y="203" text-anchor="middle" class="nsub2" style="fill:#2fd66f">channels read by scope</text>
+
+    <!-- flows -->
+    <path id="q1" d="M135 163 L185 163" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar2)" class="flow"/>
+    <path id="q2" d="M313 163 L363 163" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar2)" class="flow"/>
+    <path id="q3" d="M481 163 L531 163" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar2)" class="flow"/>
+    <path id="q4" d="M671 163 L721 163" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar2)" class="flow"/>
+    <path id="q5" d="M871 163 L921 163" stroke="#3b4d6b" stroke-width="1.6" fill="none" marker-end="url(#ar2)" class="flow"/>
+
+    <!-- drop lanes -->
+    <path d="M422 206 L422 262" stroke="#5a6a82" stroke-width="1.1" fill="none" marker-end="url(#ar2)" stroke-dasharray="3 4"/>
+    <text x="422" y="282" text-anchor="middle" class="nsub2">DroppedFiltered</text>
+    <path d="M601 206 L601 262" stroke="#5a6a82" stroke-width="1.1" fill="none" marker-end="url(#ar2)" stroke-dasharray="3 4"/>
+    <text x="601" y="282" text-anchor="middle" class="nsub2">DroppedDuplicate (count folds into original)</text>
+    <path d="M796 214 L796 262" stroke="#5a6a82" stroke-width="1.1" fill="none" marker-end="url(#ar2)" stroke-dasharray="3 4"/>
+    <text x="796" y="282" text-anchor="middle" class="nsub2">Failed (visible, retryable)</text>
+
+    <!-- packets -->
+    <circle r="4" fill="#2fd66f"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#q1"/></animateMotion></circle>
+    <circle r="4" fill="#2fd66f"><animateMotion dur="1.6s" repeatCount="indefinite" begin=".5s"><mpath href="#q2"/></animateMotion></circle>
+    <circle r="4" fill="#9d6bff"><animateMotion dur="1.6s" repeatCount="indefinite" begin=".2s"><mpath href="#q3"/></animateMotion></circle>
+    <circle r="4" fill="#ffb84a"><animateMotion dur="1.6s" repeatCount="indefinite" begin=".8s"><mpath href="#q4"/></animateMotion></circle>
+    <circle r="4" fill="#2fd66f"><animateMotion dur="1.6s" repeatCount="indefinite" begin="1.1s"><mpath href="#q5"/></animateMotion></circle>
+
+    <text x="540" y="40" text-anchor="middle" class="gtitle">raw_comments state machine: Pending → Normalized → Clustered → Published (drops &amp; failures are first-class states)</text>
+  </svg>
+  <div class="cap">Fig. 2 — The curation conveyor. Roughly one in five raw comments survives to publication; the rest are duplicates folded into a "×N say the same" counter, filtered noise, or visible failures.</div>
+  </div>
+
+  <p class="body">Duplicate handling has product value beyond hygiene: when a new comment lands inside an existing
+  semantic cluster (cosine distance under threshold against the cluster centroid), it is not published twice — instead the
+  original curated message's <b>SimilarCount</b> increments, so the feed can honestly show "hundreds of viewers said
+  exactly this" without repeating itself.</p>
+</section>
+
+<section id="engines">
+  <div class="kicker">04 · AI layer</div>
+  <h2>Four engines, two foundation models</h2>
+  <p class="body">Every AI capability in Echo is a thin, auditable JSON contract on top of the same two models. There is
+  deliberately <b>no fine-tuning and no agent framework</b> in the loop: each engine builds a rich, factual context from
+  the database (segments, positions, presence), asks one strictly-shaped JSON question, validates the response and stores
+  the verdict. Retries with exponential backoff live in a single shared OpenAI client; each engine defines its own
+  failure semantics (fail-open, fail-visible, or skip).</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 430" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+      <radialGradient id="coreR" cx=".5" cy=".5" r=".7">
+        <stop offset="0" stop-color="#231428"/><stop offset="1" stop-color="#120d18"/>
+      </radialGradient>
+    </defs>
+
+    <!-- core -->
+    <g class="corePulse">
+      <circle cx="540" cy="215" r="86" fill="url(#coreR)" stroke="#ffb84a" stroke-width="1.6"/>
+      <text x="540" y="200" text-anchor="middle" class="nlabel" style="font-size:14px">Foundation models</text>
+      <text x="540" y="222" text-anchor="middle" class="nsub">gpt-4.1-mini · JSON mode</text>
+      <text x="540" y="240" text-anchor="middle" class="nsub">text-embedding-3-small</text>
+      <circle cx="540" cy="215" r="96" fill="none" stroke="#ffb84a" stroke-opacity=".25" class="blink"/>
+    </g>
+
+    <!-- engine boxes -->
+    <g>
+      <rect x="60" y="40" width="300" height="110" rx="16" fill="#0e1420" stroke="#9d6bff" stroke-width="1.2"/>
+      <text x="82" y="70" class="nlabel" style="fill:#9d6bff">① Enrichment Engine</text>
+      <text x="82" y="92" class="nsub">Aligns every harvested comment to a scene,</text>
+      <text x="82" y="108" class="nsub">scores spoiler risk, translates EN⇄TR.</text>
+      <text x="82" y="130" class="nsub2">batch · offline · fail-visible (state machine)</text>
+    </g>
+    <g>
+      <rect x="720" y="40" width="300" height="110" rx="16" fill="#0e1420" stroke="#4aa8ff" stroke-width="1.2"/>
+      <text x="742" y="70" class="nlabel" style="fill:#4aa8ff">② Segment Intelligence</text>
+      <text x="742" y="92" class="nsub">Builds the timed scene map of each episode</text>
+      <text x="742" y="108" class="nsub">from Wikipedia plot + SRT transcript.</text>
+      <text x="742" y="130" class="nsub2">on preparation · transcript = ground truth</text>
+    </g>
+    <g>
+      <rect x="60" y="280" width="300" height="110" rx="16" fill="#0e1420" stroke="#e62238" stroke-width="1.2"/>
+      <text x="82" y="310" class="nlabel" style="fill:#e62238">③ Realtime Spoiler Shield</text>
+      <text x="82" y="332" class="nsub">Classifies live chat messages against the</text>
+      <text x="82" y="348" class="nsub">channel's scope rules, at write time.</text>
+      <text x="82" y="370" class="nsub2">synchronous · fail-open · never blocks</text>
+    </g>
+    <g>
+      <rect x="720" y="280" width="300" height="110" rx="16" fill="#0e1420" stroke="#2fd66f" stroke-width="1.2"/>
+      <text x="742" y="310" class="nlabel" style="fill:#2fd66f">④ Moderator AI</text>
+      <text x="742" y="332" class="nsub">Hosts the room: presence-aware pacing,</text>
+      <text x="742" y="348" class="nsub">@echo replies scoped to the asker's position.</text>
+      <text x="742" y="370" class="nsub2">loop · veto → gate → reason hierarchy</text>
+    </g>
+
+    <!-- spokes -->
+    <path id="s1" d="M360 105 C430 130 460 160 480 180" stroke="#9d6bff" stroke-width="1.5" fill="none" marker-end="url(#ar3)" class="flow slow"/>
+    <path id="s2" d="M720 105 C650 130 620 160 600 180" stroke="#4aa8ff" stroke-width="1.5" fill="none" marker-end="url(#ar3)" class="flow slow"/>
+    <path id="s3" d="M360 330 C430 305 460 275 480 252" stroke="#e62238" stroke-width="1.5" fill="none" marker-end="url(#ar3)" class="flow slow"/>
+    <path id="s4" d="M720 330 C650 305 620 275 600 252" stroke="#2fd66f" stroke-width="1.5" fill="none" marker-end="url(#ar3)" class="flow slow"/>
+
+    <circle r="3.6" fill="#9d6bff"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#s1"/></animateMotion></circle>
+    <circle r="3.6" fill="#4aa8ff"><animateMotion dur="2.2s" repeatCount="indefinite" begin=".55s"><mpath href="#s2"/></animateMotion></circle>
+    <circle r="3.6" fill="#e62238"><animateMotion dur="2.2s" repeatCount="indefinite" begin="1.1s"><mpath href="#s3"/></animateMotion></circle>
+    <circle r="3.6" fill="#2fd66f"><animateMotion dur="2.2s" repeatCount="indefinite" begin="1.65s"><mpath href="#s4"/></animateMotion></circle>
+
+    <text x="540" y="415" text-anchor="middle" class="nsub2">+ an admin-side Operations Copilot (content research, context packs, setup recipes) reuses the same client — see §11.</text>
+  </svg>
+  <div class="cap">Fig. 3 — The AI layer. Each engine is an independent consumer of the shared model client with its own context builder, JSON contract and failure policy.</div>
+  </div>
+
+  <table>
+    <tr><th>Engine</th><th>Trigger</th><th>Context it builds</th><th>JSON verdict</th><th>Failure policy</th></tr>
+    <tr><td><b>① Enrichment</b></td><td>Batch loop over Normalized raws</td><td>Aired episodes, top-3 nearest segments (pgvector), source language</td><td>episode · anchorSeconds · isAbsoluteSpoiler · spoilerScore · translation</td><td><span class="pill" style="background:var(--violet-soft);color:var(--violet)">fail-visible</span> raw → Failed, retryable</td></tr>
+    <tr><td><b>② Segments</b></td><td>Channel preparation / admin action</td><td>Wikipedia plot (episode&gt;season&gt;series), curated context text, thinned SRT</td><td>8–12 gapless timed segments (title, start, end, summary)</td><td><span class="pill" style="background:var(--blue-soft);color:var(--blue)">fail-hard</span> preparation reports error</td></tr>
+    <tr><td><b>③ Spoiler Shield</b></td><td>Every live message &amp; question answer</td><td>Channel scope rules (3 modes), season's timed segments, writer position</td><td>isSpoiler · short reason (Turkish)</td><td><span class="pill" style="background:var(--red-soft);color:var(--red)">fail-open</span> chat never stalls</td></tr>
+    <tr><td><b>④ Moderator</b></td><td>Worker loop per live channel</td><td>Room stats, presence, recent messages, persona, position-scoped summaries</td><td>speak/stay-silent + message (+ private reply)</td><td><span class="pill" style="background:var(--green-soft);color:var(--green)">skip</span> silence is always safe</td></tr>
+  </table>
+</section>
+
+<section id="enrichment">
+  <div class="kicker">05 · Engine 1</div>
+  <h2>Enrichment — one call that does three jobs</h2>
+  <p class="body">For every deduplicated survivor the engine makes <b>exactly one</b> gpt-4.1-mini call that answers three
+  questions at once — keeping cost linear and the contract auditable. The prompt carries the series title, the aired
+  episode list and the <b>three nearest scene segments</b> found by pgvector cosine search over the comment's own
+  embedding; the model must either snap the comment to one of those candidates or declare it "general".</p>
+  <div class="grid g3">
+    <div class="card"><h4><span class="ic" style="background:var(--violet-soft)">🎯</span>Scene alignment</h4>
+      <p>Returns <b>episode + anchorSeconds</b> (segment midpoint) when the comment clearly refers to a candidate scene;
+      otherwise both are null and the comment becomes position-independent "general" talk. This anchor is what the
+      timeline slider filters on.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--red-soft)">☠️</span>Absolute spoilers</h4>
+      <p><b>isAbsoluteSpoiler</b> marks twist/death/ending reveals that are unsafe at <i>any</i> position (e.g. a finale
+      outcome quoted in an episode-1 discussion), plus a 0–1 confidence score. These stay protected regardless of the
+      slider.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--blue-soft)">🌐</span>Faithful translation</h4>
+      <p>Every message is stored bilingually (TextEn + TextTr, slang and tone preserved). The feed then renders in the
+      <b>user's profile language</b> — one pool serves both audiences with zero extra calls at read time.</p></div>
+  </div>
+  <div class="note"><b>Concurrency discipline.</b> DbContext is not thread-safe, so all database phases run sequentially;
+  only the pure-HTTP LLM calls fan out under a semaphore (bounded parallelism). This keeps the loop fast without a single
+  shared-state race.</div>
+</section>
+
+<section id="segments">
+  <div class="kicker">06 · Engine 2</div>
+  <h2>Segment Intelligence — the coordinate system</h2>
+  <p class="body">Everything position-aware in Echo (alignment, the shield, the wave, moderator scoping) depends on one
+  artifact: a <b>gapless timed scene map</b> per episode, 8–12 segments covering second 0 to the exact runtime. The
+  engine merges two sources with a strict precedence rule: the episode's <b>SRT/VTT transcript timestamps are ground
+  truth for WHEN</b>; Wikipedia plot text (episode page → season page → series page fallback) and the curated context
+  pack tell it <b>WHAT</b> happens. Summaries are deliberately explicit — names, deaths, twists — because they are the
+  matching surface the other engines embed against.</p>
+  <div class="dia">
+  <svg viewBox="0 0 1080 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+    </defs>
+    <rect x="30" y="30" width="180" height="60" rx="12" fill="#0d1322" stroke="#2a3a54"/>
+    <text x="120" y="56" text-anchor="middle" class="nlabel" style="font-size:11.5px">Wikipedia plot</text>
+    <text x="120" y="74" text-anchor="middle" class="nsub2">episode → season → series</text>
+    <rect x="30" y="110" width="180" height="60" rx="12" fill="#0d1322" stroke="#4aa8ff"/>
+    <text x="120" y="136" text-anchor="middle" class="nlabel" style="font-size:11.5px">SRT transcript</text>
+    <text x="120" y="154" text-anchor="middle" class="nsub2">[mm:ss] = ground truth</text>
+    <g class="corePulse">
+      <rect x="330" y="62" width="170" height="76" rx="14" fill="#131a2c" stroke="#ffb84a" stroke-width="1.2"/>
+      <text x="415" y="92" text-anchor="middle" class="nlabel">gpt-4.1-mini</text>
+      <text x="415" y="110" text-anchor="middle" class="nsub2">8–12 gapless segments</text>
+      <text x="415" y="124" text-anchor="middle" class="nsub2">normalized: 0 → runtime</text>
+    </g>
+    <rect x="620" y="62" width="180" height="76" rx="14" fill="#0d1322" stroke="#9d6bff" stroke-width="1.1"/>
+    <text x="710" y="92" text-anchor="middle" class="nlabel">Embed summaries</text>
+    <text x="710" y="110" text-anchor="middle" class="nsub2">1536-d per segment</text>
+    <text x="710" y="124" text-anchor="middle" class="nsub2">replace-per-episode write</text>
+    <rect x="900" y="62" width="150" height="76" rx="14" fill="#131a2c" stroke="#2fd66f" stroke-width="1.2"/>
+    <text x="975" y="92" text-anchor="middle" class="nlabel">content_segments</text>
+    <text x="975" y="110" text-anchor="middle" class="nsub2">shared coordinate</text>
+    <text x="975" y="124" text-anchor="middle" class="nsub2">system for all engines</text>
+    <path id="w1" d="M210 60 C270 65 290 80 330 92" stroke="#3b4d6b" stroke-width="1.5" fill="none" marker-end="url(#ar4)" class="flow"/>
+    <path id="w2" d="M210 140 C270 135 290 120 330 108" stroke="#4aa8ff" stroke-width="1.5" fill="none" marker-end="url(#ar4)" class="flow"/>
+    <path id="w3" d="M500 100 L620 100" stroke="#3b4d6b" stroke-width="1.5" fill="none" marker-end="url(#ar4)" class="flow"/>
+    <path id="w4" d="M800 100 L900 100" stroke="#3b4d6b" stroke-width="1.5" fill="none" marker-end="url(#ar4)" class="flow"/>
+    <circle r="3.6" fill="#4aa8ff"><animateMotion dur="2s" repeatCount="indefinite"><mpath href="#w2"/></animateMotion></circle>
+    <circle r="3.6" fill="#ffb84a"><animateMotion dur="2s" repeatCount="indefinite" begin=".6s"><mpath href="#w3"/></animateMotion></circle>
+    <circle r="3.6" fill="#2fd66f"><animateMotion dur="2s" repeatCount="indefinite" begin="1.2s"><mpath href="#w4"/></animateMotion></circle>
+  </svg>
+  <div class="cap">Fig. 4 — Scene-map generation. A post-processing normalizer forces segments to be consecutive and gapless before persisting, so downstream code can trust the map blindly.</div>
+  </div>
+  <p class="body">Freshly-aired episodes are a special case: Wikipedia may not have a plot section yet. The engine then
+  degrades gracefully — curated context text (produced by the Operations Copilot from Trakt + Wikipedia research and
+  approved by the admin) or the transcript alone drives the map, and the source used is recorded with the result.</p>
+</section>
+
+
+<section id="shield">
+  <div class="kicker">07 · Engine 3</div>
+  <h2>Realtime Spoiler Shield — classify, never censor</h2>
+  <p class="body">The instant a user submits a chat message (or answers a room question), the shield builds the channel's
+  <b>scope rules</b>, attaches the season's full timed scene map, and asks for a strict verdict:
+  <i>{isSpoiler, reason}</i>. The message is <b>never blocked</b> — it is flagged, and the UI blurs it for exactly the
+  viewers whose own position makes it dangerous. A viewer taps to reveal; the choice is theirs. If the model call fails,
+  the shield <b>fails open</b>: chat latency and availability always win.</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 300" xmlns="http://www.w3.org/2000/svg">
+    <text x="540" y="28" text-anchor="middle" class="gtitle">Three scope modes — what counts as "spoiler territory" changes with channel type and writer position</text>
+
+    <!-- mode 1 -->
+    <rect x="30" y="50" width="320" height="105" rx="14" fill="#0e1420" stroke="#e62238" stroke-width="1.1"/>
+    <text x="52" y="78" class="nlabel" style="fill:#e62238;font-size:12px">Episode channel (E3) + position 12:00</text>
+    <rect x="52" y="95" width="120" height="14" rx="7" fill="rgba(47,214,111,.3)"/>
+    <rect x="172" y="95" width="60" height="14" rx="7" fill="rgba(47,214,111,.3)"/>
+    <rect x="238" y="95" width="30" height="14" rx="7" fill="rgba(47,214,111,.55)"/>
+    <rect x="268" y="95" width="60" height="14" rx="7" fill="rgba(230,34,56,.4)" class="blink"/>
+    <text x="52" y="128" class="nsub2">E1–E2 fully safe · E3 before 12:00 safe</text>
+    <text x="52" y="142" class="nsub2">E3 after 12:00 + later episodes = spoiler territory</text>
+
+    <!-- mode 2 -->
+    <rect x="380" y="50" width="320" height="105" rx="14" fill="#0e1420" stroke="#ffb84a" stroke-width="1.1"/>
+    <text x="402" y="78" class="nlabel" style="fill:#ffb84a;font-size:12px">Season channel + writer position set</text>
+    <rect x="402" y="95" width="90" height="14" rx="7" fill="rgba(47,214,111,.3)"/>
+    <rect x="498" y="95" width="70" height="14" rx="7" fill="rgba(47,214,111,.55)"/>
+    <rect x="574" y="95" width="104" height="14" rx="7" fill="rgba(230,34,56,.4)" class="blink"/>
+    <text x="402" y="128" class="nsub2">everything at/before the writer's (episode, second)</text>
+    <text x="402" y="142" class="nsub2">is watched; everything after = spoiler territory</text>
+
+    <!-- mode 3 -->
+    <rect x="730" y="50" width="320" height="105" rx="14" fill="#0e1420" stroke="#4aa8ff" stroke-width="1.1"/>
+    <text x="752" y="78" class="nlabel" style="fill:#4aa8ff;font-size:12px">Season channel, no position</text>
+    <rect x="752" y="95" width="200" height="14" rx="7" fill="rgba(47,214,111,.45)"/>
+    <rect x="958" y="95" width="70" height="14" rx="7" fill="rgba(230,34,56,.4)" class="blink"/>
+    <text x="752" y="128" class="nsub2">all aired content assumed watched;</text>
+    <text x="752" y="142" class="nsub2">only unaired/leaked reveals are flagged</text>
+
+    <!-- verdict row -->
+    <rect x="280" y="195" width="520" height="72" rx="14" fill="#131a2c" stroke="#2a3a54"/>
+    <text x="540" y="222" text-anchor="middle" class="nlabel">Verdict semantics</text>
+    <text x="540" y="243" text-anchor="middle" class="nsub2">strict on explicit reveals (deaths, betrayals, who wins) inside spoiler territory ·</text>
+    <text x="540" y="257" text-anchor="middle" class="nsub2">lenient on hype, jokes, non-plot chatter · watched territory is NEVER a spoiler</text>
+  </svg>
+  <div class="cap">Fig. 5 — Scope rules given verbatim to the model. Green = watched territory, red (blinking) = spoiler territory relative to the writer.</div>
+  </div>
+
+  <p class="body">On the <b>reader's</b> side, protection is applied per viewer at render time: flagged messages arrive
+  in everyone's payload with their flags (they are never dropped server-side for public messages), and the client blurs
+  a message when the <i>reader's</i> spoiler-free mode is on — including any live message written from a position ahead
+  of the reader's own. One classification, many personalized presentations.</p>
+</section>
+
+<section id="moderator">
+  <div class="kicker">08 · Engine 4</div>
+  <h2>Moderator AI — a host, not a bot</h2>
+  <p class="body">Every live channel has a resident moderator persona ("Echo Moderator") run by a worker loop. Its defining
+  property is <b>restraint</b>: the decision to speak passes through a strict hierarchy where cheap deterministic checks
+  veto expensive reasoning, and the LLM is only consulted when speaking is even permissible. Message dosage adapts to
+  <b>presence</b> — a packed room gets a quieter host; a lonely early viewer gets more company. Anti-flood cooldowns and
+  per-hour caps are hard gates, not suggestions.</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 330" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+      <linearGradient id="funnel" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#16233a"/><stop offset="1" stop-color="#0e1626"/>
+      </linearGradient>
+    </defs>
+
+    <!-- funnel stages -->
+    <g>
+      <rect x="30" y="60" width="200" height="190" rx="14" fill="url(#funnel)" stroke="#e62238" stroke-width="1.1"/>
+      <text x="130" y="88" text-anchor="middle" class="nlabel" style="fill:#e62238">1 · Absolute vetoes</text>
+      <text x="130" y="112" text-anchor="middle" class="nsub2">channel not live? empty room?</text>
+      <text x="130" y="127" text-anchor="middle" class="nsub2">moderator account missing?</text>
+      <text x="130" y="142" text-anchor="middle" class="nsub2">→ instant silence, zero cost</text>
+    </g>
+    <g>
+      <rect x="290" y="60" width="200" height="190" rx="14" fill="url(#funnel)" stroke="#ffb84a" stroke-width="1.1"/>
+      <text x="390" y="88" text-anchor="middle" class="nlabel" style="fill:#ffb84a">2 · Numeric gates</text>
+      <text x="390" y="112" text-anchor="middle" class="nsub2">presence-scaled dosage curve</text>
+      <text x="390" y="127" text-anchor="middle" class="nsub2">cooldown since last message</text>
+      <text x="390" y="142" text-anchor="middle" class="nsub2">hourly caps · flood window</text>
+      <text x="390" y="157" text-anchor="middle" class="nsub2">@echo mention bypasses dosage</text>
+      <text x="390" y="172" text-anchor="middle" class="nsub2">(with its own cooldown)</text>
+    </g>
+    <g class="corePulse">
+      <rect x="550" y="60" width="200" height="190" rx="14" fill="#131a2c" stroke="#2fd66f" stroke-width="1.2"/>
+      <text x="650" y="88" text-anchor="middle" class="nlabel" style="fill:#2fd66f">3 · LLM reasoning</text>
+      <text x="650" y="112" text-anchor="middle" class="nsub2">persona + hard rules first</text>
+      <text x="650" y="127" text-anchor="middle" class="nsub2">(no spoilers beyond scope,</text>
+      <text x="650" y="142" text-anchor="middle" class="nsub2">no fake authenticity)</text>
+      <text x="650" y="157" text-anchor="middle" class="nsub2">then soft biases: welcome quiet</text>
+      <text x="650" y="172" text-anchor="middle" class="nsub2">rooms, defuse rising tension,</text>
+      <text x="650" y="187" text-anchor="middle" class="nsub2">ask, don't lecture</text>
+    </g>
+    <g>
+      <rect x="810" y="60" width="240" height="190" rx="14" fill="url(#funnel)" stroke="#9d6bff" stroke-width="1.1"/>
+      <text x="930" y="88" text-anchor="middle" class="nlabel" style="fill:#9d6bff">4 · Action</text>
+      <text x="930" y="112" text-anchor="middle" class="nsub2">public host message → room</text>
+      <text x="930" y="132" text-anchor="middle" class="nsub2">OR private @echo reply →</text>
+      <text x="930" y="147" text-anchor="middle" class="nsub2">only the asker's SignalR group,</text>
+      <text x="930" y="162" text-anchor="middle" class="nsub2">content limited to summaries</text>
+      <text x="930" y="177" text-anchor="middle" class="nsub2">up to the ASKER's position</text>
+      <text x="930" y="197" text-anchor="middle" class="nsub2" style="fill:#9d6bff">"FOR YOU" badge in UI</text>
+    </g>
+
+    <path id="m1" d="M230 155 L290 155" stroke="#3b4d6b" stroke-width="1.8" fill="none" marker-end="url(#ar5)" class="flow"/>
+    <path id="m2" d="M490 155 L550 155" stroke="#3b4d6b" stroke-width="1.8" fill="none" marker-end="url(#ar5)" class="flow"/>
+    <path id="m3" d="M750 155 L810 155" stroke="#3b4d6b" stroke-width="1.8" fill="none" marker-end="url(#ar5)" class="flow"/>
+    <circle r="4" fill="#ffb84a"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#m1"/></animateMotion></circle>
+    <circle r="4" fill="#2fd66f"><animateMotion dur="2.6s" repeatCount="indefinite" begin=".85s"><mpath href="#m2"/></animateMotion></circle>
+    <circle r="4" fill="#9d6bff"><animateMotion dur="2.6s" repeatCount="indefinite" begin="1.7s"><mpath href="#m3"/></animateMotion></circle>
+
+    <text x="130" y="290" text-anchor="middle" class="nsub2">most cycles end here</text>
+    <text x="390" y="290" text-anchor="middle" class="nsub2">or here — silence is free</text>
+    <text x="650" y="290" text-anchor="middle" class="nsub2">reasoning only when allowed</text>
+    <text x="930" y="290" text-anchor="middle" class="nsub2">speaking is the exception</text>
+  </svg>
+  <div class="cap">Fig. 6 — The decision funnel. Deterministic layers veto early and often; the model is the last, not the first, resort.</div>
+  </div>
+
+  <p class="body">The <b>@echo mention</b> flow is the moderator's sharpest trick: when a user asks it something directly,
+  the reply is delivered <b>privately</b> — persisted with a visible-to-user marker and pushed only to that user's personal
+  SignalR group, so the payload never even reaches other clients. Crucially, the reply's knowledge is clamped to the
+  asker's watch position: the prompt receives only scene summaries up to that point, making it structurally unable to
+  spoil what the asker hasn't seen.</p>
+</section>
+
+<section id="timeline">
+  <div class="kicker">09 · Position-aware timeline</div>
+  <h2>The slider, the wave, and time-travel chat</h2>
+  <p class="body">The channel player bar is the product's signature control. The viewer drags (or plays, 1 s/s with
+  pause) a position across the episode/season; the curated feed expands in real time as scenes fall behind the playhead.
+  The slider's visual layer is the <b>Comment Wave</b> — a bar chart of real anchor density per time bucket computed from
+  the pool (no synthetic data), so the crowd's loudest moments are visible before you reach them, without revealing why.</p>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic" style="background:var(--red-soft)">🎚️</span>Position mechanics</h4>
+      <p>Client keeps an authoritative position ref; drags debounce (400 ms) before committing to the server, a ticker
+      advances it while playing, and a 10 s poll + reconnect refresh reconciles state. Messages ahead of the position
+      simply don't render from the curated pool; live chat ahead of it arrives blurred.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--blue-soft)">📊</span>Wave data honesty</h4>
+      <p>Buckets are aggregated from real curated anchors per episode (season channels concatenate aired episodes on a
+      cumulative axis). Empty pool → flat line, never a fake pulse. The wave endpoint is scope-aware, so an episode
+      channel only ever exposes its own episode's density.</p></div>
+  </div>
+</section>
+
+
+<section id="realtime">
+  <div class="kicker">10 · Realtime layer</div>
+  <h2>SignalR fan-out — one hub, two audiences</h2>
+  <p class="body">All room realtime rides a single authenticated SignalR hub with two group classes per channel: the
+  <b>room group</b> (every connected viewer) and a <b>personal group per user</b>, which exists so that private payloads
+  — the moderator's @echo replies today, personal replies tomorrow — are never broadcast and filtered client-side, but
+  simply never leave the server for anyone else. Presence (the live viewer count) is a by-product of hub connect/disconnect
+  tracking. Clients reconnect with backoff and reconcile missed events through the regular REST reads, so a dropped
+  socket degrades to 10-second polling instead of a broken room.</p>
+
+  <div class="dia">
+  <svg viewBox="0 0 1080 340" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="ar6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" fill="#3b4d6b"/>
+      </marker>
+    </defs>
+    <!-- hub -->
+    <g class="corePulse">
+      <circle cx="200" cy="170" r="70" fill="#131a2c" stroke="#2fd66f" stroke-width="1.5"/>
+      <text x="200" y="160" text-anchor="middle" class="nlabel">Channel Hub</text>
+      <text x="200" y="178" text-anchor="middle" class="nsub2">JWT on connect</text>
+      <text x="200" y="192" text-anchor="middle" class="nsub2">presence tracker</text>
+      <circle cx="200" cy="170" r="82" fill="none" stroke="#2fd66f" stroke-opacity=".3" class="blink"/>
+    </g>
+
+    <!-- event list -->
+    <g>
+      <rect x="330" y="40" width="250" height="260" rx="14" fill="#0e1420" stroke="#1e2a3e"/>
+      <text x="455" y="66" text-anchor="middle" class="gtitle">room events (to :all)</text>
+      <text x="352" y="94" class="nsub">ReceiveMessage — chat / poll / question</text>
+      <text x="352" y="120" class="nsub">ReactionChanged — live counters</text>
+      <text x="352" y="146" class="nsub">PollChanged — vote totals</text>
+      <text x="352" y="172" class="nsub">QuestionUpvoteChanged</text>
+      <text x="352" y="198" class="nsub">QuestionAnswerAdded</text>
+      <text x="352" y="224" class="nsub">EmojiBurst — ephemeral, never stored</text>
+      <text x="352" y="252" class="nsub2">everyone in the room, instantly;</text>
+      <text x="352" y="266" class="nsub2">flags applied per-viewer at render</text>
+    </g>
+
+    <g>
+      <rect x="650" y="90" width="250" height="120" rx="14" fill="#0e1420" stroke="#9d6bff" stroke-width="1.1"/>
+      <text x="775" y="116" text-anchor="middle" class="gtitle" style="fill:#9d6bff">private events (to :user:{id})</text>
+      <text x="672" y="144" class="nsub">Moderator @echo reply — "FOR YOU"</text>
+      <text x="672" y="170" class="nsub2">payload physically absent from other</text>
+      <text x="672" y="184" class="nsub2">clients; also position-clamped content</text>
+    </g>
+
+    <!-- clients -->
+    <g>
+      <circle cx="985" cy="60" r="16" fill="#1a2334" stroke="#2a3a54"/><text x="985" y="65" text-anchor="middle" style="font-size:12px">📱</text>
+      <circle cx="1020" cy="150" r="16" fill="#1a2334" stroke="#2a3a54"/><text x="1020" y="155" text-anchor="middle" style="font-size:12px">💻</text>
+      <circle cx="985" cy="250" r="16" fill="#1a2334" stroke="#2a3a54"/><text x="985" y="255" text-anchor="middle" style="font-size:12px">📱</text>
+    </g>
+
+    <path id="r1" d="M270 150 C300 130 310 110 330 100" stroke="#2fd66f" stroke-width="1.6" fill="none" marker-end="url(#ar6)" class="flow"/>
+    <path id="r2" d="M270 190 C310 210 480 300 630 260 C680 245 660 230 650 210" stroke="#9d6bff" stroke-width="1.5" fill="none" marker-end="url(#ar6)" class="flow slow"/>
+    <path id="r3" d="M580 90 C760 40 900 45 969 57" stroke="#2fd66f" stroke-width="1.4" fill="none" marker-end="url(#ar6)" class="flow"/>
+    <path id="r4" d="M580 160 C760 160 940 152 1004 150" stroke="#2fd66f" stroke-width="1.4" fill="none" marker-end="url(#ar6)" class="flow"/>
+    <path id="r5" d="M900 150 C950 170 960 210 972 238" stroke="#9d6bff" stroke-width="1.4" fill="none" marker-end="url(#ar6)" class="flow slow"/>
+
+    <circle r="3.6" fill="#2fd66f"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#r3"/></animateMotion></circle>
+    <circle r="3.6" fill="#2fd66f"><animateMotion dur="1.8s" repeatCount="indefinite" begin=".6s"><mpath href="#r4"/></animateMotion></circle>
+    <circle r="3.6" fill="#9d6bff"><animateMotion dur="2.6s" repeatCount="indefinite" begin=".3s"><mpath href="#r5"/></animateMotion></circle>
+    <text x="985" y="290" text-anchor="middle" class="nsub2">only this client receives the private payload</text>
+  </svg>
+  <div class="cap">Fig. 7 — Fan-out model. Green = room-wide events; violet = personal-group delivery (server-side privacy, not client-side hiding).</div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="kicker">11 · Feature walkthroughs</div>
+  <h2>How each capability is realized</h2>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic" style="background:var(--red-soft)">🗳️</span>Polls &amp; room questions</h4>
+      <p>Two first-class message kinds beside plain text. Polls: user-authored options (2–6), one vote per user enforced by a
+      unique index, vote switching is an upsert, live percentages via <i>PollChanged</i>. Questions: upvote toggles, threaded
+      answers that pass through the Spoiler Shield with the <b>answerer's</b> position, blurred for readers where needed.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--amber-soft)">🧨</span>Reactions &amp; emoji bursts</h4>
+      <p>Two distinct affordances: <b>reactions</b> are persistent per-message counters (fixed emoji set, toggle semantics,
+      partial unique indexes) that fire a screen-wide starburst on increase; <b>emoji throwing</b> is pure ephemeral joy —
+      a whitelisted burst broadcast to the room with a 200 ms server throttle, deliberately never written to the database.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--blue-soft)">🌐</span>Per-user language</h4>
+      <p>Because Engine 1 stores every curated message bilingually, language is a <b>profile setting</b>, not a channel toggle:
+      the API picks TextEn/TextTr per reader. Turkish and international viewers share one room and each reads it natively.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--green-soft)">🔓</span>Open Access flag</h4>
+      <p>Monetization gates (membership + Pro checks across REST and the hub) sit behind a single configuration flag, currently
+      open for the beta. Flipping it re-arms every gate under the same contract — pricing experiments without code changes.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--violet-soft)">📱</span>PWA install</h4>
+      <p>Manifest + programmatic icon set + iOS standalone meta: Echo installs to the home screen and opens full-screen with a
+      pinned, zoom-locked viewport. No service worker by design — a live-chat product must never serve stale cached rooms.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--red-soft)">🧭</span>Operations Copilot (admin)</h4>
+      <p>The admin panel embeds an assistant that researches trending series (live Trakt data), returns real episode tables,
+      deterministic subtitle-source links (built by backend code, never hallucinated), generates per-episode context packs, and
+      answers with exact panel-ready setup recipes — collapsing channel launch to minutes.</p></div>
+  </div>
+</section>
+
+<section id="data">
+  <div class="kicker">12 · Data architecture</div>
+  <h2>One database, honest states</h2>
+  <p class="body">PostgreSQL 18 + pgvector holds everything: identity, catalog (series → episodes → segments), the raw
+  and curated pools with their vectors, channels and their engagement graph (messages, reactions, polls, questions,
+  memberships, visits, preferences). Conventions are uniform — UUIDv7 keys (time-ordered, index-friendly), UTC
+  created/updated stamps, xmin optimistic concurrency, snake_case mapping, foreign keys with deliberate cascade/set-null
+  choices, partial and composite indexes on every hot path. Vector search runs <i>inside</i> the same engine
+  (cosine distance on 1536-d columns), which keeps dedupe and alignment queries transactional with the rows they touch —
+  no external vector store to drift out of sync.</p>
+  <table>
+    <tr><th>Cluster</th><th>Key tables</th><th>Notable mechanics</th></tr>
+    <tr><td><b>Catalog</b></td><td>contents · episodes · content_segments</td><td>timed scene map with per-segment embeddings; transcript + context text per episode</td></tr>
+    <tr><td><b>Pool</b></td><td>raw_comments · comment_clusters · curated_messages</td><td>9-state machine; (content, platform, external_id) idempotency; cluster centroids; SimilarCount folding</td></tr>
+    <tr><td><b>Rooms</b></td><td>channels · user_messages · message_reactions · poll_* · question_*</td><td>message kinds; per-target unique reaction indexes; single-vote upsert; visible-to-user private rows</td></tr>
+    <tr><td><b>People</b></td><td>users · subscriptions · memberships · visits · prefs · suggestions</td><td>profile language; position persistence per channel; Google identity, system accounts for AI personas</td></tr>
+  </table>
+</section>
+
+<section id="deploy">
+  <div class="kicker">13 · Deployment &amp; operations</div>
+  <h2>Boringly repeatable releases</h2>
+  <p class="body">The whole stack ships as Docker Compose on an Azure VM: <b>caddy</b> (TLS for two public hostnames),
+  <b>web</b> (Next standalone), <b>api</b>, <b>workers</b>, <b>db</b>. A deploy is one idempotent script — git pull,
+  compose build + up, then EF migrations applied against the running database, then a health probe
+  (<i>status/db/time</i>) — executed the same way every time, with logs kept per release. Database evolution is
+  migration-only (30+ applied to date); every schema change ships with its Down path and destructive steps are rehearsed
+  locally first. Failures stay visible by design: pipeline states, per-source cooldowns and structured logs make "why is
+  this comment not showing" a query, not an archaeology dig.</p>
+</section>
+
+<section id="foundations">
+  <div class="kicker">14 · Forward-ready foundations</div>
+  <h2>Already in the schema, waiting for launch day</h2>
+  <p class="body">Two upcoming product directions are pre-wired at the data layer, behind configuration flags that are
+  <b>off</b> today — zero user-visible surface, zero behavioral risk, but launch becomes an endpoint-and-UI exercise
+  instead of a migration project:</p>
+  <div class="grid g2">
+    <div class="card"><h4><span class="ic" style="background:var(--green-soft)">🤝</span>Social graph</h4>
+      <p>Friendships (request → accept, single-row pairs, self-request blocked at the DB), external identity mapping and
+      token-based friend invites (register via invite → auto-friendship). Message reply linkage is already indexed with
+      referential integrity — the moderator uses it today; user-to-user replies (public, or private via the existing
+      visible-to-user + personal-group machinery) plug straight in.</p></div>
+    <div class="card"><h4><span class="ic" style="background:var(--red-soft)">🎬</span>Live guest events</h4>
+      <p>Channel events model a scheduled/live/ended guest session — a cast member joining the room on camera — with
+      provider-agnostic stream references (the WebRTC vendor decision is deliberately deferred). Messages can bind to an
+      event, forming the "talk to the guest" lane next to the existing filters, visible to the whole room and the guest.</p></div>
+  </div>
+</section>
+
+<footer>
+  Echo — Technical Architecture &amp; AI Systems Design · July 2026 · Prepared from the production codebase (branch <b>dev</b>).
+  All figures reflect the deployed system; no synthetic metrics.
+</footer>
+
+</div>
+
+<a href="https://echo-dev-app.germanywestcentral.cloudapp.azure.com" target="_blank" rel="noopener"
+   style="position:fixed;right:22px;bottom:22px;background:#e62238;color:#fff;font-weight:700;font-size:.9rem;
+   padding:13px 22px;border-radius:999px;box-shadow:0 8px 28px rgba(230,34,56,.45);z-index:50;text-decoration:none">
+  Open the live app →
+</a>
+
+<script>
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); }
+}, { threshold: 0.08 });
+document.querySelectorAll('section').forEach(s => io.observe(s));
+</script>
+</body>
+</html>
